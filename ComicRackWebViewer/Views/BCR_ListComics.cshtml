@@ -1,0 +1,21 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<ComicRackWebViewer.List>
+
+@foreach (var item in Model.Comics)
+{
+  var s = 
+<th width=50px style="font-size:small" onclick="window.location='/Comics/Metadata/@item.Id/';">info</th>
+        <td>
+            <div onclick="window.location='/Comics/@item.Id/';">@item.Series  (@item.Volume)&nbsp&nbsp</div>
+        </td>
+        <td align=center>
+            <div onclick="window.location='/Comics/@item.Id/';">&nbsp&nbsp @item.Number &nbsp&nbsp</div>
+        </td>
+        <td>
+            <div onclick="window.location='/Comics/@item.Id/';">&nbsp&nbsp @item.Title</div>
+        </td>
+<td width=150px align=center><div>[@item.Month / @item.Year]</div></td>
+        
+        </td>
+        
+    </tr>
+}

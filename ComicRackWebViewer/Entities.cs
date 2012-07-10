@@ -5,6 +5,14 @@ using cYo.Projects.ComicRack.Engine;
 
 namespace ComicRackWebViewer
 {
+	public class List
+    {
+        public string Name { get; set; }
+        public Guid   Id { get; set; }
+        public IEnumerable<Comic> Comics { get; set; }
+        public bool IsDesc { get; set; }
+    }
+	
     public class Publisher
     {
         public string Name { get; set; }
@@ -112,6 +120,13 @@ namespace ComicRackWebViewer
             return comics.Select(x => x.ToSeries()).Distinct();
         }
 
+        /*
+        public static List ToList(this ComicListItem x)
+        {
+        	return new List{};
+        }
+        */
+        
         public static Comic ToComic(this ComicBook x)
         {
             float f;
@@ -169,5 +184,7 @@ namespace ComicRackWebViewer
                         Id = x.Id,
                     };
         }
+        
+        
     }
 }

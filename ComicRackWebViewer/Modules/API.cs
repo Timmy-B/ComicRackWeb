@@ -31,6 +31,24 @@ namespace ComicRackWebViewer
                 Name = name
             };
         }
+        
+        public static List GetIssuesOfListFromId(Guid id, NancyContext context)
+        {
+            var list = Program.Database.ComicLists.FirstOrDefault(x => x.Id == id);
+            if (list == null)
+            {
+                return new List
+                {
+                    Comics = Enumerable.Empty<Comic>(),
+                    Id = id
+                };
+            }
+            return new List
+            {
+                Comics = context.ApplyODataUriFilter(list.GetBooks().Select(x => x.ToComic())).Cast<Comic>(),
+                Id = id
+            };
+        }
 
         public static IEnumerable<Series> GetSeries()
         {

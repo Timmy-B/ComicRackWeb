@@ -5,6 +5,7 @@ using System.Reflection;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.ViewEngines.Razor;
+using Nancy.Conventions;
 using TinyIoC;
 
 namespace ComicRackWebViewer
@@ -14,7 +15,11 @@ namespace ComicRackWebViewer
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             base.ApplicationStartup(container, pipelines);
+#if DEBUG
             StaticConfiguration.DisableCaches = true;
+#else
+			StaticConfiguration.DisableCaches = false;
+#endif            
             container.Register<IRazorConfiguration, RazorConfiguration>().AsSingleton();
             container.Register<RazorViewEngine>();
             container.Register<IRootPathProvider, RootPathProvider>().AsSingleton();
@@ -29,6 +34,7 @@ namespace ComicRackWebViewer
                 yield return CreateRegistration<SeriesModule>();
                 yield return CreateRegistration<ComicsModule>();
                 yield return CreateRegistration<ListModule>();
+                yield return CreateRegistration<BCRModule>();
             }
         }
 
@@ -44,6 +50,15 @@ namespace ComicRackWebViewer
             Type t = typeof(Tmodule);
             return new ModuleRegistration(t, this.GetModuleKeyGenerator().GetKeyForModuleType(t));
         }
+        
+        protected override void ConfigureConventions(NancyConventions conventions)
+	    {
+	        base.ConfigureConventions(conventions);
+	 
+	        conventions.StaticContentsConventions.Add(
+            	StaticContentConventionBuilder.AddDirectory("/bcr", @"/bcr")
+        	);
+	    }
     }
 
     public class RootPathProvider : IRootPathProvider
@@ -74,6 +89,7 @@ namespace ComicRackWebViewer
             yield return "System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
             yield return "ComicRackWebViewer";
             yield return "ComicRack.Engine";
+            yield return "cYo.Common";
         }
 
         public IEnumerable<string> GetDefaultNamespaces()
@@ -82,6 +98,7 @@ namespace ComicRackWebViewer
             yield return "System.Linq";
             yield return "System.Collections.Generic";
             yield return "cYo.Projects.ComicRack.Engine";
+            yield return "cYo.Projects.ComicRack.Engine.Database";
         }
     }
 }

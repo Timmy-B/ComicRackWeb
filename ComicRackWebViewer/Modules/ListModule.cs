@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Nancy;
 
 namespace ComicRackWebViewer
@@ -13,10 +14,5 @@ namespace ComicRackWebViewer
         }
     }
 
-    public class List
-    {
-        public string Name { get; set; }
-        public IEnumerable<Comic> Comics { get; set; }
-        public bool IsDesc { get; set; }
-    }
+    
 }

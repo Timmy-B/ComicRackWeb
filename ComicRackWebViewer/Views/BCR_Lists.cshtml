@@ -1,0 +1,21 @@
+﻿@inherits Nancy.ViewEngines.Razor.NancyRazorViewBase<cYo.Projects.ComicRack.Engine.Database.ComicListItemCollection>
+{
+d: {
+  __count: @Model.Count()
+  ,results: [
+      @foreach (var list in Model)
+      { 
+        var type = "";
+        var count = 0;
+        if (list is ComicListItemFolder)
+        {
+          type = "ComicListItemFolder";
+          count = ((ComicListItemFolder)list).Items.Count();
+        }
+          
+        var s = "{ Id: '" + list.Id + "', Name: '" + list.Name + "', Type: '" + type + "', Count: '" + count + "' },";
+        Write(s);
+      }
+    ]
+  }
+}
