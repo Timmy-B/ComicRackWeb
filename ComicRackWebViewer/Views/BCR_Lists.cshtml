@@ -12,8 +12,10 @@ d: {
           type = "ComicListItemFolder";
           count = ((ComicListItemFolder)list).Items.Count();
         }
-          
-        var s = "{ Id: '" + list.Id + "', Name: '" + list.Name + "', Type: '" + type + "', Count: '" + count + "' },";
+        
+        string name = list.Name.ToString().Replace("\"", "\\\"");
+        
+        var s = "{ \"Id\": \"" + list.Id + "\", \"Name\": \"" + name + "\", \"Type\": \"" + type + "\", \"Count\": \"" + count + "\" },";
         Write(s);
       }
     ]
