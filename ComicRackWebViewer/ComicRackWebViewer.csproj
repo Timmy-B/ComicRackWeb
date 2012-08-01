@@ -129,10 +129,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Views\BCR.cshtml" />
-    <None Include="Views\BCR_Comic.cshtml" />
-    <None Include="Views\BCR_ListComics.cshtml" />
-    <None Include="Views\BCR_Lists.cshtml" />
+    <None Include="Views\BCR.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Views\ComicBook.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -2,10 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using cYo.Projects.ComicRack.Engine;
+using cYo.Projects.ComicRack.Engine.Database;
+
 
 namespace ComicRackWebViewer
 {
-	public class List
+  
+    // (Smart/Folder/Item) list
+    public class ComicList
+    {
+        public string Name { get; set; }
+        public Guid   Id { get; set; }
+        public int    ListsCount { get; set; }
+        public IEnumerable<ComicList> Lists { get; set; }
+        public string Type { get; set; }
+    }
+  
+    // Collection of books from a FolderList
+    public class BooksList
     {
         public string Name { get; set; }
         public Guid   Id { get; set; }
@@ -120,13 +134,30 @@ namespace ComicRackWebViewer
             return comics.Select(x => x.ToSeries()).Distinct();
         }
 
-        /*
-        public static List ToList(this ComicListItem x)
+               
+        public static ComicList ToComicList(this ComicListItem x, int depth = -1)
         {
-        	return new List{};
+          ComicList list = new ComicList{
+            Name = x.Name,
+            Id = x.Id,
+            ListsCount = 0,
+            Type = x.GetType().ToString().Split('.').LastOrDefault()
+          };
+          
+          ComicListItemFolder folderList = x as ComicListItemFolder;
+          if (folderList != null)
+          {
+            list.ListsCount = folderList.Items.Count;
+            // recurse ?
+            if (depth != 0)
+            {
+              list.Lists = folderList.Items.Select(c => c.ToComicList(depth-1));
+            }
+          }
+          
+          return list;
         }
-        */
-        
+         
         public static Comic ToComic(this ComicBook x)
         {
             float f;

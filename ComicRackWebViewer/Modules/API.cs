@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using cYo.Projects.ComicRack.Engine;
@@ -14,38 +16,39 @@ namespace ComicRackWebViewer
 {
     public static class API
     {
-        public static List GetIssuesOfList(string name, NancyContext context)
+        public static BooksList GetIssuesOfList(string name, NancyContext context)
         {
             var list = Program.Database.ComicLists.FirstOrDefault(x => x.Name == name);
             if (list == null)
             {
-                return new List
+                return new BooksList
                 {
                     Comics = Enumerable.Empty<Comic>(),
                     Name = name
                 };
             }
-            return new List
+            return new BooksList
             {
                 Comics = context.ApplyODataUriFilter(list.GetBooks().Select(x => x.ToComic())).Cast<Comic>(),
                 Name = name
             };
         }
         
-        public static List GetIssuesOfListFromId(Guid id, NancyContext context)
+        public static BooksList GetIssuesOfListFromId(Guid id, NancyContext context)
         {
             var list = Program.Database.ComicLists.FirstOrDefault(x => x.Id == id);
             if (list == null)
             {
-                return new List
+                return new BooksList
                 {
                     Comics = Enumerable.Empty<Comic>(),
                     Id = id
                 };
             }
-            return new List
+            return new BooksList
             {
-                Comics = context.ApplyODataUriFilter(list.GetBooks().Select(x => x.ToComic())).Cast<Comic>(),
+                //Comics = context.ApplyODataUriFilter(list.GetBooks().Select(x => x.ToComic())).Cast<Comic>(),
+                Comics = list.GetBooks().Select(x => x.ToComic()),
                 Id = id
             };
         }
@@ -55,7 +58,7 @@ namespace ComicRackWebViewer
             return Plugin.Application.GetLibraryBooks().AsSeries();
         }
 
-        public static List GetSeries(Guid id, NancyContext context)
+        public static BooksList GetSeries(Guid id, NancyContext context)
         {
             var books = Plugin.Application.GetLibraryBooks();
             var book = books.Where(x => x.Id == id).First();
@@ -63,7 +66,7 @@ namespace ComicRackWebViewer
                 .Where(x => x.Volume == book.Volume)
                 .Select(x => x.ToComic())
                 .OrderBy(x => x.Number).ToList();
-            return new List
+            return new BooksList
             {
                 Comics = context.ApplyODataUriFilter(series).Cast<Comic>(),
                 Name = book.Series
@@ -92,14 +95,22 @@ namespace ComicRackWebViewer
 
         private static byte[] GetPageImageBytes(Guid id, int page)
         {
-            var comic = GetComics().First(x => x.Id == id);
-            var index = comic.TranslatePageToImageIndex(page);
-            var provider = GetProvider(comic);
-            if (provider == null)
+            try
             {
+              var comic = GetComics().First(x => x.Id == id);
+              var index = comic.TranslatePageToImageIndex(page);
+              var provider = GetProvider(comic);
+              if (provider == null)
+              {
+                  return null;
+              }
+              return provider.GetByteImage(index); // ComicRack returns the page converted to a jpeg image.....
+            }
+            catch (Exception e)
+            {
+                //MessageBox.Show(e.ToString());
                 return null;
             }
-            return provider.GetByteImage(index);
         }
 
         public static Response GetPageImage(Guid id, int page, IResponseFormatter response)
@@ -112,6 +123,59 @@ namespace ComicRackWebViewer
             return response.FromStream(new MemoryStream(bytes), MimeTypes.GetMimeType(".jpg"));
         }
 
+        
+        public static Image Resize(Image img, int width, int height)
+        {
+            //create a new Bitmap the size of the new image
+            Bitmap bmp = new Bitmap(width, height);
+            //create a new graphic from the Bitmap
+            Graphics graphic = Graphics.FromImage((Image)bmp);
+            graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            //draw the newly resized image
+            graphic.DrawImage(img, 0, 0, width, height);
+            //dispose and free up the resources
+            graphic.Dispose();
+            //return the image
+            return (Image)bmp;
+        }
+        
+        public static Response GetPageImage(Guid id, int page, int width, int height, IResponseFormatter response)
+        {
+            var bytes = GetPageImageBytes(id, page);
+            if (bytes == null)
+            {
+              return HttpStatusCode.NotFound;
+            }
+            
+            if (width == -1 && height == -1)
+            {
+              // Return original image.
+              return response.FromStream(new MemoryStream(bytes), MimeTypes.GetMimeType(".jpg"));
+            }
+            else
+            {
+              var bitmap = Image.FromStream(new MemoryStream(bytes), false, false);
+              if (width == -1)
+              {
+                double ratio = height / (double)bitmap.Height;
+                width = (int)(bitmap.Width * ratio);
+              }
+              else
+              if (height == -1)
+              {
+                double ratio = width / (double)bitmap.Width;
+                height = (int)(bitmap.Height * ratio);
+              }
+                  
+              // Use high quality resize.
+              var thumbnail = Resize(bitmap, width, height);
+              bitmap.Dispose();
+              MemoryStream stream = GetBytesFromImage(thumbnail);
+              thumbnail.Dispose();
+              return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
+            }
+        }
+        
         private static ImageProvider GetProvider(ComicBook comic)
         {
             var provider = comic.CreateImageProvider();
@@ -128,8 +192,16 @@ namespace ComicRackWebViewer
 
         public static Comic GetComic(Guid id)
         {
+          try
+          {
             var comic = GetComics().First(x => x.Id == id);
             return comic.ToComic();
+          }
+          catch(Exception e)
+          {
+            //MessageBox.Show(e.ToString());
+            return null;
+          }
         }
 
         public static IQueryable<ComicBook> GetComics()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -15,6 +16,10 @@ namespace ComicRackWebViewer
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             base.ApplicationStartup(container, pipelines);
+            
+            // Increase size of JSON responses as 100K is way too small for a large comic collection.
+            Nancy.Json.JsonSettings.MaxJsonLength = 10000000; 
+            
 #if DEBUG
             StaticConfiguration.DisableCaches = true;
 #else
@@ -23,8 +28,16 @@ namespace ComicRackWebViewer
             container.Register<IRazorConfiguration, RazorConfiguration>().AsSingleton();
             container.Register<RazorViewEngine>();
             container.Register<IRootPathProvider, RootPathProvider>().AsSingleton();
+            
+            //pipelines.OnError += ExceptionHandler;
         }
 
+        private Response ExceptionHandler(NancyContext ctx, Exception ex)
+        {
+          MessageBox.Show(ex.ToString()); 
+          return HttpStatusCode.InternalServerError;
+        }
+            
         protected override IEnumerable<ModuleRegistration> Modules
         {
             get
@@ -56,7 +69,7 @@ namespace ComicRackWebViewer
 	        base.ConfigureConventions(conventions);
 	 
 	        conventions.StaticContentsConventions.Add(
-            	StaticContentConventionBuilder.AddDirectory("/bcr", @"/bcr")
+            	StaticContentConventionBuilder.AddDirectory("/viewer", @"/bcr")
         	);
 	    }
     }
