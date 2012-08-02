@@ -36,7 +36,7 @@ namespace ComicRackWebViewer
         
         public static BooksList GetIssuesOfListFromId(Guid id, NancyContext context)
         {
-            var list = Program.Database.ComicLists.FirstOrDefault(x => x.Id == id);
+            var list = Program.Database.ComicLists.FindItem(id);
             if (list == null)
             {
                 return new BooksList
