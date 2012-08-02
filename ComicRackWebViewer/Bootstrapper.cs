@@ -20,11 +20,15 @@ namespace ComicRackWebViewer
             // Increase size of JSON responses as 100K is way too small for a large comic collection.
             Nancy.Json.JsonSettings.MaxJsonLength = 10000000; 
             
+            StaticConfiguration.CaseSensitive = false;
+            
 #if DEBUG
             StaticConfiguration.DisableCaches = true;
+            
 #else
-			StaticConfiguration.DisableCaches = false;
-#endif            
+			      StaticConfiguration.DisableCaches = false;
+#endif
+
             container.Register<IRazorConfiguration, RazorConfiguration>().AsSingleton();
             container.Register<RazorViewEngine>();
             container.Register<IRootPathProvider, RootPathProvider>().AsSingleton();
