@@ -94,6 +94,7 @@ namespace ComicRackWebViewer
 
     public class Comic
     {
+        public string FilePath { get; set; }
         public string Title { get; set; }
         public int Volume { get; set; }
         public float Number { get; set; }
@@ -125,6 +126,7 @@ namespace ComicRackWebViewer
         public string Web { get; set; }
         public string Notes { get; set; }
         public string ScanInfo { get; set; }
+        public string Opened { get; set; }
     }
 
     public static class EntityExtensions
@@ -175,6 +177,7 @@ namespace ComicRackWebViewer
                         Title = title,
                         Volume = x.Volume,
                         Id = x.Id,
+                        FilePath = x.FilePath,
                         Number = f,
                         Year = x.Year,
                         Month = x.Month,
@@ -203,6 +206,7 @@ namespace ComicRackWebViewer
                         Web = x.Web,
                         Notes = x.Notes,
                         ScanInfo = x.ScanInformation,
+                        Opened = x.OpenedTimeAsText
                     };
         }
 
