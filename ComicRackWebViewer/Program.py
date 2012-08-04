@@ -16,7 +16,7 @@ def ComicRackWebViewer(books):
 
 #@Name ComicRack Web (Startup)
 #@Hook Startup
-#@Enabled false
+#@Enabled true
 #@Image nancy.jpg
 #@Description ComicRack Web (Startup)
 def ComicRackWebViewerStartup():

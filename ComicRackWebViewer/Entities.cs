@@ -7,6 +7,20 @@ using cYo.Projects.ComicRack.Engine.Database;
 
 namespace ComicRackWebViewer
 {
+    /*
+    public class BCRSettings {
+      public bool open_current_comic_at_launch { get; set; }
+      public bool open_next_comic { get; set; }
+      public int page_fit_mode { get; set; }
+      public int zoom_on_tap { get; set; }
+      public int toggle_paging_bar { get; set; }
+      public bool use_page_turn_drag { get; set; }
+      public int page_turn_drag_threshold { get; set; }
+      public bool use_page_change_area { get; set; }
+      public int page_change_area_width { get; set; }
+    }
+    */
+  
   
     // (Smart/Folder/Item) list
     public class ComicList

@@ -112,6 +112,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BCRSettings.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Modules\API.cs" />
     <Compile Include="Modules\BCRModule.cs" />

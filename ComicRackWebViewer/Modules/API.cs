@@ -47,7 +47,6 @@ namespace ComicRackWebViewer
             }
             return new BooksList
             {
-                //Comics = context.ApplyODataUriFilter(list.GetBooks().Select(x => x.ToComic())).Cast<Comic>(),
                 Comics = list.GetBooks().Select(x => x.ToComic()),
                 Id = id
             };
@@ -196,6 +195,20 @@ namespace ComicRackWebViewer
           {
             var comic = GetComics().First(x => x.Id == id);
             return comic.ToComic();
+          }
+          catch(Exception e)
+          {
+            //MessageBox.Show(e.ToString());
+            return null;
+          }
+        }
+        
+        public static ComicBook GetComicBook(Guid id)
+        {
+          try
+          {
+            var comic = GetComics().First(x => x.Id == id);
+            return comic;
           }
           catch(Exception e)
           {
