@@ -71,6 +71,18 @@ namespace ComicRackWebViewer
                 Name = book.Series
             };
         }
+        
+        public static IEnumerable<Comic> GetComicsFromSeries(Guid id)
+        {
+            var books = Plugin.Application.GetLibraryBooks();
+            var book = books.Where(x => x.Id == id).First();
+            var series = books.Where(x => x.Series == book.Series)
+                .Where(x => x.Volume == book.Volume)
+                .Select(x => x.ToComic())
+                .OrderBy(x => x.Number).ToList();
+            
+            return series;
+        }
 
         public static Response GetThumbnailImage(Guid id, int page, IResponseFormatter response)
         {

@@ -52,6 +52,7 @@ namespace ComicRackWebViewer
         public string Title { get; set; }
         public int Volume { get; set; }
         public Guid Id { get; set; }
+        public Guid Count { get; set; }
 
         public bool Equals(Series other)
         {

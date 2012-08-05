@@ -85,6 +85,10 @@ namespace ComicRackWebViewer
 
         	  };
             
+        	  Get["/Comics"] = x => { 
+        	    return Response.AsOData(API.GetComics().Select(c => c.ToComic()));
+        	  };
+        	  
         	  // Return the comicbook info as an OData filtered bag of properties.
             Get["/Comics/{id}"] = x => { 
               Comic comic = API.GetComic(new Guid(x.id));
@@ -178,15 +182,45 @@ namespace ComicRackWebViewer
         	  // Update the BCR settings.
         	  Put["/Settings"] = x => {
         	    
-        	    BCRSettings settings = this.Bind<BCRSettings>();
-        	    settings.Save();
-        	    return HttpStatusCode.OK;  
+        	    try 
+        	    {
+          	    BCRSettings settings = this.Bind<BCRSettings>();
+          	    settings.Save();
+          	    return HttpStatusCode.OK;  
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString());
+        	    }
         	  };
            
         	  Get["/Series"] = x => {
         	    try 
         	    {
         	      return Response.AsOData(API.GetSeries(), HttpStatusCode.OK);
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.BadRequest, e.ToString());
+        	    }
+        	  };
+        	  
+        	  
+        	  Get["/Series/{id}"] = x => {
+        	    try 
+        	    {
+        	      return Response.AsOData(API.GetComicsFromSeries(new Guid(x.id)), HttpStatusCode.OK);
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.BadRequest, e.ToString());
+        	    }
+        	  };
+        	  
+        	  Get["/Series/{id}/count"] = x => {
+        	    try 
+        	    {
+        	      return Response.AsText(Context.ApplyODataUriFilter(API.GetComicsFromSeries(new Guid(x.id))).Count().ToString());
         	    }
         	    catch(Exception e)
         	    {
