@@ -75,6 +75,7 @@ namespace ComicRackWebViewer
           XmlSerializer serializer = new XmlSerializer(this.GetType());
           StreamWriter writer = new StreamWriter(filepath);
           serializer.Serialize(writer.BaseStream, this);
+          writer.Close();
         }
        
      
