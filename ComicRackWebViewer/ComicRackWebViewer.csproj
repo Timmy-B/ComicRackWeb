@@ -130,9 +130,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Views\BCR.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Views\ComicBook.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
