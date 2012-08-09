@@ -34,9 +34,13 @@ namespace ComicRackWebViewer
     
     public class BCRModule : NancyModule
     {
+        private BCRSettings settings = null;
+        
         public BCRModule()
             : base("/BCR")
         {
+            settings = BCRSettings.Load();
+            
             Get["/"] = x => { return Response.AsRedirect("/viewer/index.html", RedirectResponse.RedirectType.Permanent); };
             
             Get["/Lists"] = x => { 
@@ -107,7 +111,7 @@ namespace ComicRackWebViewer
               int width = Request.Query.width.HasValue ? int.Parse(Request.Query.width) : -1;
               int height = Request.Query.height.HasValue ? int.Parse(Request.Query.height) : -1;
               
-              return API.GetPageImage(new Guid(x.id), int.Parse(x.page), width, height, Response);
+              return API.GetPageImage(new Guid(x.id), int.Parse(x.page), width, height, settings, Response);
             };
             
         	  // Get one property.
@@ -175,7 +179,7 @@ namespace ComicRackWebViewer
         	  
         	  // Get the BCR settings.
         	  Get["/Settings"] = x => {
-        	    BCRSettings settings = BCRSettings.Load();
+        	    
         	    return Response.AsJson(settings, HttpStatusCode.OK);
         	  };
         	  
@@ -184,7 +188,7 @@ namespace ComicRackWebViewer
         	    
         	    try 
         	    {
-          	    BCRSettings settings = this.Bind<BCRSettings>();
+          	    settings = this.Bind<BCRSettings>();
           	    settings.Save();
           	    return HttpStatusCode.OK;  
         	    }
