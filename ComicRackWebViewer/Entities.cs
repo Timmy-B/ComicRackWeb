@@ -52,7 +52,7 @@ namespace ComicRackWebViewer
         public string Title { get; set; }
         public int Volume { get; set; }
         public Guid Id { get; set; }
-        public Guid Count { get; set; }
+        public int Count { get; set; }
 
         public bool Equals(Series other)
         {
@@ -142,7 +142,9 @@ namespace ComicRackWebViewer
         public string Notes { get; set; }
         public string ScanInfo { get; set; }
         public string Opened { get; set; }
+        public int LastPageRead { get; set; }
     }
+
 
     public static class EntityExtensions
     {
@@ -177,6 +179,7 @@ namespace ComicRackWebViewer
          
         public static Comic ToComic(this ComicBook x)
         {
+          
             float f;
             if (!float.TryParse(x.Number, out f))
             {
@@ -221,7 +224,8 @@ namespace ComicRackWebViewer
                         Web = x.Web,
                         Notes = x.Notes,
                         ScanInfo = x.ScanInformation,
-                        Opened = x.OpenedTimeAsText
+                        Opened = x.OpenedTimeAsText,
+                        LastPageRead = x.LastPageRead
                     };
         }
 
@@ -234,7 +238,6 @@ namespace ComicRackWebViewer
                         Id = x.Id,
                     };
         }
-        
         
     }
 }

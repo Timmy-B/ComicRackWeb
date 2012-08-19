@@ -48,6 +48,7 @@ namespace ComicRackWebViewer
                 if (panel == null)
                 {
                     panel = new WebServicePanel();
+                    panel.Closed += new EventHandler(panel_Closed);
                 }
                 panel.StartService();
             }

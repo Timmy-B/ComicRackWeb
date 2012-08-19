@@ -9,6 +9,7 @@ using Nancy.ViewEngines.Razor;
 using Nancy.Conventions;
 using TinyIoC;
 
+  
 namespace ComicRackWebViewer
 {
     public class Bootstrapper : DefaultNancyBootstrapper
@@ -33,15 +34,19 @@ namespace ComicRackWebViewer
             container.Register<RazorViewEngine>();
             container.Register<IRootPathProvider, RootPathProvider>().AsSingleton();
             
+            BCRInstaller.Instance.Install();
+            
             //pipelines.OnError += ExceptionHandler;
         }
-
+        
+/*
         private Response ExceptionHandler(NancyContext ctx, Exception ex)
         {
           MessageBox.Show(ex.ToString()); 
           return HttpStatusCode.InternalServerError;
         }
-            
+*/            
+
         protected override IEnumerable<ModuleRegistration> Modules
         {
             get
@@ -73,7 +78,7 @@ namespace ComicRackWebViewer
 	        base.ConfigureConventions(conventions);
 	 
 	        conventions.StaticContentsConventions.Add(
-            	StaticContentConventionBuilder.AddDirectory("/viewer", @"/bcr")
+            	StaticContentConventionBuilder.AddDirectory("/viewer", "/viewer")
         	);
 	    }
     }

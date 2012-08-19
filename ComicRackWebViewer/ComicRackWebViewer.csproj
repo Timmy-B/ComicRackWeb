@@ -36,7 +36,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>PdbOnly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -73,8 +73,11 @@
     <Reference Include="cYo.Common">
       <HintPath>..\..\..\Program Files\ComicRack\cYo.Common.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>C:\Program Files\ComicRack\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Linq2Rest">
-      <HintPath>..\packages\Linq2Rest.2.3.1.0\lib\Net40\Linq2Rest.dll</HintPath>
+      <HintPath>..\packages\Linq2Rest.2.4.1.0\lib\Net45\Linq2Rest.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Nancy, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -115,6 +118,7 @@
     <Compile Include="BCRSettings.cs" />
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Modules\API.cs" />
+    <Compile Include="Modules\BCRInstaller.cs" />
     <Compile Include="Modules\BCRModule.cs" />
     <Compile Include="Modules\ComicsModule.cs" />
     <Compile Include="Entities.cs" />

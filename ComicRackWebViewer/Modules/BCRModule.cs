@@ -32,10 +32,16 @@ namespace ComicRackWebViewer
       }
     }
     
+
+	
+
+    
     public class BCRModule : NancyModule
     {
         private BCRSettings settings = null;
         
+    		
+    		
         public BCRModule()
             : base("/BCR")
         {
@@ -80,7 +86,8 @@ namespace ComicRackWebViewer
         	    
         	    try
         	    {
-        	      return Response.AsOData(API.GetIssuesOfListFromId(new Guid(x.id), Context).Comics); 
+        	      IEnumerable<Comic> comics = API.GetIssuesOfListFromId(new Guid(x.id), Context).Comics;
+        	      return Response.AsOData(comics); 
         	    }
         	    catch(Exception e)
         	    {
@@ -104,12 +111,14 @@ namespace ComicRackWebViewer
               return Response.AsOData(new List<Comic> { comic });
             };
         	  
-        	  
             // Retrieve the specified page as a jpg file with the specified dimensions.
             Get["/Comics/{id}/Pages/{page}"] = x => {
               
               int width = Request.Query.width.HasValue ? int.Parse(Request.Query.width) : -1;
               int height = Request.Query.height.HasValue ? int.Parse(Request.Query.height) : -1;
+              
+              int maxWidth = Request.Query.maxWidth.HasValue ? int.Parse(Request.Query.maxWidth) : -1;
+              int maxHeight = Request.Query.maxHeight.HasValue ? int.Parse(Request.Query.maxHeight) : -1;
               
               return API.GetPageImage(new Guid(x.id), int.Parse(x.page), width, height, settings, Response);
             };
@@ -139,7 +148,7 @@ namespace ComicRackWebViewer
         	  Put["/Comics/{id}"] = x => {
         	    
         	    // Get the ComicBook entry from the library, so we can change it.
-        	    ComicBook book = API.GetComicBook(x.id);
+        	    ComicBook book = API.GetComicBook(new Guid(x.id));
         	    if (book == null)
         	    {
         	      return Response.AsError(HttpStatusCode.NotFound, "Comic not found");
@@ -152,9 +161,11 @@ namespace ComicRackWebViewer
         	    
         	    // This also triggers the update of the ComicRack application.
         	    book.CopyDataFrom(info, keys);
-        	    
+        	      
         	    return HttpStatusCode.OK;  
         	  };
+        	  
+
         	  
         	  // Update one property
         	  Put["/Comics/{id}/{property}"] = x => {
@@ -186,6 +197,7 @@ namespace ComicRackWebViewer
         	  // Update the BCR settings.
         	  Put["/Settings"] = x => {
         	    
+        	    // TODO: only overwrite settings that were specified.
         	    try 
         	    {
           	    settings = this.Bind<BCRSettings>();
@@ -242,6 +254,12 @@ namespace ComicRackWebViewer
         	    {
         	      return Response.AsError(HttpStatusCode.BadRequest, e.ToString());
         	    }
+        	  };
+        	  
+        	  Get["/Log"] = x => {
+        	    string severity = Request.Query.sev.HasValue ? Request.Query.sev : "";
+              string message = Request.Query.msg.HasValue ? Request.Query.msg : "";
+              return Response.AsRedirect("/viewer/resources/images/empty_1x1.png", RedirectResponse.RedirectType.Permanent);
         	  };
         	  
         }

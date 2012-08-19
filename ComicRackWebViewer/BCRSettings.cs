@@ -31,7 +31,7 @@ namespace ComicRackWebViewer
         private static string filepath;
         private static bool initialized = false;
         
-        private static int max_size = 3072; // max ipad image size is 4096x3072 ?
+        private static int max_image_dimension = 3072; // max ipad image size is 4096x3072 ?
 
         public BCRSettings()
         { 
