@@ -39,7 +39,7 @@ namespace ComicRackWebViewer
                 return string.Concat("original/Views/", viewName);
             });
             
-            BCRInstaller.Instance.Install();
+            
             
             //pipelines.OnError += ExceptionHandler;
         }

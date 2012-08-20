@@ -10,6 +10,7 @@ using System;
 using System.Text;
 using System.Collections;
 using System.IO;
+using System.Windows;
 
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
@@ -58,11 +59,11 @@ namespace ComicRackWebViewer
           // TODO: remove previous install ?  
         }
       }
-            
-      Unzip(dir + INSTALLER_FILE);
+      
+      Unzip(dir + INSTALLER_FILE, dir);
     }
     
-    public void Unzip(string ZipFile)
+    public void Unzip(string ZipFile, string DestinationFolder)
     {
   		if ( !File.Exists(ZipFile) ) 
   		{
@@ -83,12 +84,12 @@ namespace ComicRackWebViewer
   				// create directory
   				if ( directoryName.Length > 0 ) 
   				{
-  					Directory.CreateDirectory(directoryName);
+  					Directory.CreateDirectory(DestinationFolder + directoryName);
   				}
   				
   				if (fileName != String.Empty) 
   				{
-  					using (FileStream streamWriter = File.Create(theEntry.Name)) 
+  					using (FileStream streamWriter = File.Create(DestinationFolder + theEntry.Name)) 
   					{
   						int size = 2048;
   						byte[] data = new byte[2048];
