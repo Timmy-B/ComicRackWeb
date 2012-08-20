@@ -129,7 +129,7 @@ namespace ComicRackWebViewer
             var bytes = GetPageImageBytes(id, page);
             if (bytes == null)
             {
-                return response.AsRedirect("/Comics/Images/spacer.png");
+                return response.AsRedirect("/original/Views/spacer.png");
             }
             return response.FromStream(new MemoryStream(bytes), MimeTypes.GetMimeType(".jpg"));
         }
@@ -156,11 +156,12 @@ namespace ComicRackWebViewer
             try
             {
               MemoryStream stream = settings.LoadFromCache(filename, !(width == -1 && height == -1));
-              return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
+              if (stream == null)
+                return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
             }
             catch (Exception e)
             {
-              // 
+              // Image is not in the cache.
             }
             
             var bytes = GetPageImageBytes(id, page);
@@ -256,7 +257,7 @@ namespace ComicRackWebViewer
             var image = ComicBook.PublisherIcons.GetImage(key);
             if (image == null)
             {
-                return response.AsRedirect("/Comics/Images/spacer.png");
+                return response.AsRedirect("/original/Views/spacer.png");
             }
             return response.FromStream(API.GetBytesFromImage(image), MimeTypes.GetMimeType(".jpg"));
         }

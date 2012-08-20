@@ -34,6 +34,11 @@ namespace ComicRackWebViewer
             container.Register<RazorViewEngine>();
             container.Register<IRootPathProvider, RootPathProvider>().AsSingleton();
             
+            this.Conventions.ViewLocationConventions.Add((viewName, model, context) =>
+            {
+                return string.Concat("original/Views/", viewName);
+            });
+            
             BCRInstaller.Instance.Install();
             
             //pipelines.OnError += ExceptionHandler;
@@ -78,7 +83,10 @@ namespace ComicRackWebViewer
 	        base.ConfigureConventions(conventions);
 	 
 	        conventions.StaticContentsConventions.Add(
-            	StaticContentConventionBuilder.AddDirectory("/viewer", "/viewer")
+            	StaticContentConventionBuilder.AddDirectory("/tablet", "/tablet")
+        	);
+	        conventions.StaticContentsConventions.Add(
+            	StaticContentConventionBuilder.AddDirectory("/original", "/original")
         	);
 	    }
     }

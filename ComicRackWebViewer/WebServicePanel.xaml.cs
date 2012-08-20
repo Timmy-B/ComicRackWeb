@@ -27,10 +27,10 @@ namespace ComicRackWebViewer
         public WebServicePanel()
         {
             InitializeComponent();
-            SetEnabledState();
             addressTextBox.Text = Settings.GetSetting("ip") ?? "localhost";
             portTextBox.Text = Settings.GetSetting("port") ?? "8080";
             bindAll.IsChecked = bool.Parse(Settings.GetSetting("bindAll") ?? "false");
+            SetEnabledState();
         }
 
         private void portTextBox_TextChanged(object sender, TextChangedEventArgs e)

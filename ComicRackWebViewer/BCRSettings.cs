@@ -105,6 +105,9 @@ namespace ComicRackWebViewer
        
         public MemoryStream LoadFromCache(string filename, bool thumbnail)
         {
+          if (cache_size <= 0)
+            return null;
+          
           byte[] content = File.ReadAllBytes((thumbnail ? thumbnail_folder : cache_folder) + filename);
           MemoryStream stream = new MemoryStream(content);
           return stream;
@@ -112,6 +115,9 @@ namespace ComicRackWebViewer
         
         public void SaveToCache(string filename, MemoryStream image, bool thumbnail)
         {
+          if (cache_size <= 0)
+            return;
+          
           try 
           {
             CheckCache();

@@ -259,7 +259,7 @@ namespace ComicRackWebViewer
         	  Get["/Log"] = x => {
         	    string severity = Request.Query.sev.HasValue ? Request.Query.sev : "";
               string message = Request.Query.msg.HasValue ? Request.Query.msg : "";
-              return Response.AsRedirect("/viewer/resources/images/empty_1x1.png", RedirectResponse.RedirectType.Permanent);
+              return Response.AsRedirect("/tablet/resources/images/empty_1x1.png", RedirectResponse.RedirectType.Permanent);
         	  };
         	  
         }
