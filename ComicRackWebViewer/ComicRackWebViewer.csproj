@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ComicRackWebViewer</RootNamespace>
     <AssemblyName>ComicRackWebViewer</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -26,7 +26,7 @@
     <RunSourceAnalysis>False</RunSourceAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>Full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
@@ -76,9 +76,6 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:\Program Files\ComicRack\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="Linq2Rest">
-      <HintPath>..\packages\Linq2Rest.2.4.1.0\lib\Net45\Linq2Rest.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Nancy, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -88,9 +85,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Nancy.Hosting.Self.0.11.0\lib\net40\Nancy.Hosting.Self.dll</HintPath>
     </Reference>
-    <Reference Include="Nancy.OData, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Nancy.OData.1.0.2\lib\net40\Nancy.OData.dll</HintPath>
+    <Reference Include="Nancy.OData">
+      <HintPath>..\..\Nancy.OData\Nancy.OData\bin\Debug\Nancy.OData.dll</HintPath>
     </Reference>
     <Reference Include="Nancy.ViewEngines.Razor, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
