@@ -47,7 +47,7 @@ namespace ComicRackWebViewer
         {
             settings = BCRSettings.Load();
             
-            Get["/"] = x => { return Response.AsRedirect("/viewer/index.html", RedirectResponse.RedirectType.Permanent); };
+            Get["/"] = x => { return Response.AsRedirect("/tablet/index.html", RedirectResponse.RedirectType.Permanent); };
             
             Get["/Lists"] = x => { 
        	    
