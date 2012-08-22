@@ -7,6 +7,7 @@ using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.ViewEngines.Razor;
 using Nancy.Conventions;
+using Nancy.Diagnostics;
 using TinyIoC;
 
   
@@ -14,6 +15,19 @@ namespace ComicRackWebViewer
 {
     public class Bootstrapper : DefaultNancyBootstrapper
     {
+        private static BCRSettings settings = null;
+        
+        private BCRSettings getSettings()
+        {
+          if (settings == null)
+          {
+            settings = BCRSettings.Load();
+            // save current settings once, so new entries will be saved in the xml file.
+            settings.Save();
+          }
+          
+          return settings;
+        }
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             base.ApplicationStartup(container, pipelines);
@@ -39,8 +53,11 @@ namespace ComicRackWebViewer
                 return string.Concat("original/Views/", viewName);
             });
             
+            StaticConfiguration.EnableRequestTracing = getSettings().nancy_request_tracing;
             
-            
+            if (getSettings().nancy_diagnostics_password == "")
+              DiagnosticsHook.Disable(pipelines);
+
             //pipelines.OnError += ExceptionHandler;
         }
         
@@ -79,7 +96,7 @@ namespace ComicRackWebViewer
         }
         
         protected override void ConfigureConventions(NancyConventions conventions)
-	    {
+	      {
 	        base.ConfigureConventions(conventions);
 	 
 	        conventions.StaticContentsConventions.Add(
@@ -88,7 +105,12 @@ namespace ComicRackWebViewer
 	        conventions.StaticContentsConventions.Add(
             	StaticContentConventionBuilder.AddDirectory("/original", "/original")
         	);
-	    }
+	      }
+        
+        protected override DiagnosticsConfiguration DiagnosticsConfiguration
+        {
+          get { return new DiagnosticsConfiguration { Password = getSettings().nancy_diagnostics_password }; }
+        }
     }
 
     public class RootPathProvider : IRootPathProvider

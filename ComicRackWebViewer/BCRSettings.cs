@@ -23,6 +23,8 @@ namespace ComicRackWebViewer
         public bool use_page_change_area { get; set; }
         public int page_change_area_width { get; set; }
         public int cache_size { get; set; }
+        public bool nancy_request_tracing { get; set; }
+        public string nancy_diagnostics_password { get; set; }
         
 
         private static string folder;
@@ -47,6 +49,9 @@ namespace ComicRackWebViewer
           use_page_change_area = true;
           page_change_area_width = 50;
           cache_size = 1024; // MB 
+          
+          nancy_request_tracing = true;
+          nancy_diagnostics_password = "diagnostics";
         }
 
         private static void Init()
