@@ -27,9 +27,9 @@ namespace ComicRackWebViewer
         public WebServicePanel()
         {
             InitializeComponent();
-            addressTextBox.Text = Settings.GetSetting("ip") ?? "localhost";
+            addressTextBox.Text = Settings.GetSetting("externalip") ?? "localhost";
             portTextBox.Text = Settings.GetSetting("port") ?? "8080";
-            bindAll.IsChecked = bool.Parse(Settings.GetSetting("bindAll") ?? "false");
+            //bindAll.IsChecked = bool.Parse(Settings.GetSetting("bindAll") ?? "false");
             SetEnabledState();
         }
 
@@ -60,7 +60,7 @@ namespace ComicRackWebViewer
             startServiceButton.IsEnabled = actualPort.HasValue && host == null;
             stopServiceButton.IsEnabled = host != null;
             portTextBox.IsEnabled = host == null;
-            if (!bindAll.IsChecked ?? false)
+            //if (!bindAll.IsChecked ?? false)
             {
                 addressTextBox.IsEnabled = host == null;
             }
@@ -71,7 +71,9 @@ namespace ComicRackWebViewer
             else
             {
                 Status.Text = "Running on: ";
-                foreach (var uri in GetUris(bindAll.IsChecked ?? false))
+                int port = actualPort.Value;
+                List<Uri> uris = GetUriParams(port).ToList();
+                foreach (var uri in uris)
                 {
                     Status.Text += uri.ToString() + " ";
                 }
@@ -86,8 +88,8 @@ namespace ComicRackWebViewer
             portTextBox.IsEnabled = false;
             addressTextBox.IsEnabled = false;
             Mouse.SetCursor(Cursors.Wait);
-            bool bind = bindAll.IsChecked ?? false;
-            Task.Factory.StartNew(() => LoadService(bind));
+            //bool bind = bindAll.IsChecked ?? false;
+            Task.Factory.StartNew(() => LoadService(true));
             Status.Text = "Starting";
         }
 
@@ -98,7 +100,11 @@ namespace ComicRackWebViewer
                 StopService();
             }
 
-            host = new NancyHost(new Bootstrapper(), GetUris(bindAll).ToArray());
+            int port = actualPort.Value;
+            
+            
+            host = new NancyHost(new Bootstrapper(), GetUriParams(port));
+            //host = new NancyHost(new Bootstrapper(), GetUris(bindAll).ToArray());
             try
             {
                 host.Start();
@@ -143,6 +149,41 @@ namespace ComicRackWebViewer
             return Dns.GetHostAddresses(Dns.GetHostName()).Where(x => x.AddressFamily == AddressFamily.InterNetwork).Select(x => x.ToString());
         }
 
+        private Uri[] GetUriParams(int port)
+        {
+            var uriParams = new List<Uri>();
+            string hostName = Dns.GetHostName();
+
+            // Host name URI
+            string hostNameUri = string.Format("http://{0}:{1}", Dns.GetHostName(), port);
+            uriParams.Add(new Uri(hostNameUri));
+
+            if (address.Trim().Length > 0)
+            {
+              string external_address = string.Format("http://{0}:{1}/", address, port);
+              uriParams.Add(new Uri(external_address));
+            }
+            
+
+            // Host address URI(s)
+            var hostEntry = Dns.GetHostEntry(hostName);
+            foreach (var ipAddress in hostEntry.AddressList)
+            {
+                if (ipAddress.AddressFamily == AddressFamily.InterNetwork)  // IPv4 addresses only
+                {
+                    var addrBytes = ipAddress.GetAddressBytes();
+                    string hostAddressUri = string.Format("http://{0}.{1}.{2}.{3}:{4}", addrBytes[0], addrBytes[1], addrBytes[2], addrBytes[3], port);
+                    uriParams.Add(new Uri(hostAddressUri));
+                }
+            }
+
+
+
+            // Localhost URI
+            uriParams.Add(new Uri(string.Format("http://localhost:{0}", port)));
+            return uriParams.ToArray();
+        }
+        
         public void StopService()
         {
             mre.Set();
@@ -152,9 +193,9 @@ namespace ComicRackWebViewer
         {
             if (IsCurrentlyRunningAsAdmin())
             {
-                Settings.SaveSetting("ip", addressTextBox.Text);
+                Settings.SaveSetting("externalip", addressTextBox.Text);
                 Settings.SaveSetting("port", portTextBox.Text);
-                Settings.SaveSetting("bindAll", (bindAll.IsChecked ?? false).ToString());
+                //Settings.SaveSetting("bindAll", (bindAll.IsChecked ?? false).ToString());
                 StartService();
             }
             else
