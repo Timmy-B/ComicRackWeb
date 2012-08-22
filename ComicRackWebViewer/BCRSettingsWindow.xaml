@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window
+  x:Class="ComicRackWebViewer.BCRSettingsWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  Title="ComicRackWebViewer"
+  Height="347"
+  Width="420">
+  <TabControl
+    HorizontalAlignment="Stretch"
+    Height="299"
+    Width="384">
+    <TabItem
+      Header="Web Server">
+      
+    </TabItem>
+    <TabItem
+      Header="Viewer">
+    Viewer options</TabItem>
+    <TabItem
+      Header="Debug">
+        Debug options
+      </TabItem>
+  </TabControl>
+</Window>

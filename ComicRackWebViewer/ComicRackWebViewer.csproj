@@ -114,6 +114,10 @@
     <Compile Include="API.cs" />
     <Compile Include="BCRInstaller.cs" />
     <Compile Include="BCRSettings.cs" />
+    <Compile Include="BCRSettingsWindow.xaml.cs">
+      <DependentUpon>BCRSettingsWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Modules\BCRModule.cs" />
     <Compile Include="Modules\ComicsModule.cs" />
@@ -157,6 +161,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="BCRSettingsWindow.xaml" />
     <Page Include="WebServicePanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
