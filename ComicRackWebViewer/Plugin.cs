@@ -14,7 +14,6 @@ namespace ComicRackWebViewer
         {
             try
             {
-                BCRInstaller.Instance.Install();
                 Application = app;
                 var comicVersion = new Version(app.ProductVersion);
                 if (comicVersion < requiredVersion)
@@ -22,6 +21,9 @@ namespace ComicRackWebViewer
                     MessageBox.Show("ComicRack version required: " + requiredVersion);
                     return;
                 }
+                
+                BCRInstaller.Instance.Install();
+                
                 if (panel == null)
                 {
                     panel = new WebServicePanel();
@@ -40,7 +42,6 @@ namespace ComicRackWebViewer
         {
             try
             {
-                BCRInstaller.Instance.Install();
                 Application = app;
                 var comicVersion = new Version(app.ProductVersion);
                 if (comicVersion < requiredVersion)
@@ -48,6 +49,9 @@ namespace ComicRackWebViewer
                     MessageBox.Show("ComicRack version required: " + requiredVersion);
                     return;
                 }
+                
+                BCRInstaller.Instance.Install();
+                
                 if (panel == null)
                 {
                     panel = new WebServicePanel();
