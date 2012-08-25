@@ -24,7 +24,7 @@ namespace ComicRackWebViewer
   {
     private const string INSTALLER_FILE = "BCRPlugin.zip";
     private const string VERSION_FILE = "BCRVersion.txt";
-    private const string VERSION = "1.0";
+    private const string VERSION = "1.4";
     
     private static BCRInstaller instance = new BCRInstaller();
     
@@ -54,12 +54,10 @@ namespace ComicRackWebViewer
         {
           return;
         }
-        else
-        {
-          // TODO: remove previous install ?  
-        }
       }
       
+      // Create/Update the version file.
+      System.IO.File.WriteAllText(dir + VERSION_FILE, VERSION);
       Unzip(dir + INSTALLER_FILE, dir);
     }
     
