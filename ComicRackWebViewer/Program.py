@@ -6,6 +6,9 @@ clr.AddReferenceByPartialName("ComicRackWebViewer")
 
 from ComicRackWebViewer import Plugin
 
+#Version check + additional install operations:
+#Plugin.RunWhenComicRackStarts(ComicRack.App)
+
 #@Name	ComicRack Web
 #@Key	ComicRackWebViewer
 #@Hook	Books, Editor

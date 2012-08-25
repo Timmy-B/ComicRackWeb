@@ -9,32 +9,44 @@ using Nancy.ViewEngines.Razor;
 using Nancy.Conventions;
 using Nancy.Diagnostics;
 using TinyIoC;
-
+using Nancy.ErrorHandling;
+using Nancy.Extensions;
   
 namespace ComicRackWebViewer
 {
+  /*
+  public class LoggingErrorHandler : IErrorHandler
+  {
+      public bool HandlesStatusCode(HttpStatusCode statusCode, NancyContext context)
+      {
+          return true;//statusCode == HttpStatusCode.InternalServerError;
+      }
+  
+      public void Handle(HttpStatusCode statusCode, NancyContext context)
+      {
+        
+          object errorObject;
+          context.Items.TryGetValue(NancyEngine.ERROR_EXCEPTION, out errorObject);
+          var error = errorObject as Exception;
+          
+  
+
+      }
+  }
+  */
+
     public class Bootstrapper : DefaultNancyBootstrapper
     {
-        private static BCRSettings settings = null;
-        
-        private BCRSettings getSettings()
-        {
-          if (settings == null)
-          {
-            settings = BCRSettings.Load();
-            // save current settings once, so new entries will be saved in the xml file.
-            settings.Save();
-          }
-          
-          return settings;
-        }
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             base.ApplicationStartup(container, pipelines);
             
-            // Increase size of JSON responses as 100K is way too small for a large comic collection.
+            // Increase size of JSON responses as 100K is way too small for a large comic collection. Make it 10M.
+            // Also, for some reason I don't get InvalidOperationException ("Nancy.Json.JsonSettings.MaxJsonLength exceeded")
+            // Instead Nancy generates a response with status OK and content length 0.
             Nancy.Json.JsonSettings.MaxJsonLength = 10000000; 
             
+            // Case sensitivity is buggy in Nancy, so disable it. Or maybe I should generate/parse GUIDs correctly......
             StaticConfiguration.CaseSensitive = false;
             
 #if DEBUG
@@ -53,34 +65,12 @@ namespace ComicRackWebViewer
                 return string.Concat("original/Views/", viewName);
             });
             
-            StaticConfiguration.EnableRequestTracing = getSettings().nancy_request_tracing;
+            StaticConfiguration.EnableRequestTracing = BCRSettingsStore.Instance.nancy_request_tracing;
             
-            if (getSettings().nancy_diagnostics_password == "")
+            if (BCRSettingsStore.Instance.nancy_diagnostics_password == "")
               DiagnosticsHook.Disable(pipelines);
-
-            //pipelines.OnError += ExceptionHandler;
         }
-        
-/*
-        private Response ExceptionHandler(NancyContext ctx, Exception ex)
-        {
-          MessageBox.Show(ex.ToString()); 
-          return HttpStatusCode.InternalServerError;
-        }
-*/            
-
-        protected override IEnumerable<ModuleRegistration> Modules
-        {
-            get
-            {
-                yield return CreateRegistration<IndexModule>();
-                yield return CreateRegistration<PublishersModule>();
-                yield return CreateRegistration<SeriesModule>();
-                yield return CreateRegistration<ComicsModule>();
-                yield return CreateRegistration<ListModule>();
-                yield return CreateRegistration<BCRModule>();
-            }
-        }
+       
 
         protected override void ConfigureApplicationContainer(TinyIoCContainer container)
         {
@@ -89,11 +79,13 @@ namespace ComicRackWebViewer
             container.AutoRegister(new List<Assembly>() { typeof(Bootstrapper).Assembly, typeof(RazorViewEngine).Assembly });
         }
 
+        /*
         private ModuleRegistration CreateRegistration<Tmodule>()
         {
             Type t = typeof(Tmodule);
             return new ModuleRegistration(t, this.GetModuleKeyGenerator().GetKeyForModuleType(t));
         }
+        */
         
         protected override void ConfigureConventions(NancyConventions conventions)
 	      {
@@ -109,7 +101,7 @@ namespace ComicRackWebViewer
         
         protected override DiagnosticsConfiguration DiagnosticsConfiguration
         {
-          get { return new DiagnosticsConfiguration { Password = getSettings().nancy_diagnostics_password }; }
+          get { return new DiagnosticsConfiguration { Password = BCRSettingsStore.Instance.nancy_diagnostics_password }; }
         }
     }
 

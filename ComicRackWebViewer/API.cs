@@ -150,12 +150,12 @@ namespace ComicRackWebViewer
             return (Image)bmp;
         }
         
-        public static Response GetPageImage(Guid id, int page, int width, int height, BCRSettings settings, IResponseFormatter response)
+        public static Response GetPageImage(Guid id, int page, int width, int height, IResponseFormatter response)
         {
             string filename = string.Format("{0}-p{1}-w{2}-h{3}.jpg", id, page, width, height);
             try
             {
-              MemoryStream stream = settings.LoadFromCache(filename, !(width == -1 && height == -1));
+              MemoryStream stream = BCRSettingsStore.Instance.LoadFromCache(filename, !(width == -1 && height == -1));
               if (stream == null)
                 return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
             }
@@ -174,7 +174,7 @@ namespace ComicRackWebViewer
             {
               // Return original image.
               MemoryStream mem = new MemoryStream(bytes);
-              settings.SaveToCache(filename, mem, false);
+              BCRSettingsStore.Instance.SaveToCache(filename, mem, false);
               
               return response.FromStream(mem, MimeTypes.GetMimeType(".jpg"));
             }
@@ -199,7 +199,7 @@ namespace ComicRackWebViewer
               MemoryStream stream = GetBytesFromImage(thumbnail);
               thumbnail.Dispose();
               
-              settings.SaveToCache(filename, stream, true);
+              BCRSettingsStore.Instance.SaveToCache(filename, stream, true);
                             
               return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
             }

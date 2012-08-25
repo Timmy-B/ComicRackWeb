@@ -10,9 +10,6 @@ namespace ComicRackWebViewer
 {
     public class BCRSettings
     {
-        private const string DIRECTORY = "ComicRack BCR";
-        private const string SETTINGS_FILE = "settings.xml";
-        
         public bool open_current_comic_at_launch { get; set; }
         public bool open_next_comic { get; set; }
         public int page_fit_mode { get; set; } // 1: Fit width, 2: Full page
@@ -25,20 +22,11 @@ namespace ComicRackWebViewer
         public int cache_size { get; set; }
         public bool nancy_request_tracing { get; set; }
         public string nancy_diagnostics_password { get; set; }
+        public int webserver_port { get; set; }
+        public string webserver_externalip { get; set; }
         
-
-        private static string folder;
-        private static string cache_folder;
-        private static string thumbnail_folder;
-        private static string filepath;
-        private static bool initialized = false;
-        
-        private static int max_image_dimension = 3072; // max ipad image size is 4096x3072 ?
-
         public BCRSettings()
-        { 
-          Init();
-          
+        {
           open_current_comic_at_launch = true; 
           open_next_comic = true;
           page_fit_mode = 1;
@@ -52,59 +40,134 @@ namespace ComicRackWebViewer
           
           nancy_request_tracing = true;
           nancy_diagnostics_password = "diagnostics";
+          
+          webserver_port = 8080;
+          webserver_externalip = ""; 
         }
+    }
+     
+    public sealed class BCRSettingsStore : BCRSettings
+    {
+        private const string DIRECTORY = "ComicRack BCR";
+        private const string SETTINGS_FILE = "settings.xml";
+        
+        private static string folder;
+        private static string cache_folder;
+        private static string thumbnail_folder;
+        private static string filepath;
+        
+        //private static int max_image_dimension = 3072; // max ipad image size is 4096x3072 ?
 
-        private static void Init()
+        private static BCRSettingsStore instance = new BCRSettingsStore();
+    
+        public static BCRSettingsStore Instance 
         {
-          if (!initialized)
-          {
-            initialized = true;
-            folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DIRECTORY);
-            if (!Directory.Exists(folder))
-            {
-          	  Directory.CreateDirectory(folder);
-            }
-            
-            cache_folder = folder + "\\cache\\";
-            if (!Directory.Exists(cache_folder))
-            {
-          	  Directory.CreateDirectory(cache_folder);
-            }
-            
-            thumbnail_folder = folder + "\\cache\\thumbnails\\";
-            if (!Directory.Exists(thumbnail_folder))
-            {
-          	  Directory.CreateDirectory(thumbnail_folder);
-            }
-            
-  
-            filepath = folder + "\\" + SETTINGS_FILE;
-            
-            if (!File.Exists(filepath))
-            {
-              BCRSettings settings = new BCRSettings();
-              settings.Save();
-            }
-          }
+          get { return instance; }
         }
         
-        public static BCRSettings Load()
-        {
-          Init();
+        private BCRSettingsStore()
+        { 
+          folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DIRECTORY);
+          if (!Directory.Exists(folder))
+          {
+        	  Directory.CreateDirectory(folder);
+          }
           
+          cache_folder = folder + "\\cache\\";
+          if (!Directory.Exists(cache_folder))
+          {
+        	  Directory.CreateDirectory(cache_folder);
+          }
+          
+          thumbnail_folder = folder + "\\cache\\thumbnails\\";
+          if (!Directory.Exists(thumbnail_folder))
+          {
+        	  Directory.CreateDirectory(thumbnail_folder);
+          }
+          
+
+          filepath = folder + "\\" + SETTINGS_FILE;
+          
+          if (File.Exists(filepath))
+          {
+            Load();
+          }
+          
+          // save current settings once, so new entries will be saved in the xml file.
+          Save();
+        }
+
+    
+        // this can undoubtely be done simpler, but I don't enough C#....
+        public void UpdateFrom(BCRSettings data)
+        {
+          open_current_comic_at_launch = data.open_current_comic_at_launch; 
+          open_next_comic = data.open_next_comic;
+          page_fit_mode = data.page_fit_mode;
+          zoom_on_tap = data.zoom_on_tap;
+          toggle_paging_bar = data.toggle_paging_bar;
+          use_page_turn_drag = data.use_page_turn_drag;
+          page_turn_drag_threshold = data.page_turn_drag_threshold;
+          use_page_change_area = data.use_page_change_area;
+          page_change_area_width = data.page_change_area_width;
+          cache_size = data.cache_size; 
+          
+          nancy_request_tracing = data.nancy_request_tracing;
+          nancy_diagnostics_password = data.nancy_diagnostics_password;
+          
+          webserver_port = data.webserver_port;
+          webserver_externalip = data.webserver_externalip; 
+          Save();
+        }
+        
+        
+        public BCRSettings GetData()
+        {
+          BCRSettings data = new BCRSettings();
+          data.open_current_comic_at_launch = open_current_comic_at_launch; 
+          data.open_next_comic = open_next_comic;
+          data.page_fit_mode = page_fit_mode;
+          data.zoom_on_tap = zoom_on_tap;
+          data.toggle_paging_bar = toggle_paging_bar;
+          data.use_page_turn_drag = use_page_turn_drag;
+          data.page_turn_drag_threshold = page_turn_drag_threshold;
+          data.use_page_change_area = use_page_change_area;
+          data.page_change_area_width = page_change_area_width;
+          data.cache_size = cache_size; 
+          
+          data.nancy_request_tracing = nancy_request_tracing;
+          data.nancy_diagnostics_password = nancy_diagnostics_password;
+          
+          data.webserver_port = webserver_port;
+          data.webserver_externalip = webserver_externalip;
+          
+          return data;
+        }
+        
+        
+        public void Load()
+        {
           XmlSerializer deserializer = new XmlSerializer(typeof(BCRSettings));
           TextReader textReader = new StreamReader(filepath);
           
-          BCRSettings settings = (BCRSettings)deserializer.Deserialize(textReader);
+          try
+          {
+            BCRSettings settings = (BCRSettings)deserializer.Deserialize(textReader);
+            UpdateFrom(settings);
+          }
+          catch(Exception e)
+          {
+            // ignore, use default values.
+          }
+          
           textReader.Close();
-          return settings;
         }
         
         public void Save()
         {
-          XmlSerializer serializer = new XmlSerializer(this.GetType());
+          XmlSerializer serializer = new XmlSerializer(typeof(BCRSettings));
           StreamWriter writer = new StreamWriter(filepath);
-          serializer.Serialize(writer.BaseStream, this);
+          serializer.Serialize(writer.BaseStream, GetData());
           writer.Close();
         }
        
@@ -181,10 +244,5 @@ namespace ComicRackWebViewer
             } 
           }
         }
-        
-        
-     
     }
-    
-    
 }

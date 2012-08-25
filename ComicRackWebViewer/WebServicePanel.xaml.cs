@@ -27,8 +27,9 @@ namespace ComicRackWebViewer
         public WebServicePanel()
         {
             InitializeComponent();
-            addressTextBox.Text = Settings.GetSetting("externalip") ?? "localhost";
-            portTextBox.Text = Settings.GetSetting("port") ?? "8080";
+            addressTextBox.Text = BCRSettingsStore.Instance.webserver_externalip;
+            portTextBox.Text = BCRSettingsStore.Instance.webserver_port.ToString();
+            actualPort = BCRSettingsStore.Instance.webserver_port;
             //bindAll.IsChecked = bool.Parse(Settings.GetSetting("bindAll") ?? "false");
             SetEnabledState();
         }
@@ -193,8 +194,10 @@ namespace ComicRackWebViewer
         {
             if (IsCurrentlyRunningAsAdmin())
             {
-                Settings.SaveSetting("externalip", addressTextBox.Text);
-                Settings.SaveSetting("port", portTextBox.Text);
+                BCRSettingsStore.Instance.webserver_externalip = addressTextBox.Text.Trim();
+                BCRSettingsStore.Instance.webserver_port = actualPort.HasValue ? actualPort.Value : 8080;
+                BCRSettingsStore.Instance.Save();
+              
                 //Settings.SaveSetting("bindAll", (bindAll.IsChecked ?? false).ToString());
                 StartService();
             }

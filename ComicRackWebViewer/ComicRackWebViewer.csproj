@@ -76,6 +76,9 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:\Program Files\ComicRack\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="Linq2Rest">
+      <HintPath>..\packages\Linq2Rest.2.4.1.0\lib\Net40\Linq2Rest.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Nancy, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -128,7 +131,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Modules\PublishersModule.cs" />
     <Compile Include="Modules\SeriesModule.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="WebServicePanel.xaml.cs">
       <DependentUpon>WebServicePanel.xaml</DependentUpon>
     </Compile>

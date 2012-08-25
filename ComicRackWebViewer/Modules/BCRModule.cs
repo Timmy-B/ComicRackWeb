@@ -17,17 +17,88 @@ using Nancy.OData;
 using Nancy.ModelBinding;
 using Nancy.Responses;
 
+/*
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using Linq2Rest.Parser;
+
+namespace Nancy.OData
+{
+    public static class ODataExtensions
+    {
+        private const string ODATA_URI_KEY = "OData_Uri";
+
+        private static NameValueCollection MyParseUriOptions(NancyContext context)
+        {
+            object item;
+            if (context.Items.TryGetValue(ODATA_URI_KEY, out item))
+            {
+                return item as NameValueCollection;
+            }
+            NameValueCollection nv = new NameValueCollection();
+            context.Items.Add(ODATA_URI_KEY, nv);
+            var queryString = context.Request.Url.Query;
+            if (string.IsNullOrWhiteSpace(queryString))
+            {
+                return nv;
+            }
+            if (!queryString.StartsWith("?"))
+            {
+                throw new InvalidOperationException("Invalid OData query string " + queryString);
+            }
+            var parameters = queryString.Substring(1).Split('&', '=');
+            if (parameters.Length % 2 != 0)
+            {
+                throw new InvalidOperationException("Invalid OData query string " + queryString);
+            }
+            for (int i = 0; i < parameters.Length; i += 2)
+            {
+                nv.Add(parameters[i], Uri.UnescapeDataString(parameters[i + 1]));
+            }
+            return nv;
+        }
+        public static IEnumerable<object> MyApplyODataUriFilter<T>(this NancyContext context, IEnumerable<T> modelItems)
+        {
+            var nv = MyParseUriOptions(context);
+
+            var parser = new ParameterParser<T>();
+            var filter = parser.Parse(nv);
+            return filter.Filter(modelItems);
+        }
+
+        public static Response MyAsOData<T>(this IResponseFormatter formatter, IEnumerable<T> modelItems, HttpStatusCode code = HttpStatusCode.OK)
+        {
+            bool isJson = formatter.Context.Request.Headers.Accept.Select(x => x.Item1).Where(x => x.StartsWith("application/json", StringComparison.InvariantCultureIgnoreCase)).Any();
+
+            var nv = MyParseUriOptions(formatter.Context);
+            string value = nv.Get("$format");
+            if (string.Compare(value, "json", true) == 0)
+            {
+                isJson = true;
+            }
+
+            if (isJson)
+            {
+                return formatter.AsJson(formatter.Context.MyApplyODataUriFilter(modelItems), code);
+            }
+            throw new NotImplementedException("Atom feeds not implemented");
+        }
+    }
+}
+*/
+
 namespace ComicRackWebViewer
 {
     public static class BCRExtensions
     {
-      public static Response AsError(this IResponseFormatter formatter, HttpStatusCode statusCode, string message)
+      public static Response AsError(this IResponseFormatter formatter, HttpStatusCode statusCode, string message, Request request)
       {
           return new Response
               {
                   StatusCode = statusCode,
                   ContentType = "text/plain",
-                  Contents = stream => (new StreamWriter(stream) { AutoFlush = true }).Write(message)
+                  Contents = stream => (new StreamWriter(stream) { AutoFlush = true }).Write("Request: " + request.Url + "\nError: " + message)
               };
       }
     }
@@ -38,160 +109,258 @@ namespace ComicRackWebViewer
     
     public class BCRModule : NancyModule
     {
-        private BCRSettings settings = null;
-        
-    		
-    		
         public BCRModule()
             : base("/BCR")
         {
-            settings = BCRSettings.Load();
-            
+            // Undoubtedly Nancy has a better way to do error handling, but the documentation is severely lacking.
+            // For now, rewrite the response with a JSON object.
+            /* After hook isn't called if there is an unhandled exception....
+            After += (ctx) => { 
+
+                NancyContext c = ctx as NancyContext;// Modify ctx.Response
+                
+                // Error handling
+                // If this is an error response then we need to alter it, because the default error handling intends to show a page, but 
+                // the error page will never be visible to the user.
+                // Instead we will send a JSON error object with the error details.
+                                
+                if (c.Response.StatusCode != HttpStatusCode.OK)
+                {
+                  string message = "";
+                  string details = "";
+                  
+                  if (c.Response.StatusCode == HttpStatusCode.InternalServerError)
+                  {
+                    object errorObject;
+                    
+                    c.Items.TryGetValue(NancyEngine.ERROR_EXCEPTION, out errorObject);
+                    
+                    var error = errorObject as Exception;
+                    
+                    //string trace = context.Trace.TraceLog;.ToString();
+                    if (error != null)
+                    {
+                      message = "EXCEPTION";
+                      details = error.ToString();
+                    }
+                    else
+                    {
+                      message = "INTERNAL SERVER ERROR";
+                      details = error.ToString();
+                    }
+                  }
+                  else
+                  if (c.Response.StatusCode == HttpStatusCode.NotFound)
+                  {
+                    message = "NOT FOUND";
+                  }
+                  else
+                  {
+                    message = "UNKNOWN";
+                  }
+                                                    
+                  c.Response.ContentType = "application/json";
+                  c.Response = Response.AsJson(new { message = message, details = details }, c.Response.StatusCode);
+                }
+            };
+            */
+           
             Get["/"] = x => { return Response.AsRedirect("/tablet/index.html", RedirectResponse.RedirectType.Permanent); };
             
             Get["/Lists"] = x => { 
-       	    
-        	    int depth = Request.Query.depth.HasValue ? int.Parse(Request.Query.depth) : -1;
-        	    return Response.AsOData(Program.Database.ComicLists.Select(c => c.ToComicList(depth)));
+        	    try 
+        	    {
+                int depth = Request.Query.depth.HasValue ? int.Parse(Request.Query.depth) : -1;
+         	      return Response.AsOData(Program.Database.ComicLists.Select(c => c.ToComicList(depth)));
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
         	  };
         	  
         	  
             Get["/Lists/{id}"]  = x => { 
-        	    int depth = Request.Query.depth.HasValue ? int.Parse(Request.Query.depth) : -1;
-        	    IEnumerable<ComicList> list = Program.Database.ComicLists.Where(c => c.Id == new Guid(x.id)).Select(c => c.ToComicList(depth));
-        	    if (list.Count() == 0)
-        	    {
-        	      return Response.AsError(HttpStatusCode.NotFound, "List not found");
-        	    }
-        	    
-        	    try 
-        	    {
-        	     return Response.AsOData(list); 
+              try
+              {
+          	    int depth = Request.Query.depth.HasValue ? int.Parse(Request.Query.depth) : -1;
+          	    IEnumerable<ComicList> list = Program.Database.ComicLists.Where(c => c.Id == new Guid(x.id)).Select(c => c.ToComicList(depth));
+          	    if (list.Count() == 0)
+          	    {
+          	      return Response.AsError(HttpStatusCode.NotFound, "List not found", Request);
+          	    }
+          	    
+        	      return Response.AsOData(list); 
         	    }
         	    catch(Exception e)
         	    {
-        	      return Response.AsError(HttpStatusCode.InsufficientStorage, e.ToString());
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
         	  
         	  // For OData compatibility, count should be $count, but I don't know how to parse the $ with Nancy....
-        	  Get["/Lists/{id}/Comics/count"] = x => { 
-        	    return Response.AsText(Context.ApplyODataUriFilter(API.GetIssuesOfListFromId(new Guid(x.id), Context).Comics).Count().ToString());
+        	  Get["/Lists/{id}/Comics/count"] = x => {
+              try 
+              {
+        	      return Response.AsText(Context.ApplyODataUriFilter(API.GetIssuesOfListFromId(new Guid(x.id), Context).Comics).Count().ToString());
+              }
+              catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
         	  };
         	  
         	  // Return the comics of the specified list using OData to filter the comic properties and the list paging.
             Get["/Lists/{id}/Comics"] = x => { 
-        	    
-        	    bool wantsCount = Request.Query["$inlinecount"].HasValue;
-        	    
         	    try
         	    {
-        	      IEnumerable<Comic> comics = API.GetIssuesOfListFromId(new Guid(x.id), Context).Comics;
-        	      return Response.AsOData(comics); 
+        	      bool wantsCount = Request.Query["$inlinecount"].HasValue;
+        	      var rawcomics = API.GetIssuesOfListFromId(new Guid(x.id), Context).Comics;
+        	      var comics = Context.ApplyODataUriFilter(rawcomics);
+        	      return Response.AsJson(comics, HttpStatusCode.OK);
+        	      //IEnumerable<Comic> comics = API.GetIssuesOfListFromId(new Guid(x.id), Context).Comics;
+        	      //return Response.AsOData(comics); 
         	    }
         	    catch(Exception e)
         	    {
-                return Response.AsError(HttpStatusCode.InsufficientStorage, e.ToString());
+                return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
-
         	  };
             
         	  Get["/Comics"] = x => { 
-        	    return Response.AsOData(API.GetComics().Select(c => c.ToComic()));
+        	    try
+        	    {
+        	      return Response.AsOData(API.GetComics().Select(c => c.ToComic()));
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
         	  };
         	  
         	  // Return the comicbook info as an OData filtered bag of properties.
             Get["/Comics/{id}"] = x => { 
-              Comic comic = API.GetComic(new Guid(x.id));
-              if (comic == null)
-              {
-                return Response.AsError(HttpStatusCode.NotFound, "Comic not found");
-              }
-
-              return Response.AsOData(new List<Comic> { comic });
+        	    try
+        	    {
+                Comic comic = API.GetComic(new Guid(x.id));
+                if (comic == null)
+                {
+                  return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
+                }
+  
+                return Response.AsOData(new List<Comic> { comic });
+        	    }
+              catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
             };
         	  
             // Retrieve the specified page as a jpg file with the specified dimensions.
             Get["/Comics/{id}/Pages/{page}"] = x => {
-              
-              int width = Request.Query.width.HasValue ? int.Parse(Request.Query.width) : -1;
-              int height = Request.Query.height.HasValue ? int.Parse(Request.Query.height) : -1;
-              
-              int maxWidth = Request.Query.maxWidth.HasValue ? int.Parse(Request.Query.maxWidth) : -1;
-              int maxHeight = Request.Query.maxHeight.HasValue ? int.Parse(Request.Query.maxHeight) : -1;
-              
-              return API.GetPageImage(new Guid(x.id), int.Parse(x.page), width, height, settings, Response);
+              try
+              {
+                int width = Request.Query.width.HasValue ? int.Parse(Request.Query.width) : -1;
+                int height = Request.Query.height.HasValue ? int.Parse(Request.Query.height) : -1;
+                
+                int maxWidth = Request.Query.maxWidth.HasValue ? int.Parse(Request.Query.maxWidth) : -1;
+                int maxHeight = Request.Query.maxHeight.HasValue ? int.Parse(Request.Query.maxHeight) : -1;
+                
+                return API.GetPageImage(new Guid(x.id), int.Parse(x.page), width, height, Response);
+              }
+              catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
             };
             
         	  // Get one property.
         	  Get["/Comics/{id}/{property}"] = x => { 
-              Comic comic = API.GetComic(new Guid(x.id));
-              if (comic == null)
-              {
-                return Response.AsError(HttpStatusCode.NotFound, "Comic not found");
-              }
+        	    try
+        	    {
+                Comic comic = API.GetComic(new Guid(x.id));
+                if (comic == null)
+                {
+                  return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
+                }
 
-              try 
-              {
                 PropertyInfo property = comic.GetType().GetProperty(x.property);
                 object value = property.GetValue(comic, null);
                 
                 return Response.AsJson(value);
               }
               catch(Exception e)
-              {
-                return Response.AsError(HttpStatusCode.NotFound, "Comic property not found");
-              }
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
             };
         	  
         	  // Update properties of the specified comicbook.
         	  Put["/Comics/{id}"] = x => {
-        	    
-        	    // Get the ComicBook entry from the library, so we can change it.
-        	    ComicBook book = API.GetComicBook(new Guid(x.id));
-        	    if (book == null)
+        	    try
         	    {
-        	      return Response.AsError(HttpStatusCode.NotFound, "Comic not found");
+          	    // Get the ComicBook entry from the library, so we can change it.
+          	    ComicBook book = API.GetComicBook(new Guid(x.id));
+          	    if (book == null)
+          	    {
+          	      return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
+          	    }
+          	    
+          	    // Convert form values to temporary ComicBook object.
+          	    ComicBook info = this.Bind<ComicBook>();
+          	    
+          	    IEnumerable<string> keys = Request.Form.GetDynamicMemberNames();
+          	    
+          	    // This also triggers the update of the ComicRack application.
+          	    book.CopyDataFrom(info, keys);
+          	      
+          	    return HttpStatusCode.OK;  
         	    }
-        	    
-        	    // Convert form values to temporary ComicBook object.
-        	    ComicBook info = this.Bind<ComicBook>();
-        	    
-        	    IEnumerable<string> keys = Request.Form.GetDynamicMemberNames();
-        	    
-        	    // This also triggers the update of the ComicRack application.
-        	    book.CopyDataFrom(info, keys);
-        	      
-        	    return HttpStatusCode.OK;  
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
         	  };
         	  
 
         	  
         	  // Update one property
         	  Put["/Comics/{id}/{property}"] = x => {
-        	    
-        	    // Convert form values to temporary Comic object.
-        	    string info = this.Bind<string>();
-        	    
-        	    
-        	    // Now get the ComicBook entry from the library, so we can change it.
-        	    ComicBook book = API.GetComicBook(x.id);
-        	    if (book == null)
+        	    try
         	    {
-        	      return Response.AsError(HttpStatusCode.NotFound, "Comic not found");
+          	    // Convert form values to temporary Comic object.
+          	    string info = this.Bind<string>();
+          	    
+          	    
+          	    // Now get the ComicBook entry from the library, so we can change it.
+          	    ComicBook book = API.GetComicBook(x.id);
+          	    if (book == null)
+          	    {
+          	      return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
+          	    }
+          	    
+          	    // Setting one of these values also triggers the update of the ComicRack application.
+          	    book.SetValue(x.property, info);
+          	    
+          	    
+          	    return HttpStatusCode.OK;  
         	    }
-        	    
-        	    // Setting one of these values also triggers the update of the ComicRack application.
-        	    book.SetValue(x.property, info);
-        	    
-        	    
-        	    return HttpStatusCode.OK;  
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
         	  };
         	  
         	  // Get the BCR settings.
         	  Get["/Settings"] = x => {
-        	    
-        	    return Response.AsJson(settings, HttpStatusCode.OK);
+        	    try
+        	    {
+        	      return Response.AsJson(BCRSettingsStore.Instance, HttpStatusCode.OK);
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
         	  };
         	  
         	  // Update the BCR settings.
@@ -200,13 +369,13 @@ namespace ComicRackWebViewer
         	    // TODO: only overwrite settings that were specified.
         	    try 
         	    {
-          	    settings = this.Bind<BCRSettings>();
-          	    settings.Save();
+          	    BCRSettings settings = this.Bind<BCRSettings>();
+          	    BCRSettingsStore.Instance.UpdateFrom(settings);
           	    return HttpStatusCode.OK;  
         	    }
         	    catch(Exception e)
         	    {
-        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString());
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
            
@@ -217,7 +386,7 @@ namespace ComicRackWebViewer
         	    }
         	    catch(Exception e)
         	    {
-        	      return Response.AsError(HttpStatusCode.BadRequest, e.ToString());
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
         	  
@@ -229,7 +398,7 @@ namespace ComicRackWebViewer
         	    }
         	    catch(Exception e)
         	    {
-        	      return Response.AsError(HttpStatusCode.BadRequest, e.ToString());
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
         	  
@@ -240,7 +409,7 @@ namespace ComicRackWebViewer
         	    }
         	    catch(Exception e)
         	    {
-        	      return Response.AsError(HttpStatusCode.BadRequest, e.ToString());
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
         	  
@@ -252,14 +421,24 @@ namespace ComicRackWebViewer
         	    }
         	    catch(Exception e)
         	    {
-        	      return Response.AsError(HttpStatusCode.BadRequest, e.ToString());
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
         	  
         	  Get["/Log"] = x => {
-        	    string severity = Request.Query.sev.HasValue ? Request.Query.sev : "";
-              string message = Request.Query.msg.HasValue ? Request.Query.msg : "";
-              return Response.AsRedirect("/tablet/resources/images/empty_1x1.png", RedirectResponse.RedirectType.Permanent);
+        	    try
+        	    {
+          	    string severity = Request.Query.sev.HasValue ? Request.Query.sev : "";
+                string message = Request.Query.msg.HasValue ? Request.Query.msg : "";
+                
+                // TODO: write log entry to a file.
+                
+                return Response.AsRedirect("/tablet/resources/images/empty_1x1.png", RedirectResponse.RedirectType.Permanent);
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
         	  };
         	  
         }

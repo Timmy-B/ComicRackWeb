@@ -8,7 +8,7 @@ using cYo.Projects.ComicRack.Engine.Database;
 namespace ComicRackWebViewer
 {
     /*
-    public class BCRSettings {
+    public class BCRSettingsStore {
       public bool open_current_comic_at_launch { get; set; }
       public bool open_next_comic { get; set; }
       public int page_fit_mode { get; set; }
