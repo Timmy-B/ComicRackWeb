@@ -112,7 +112,8 @@ namespace ComicRackWebViewer
         public string FilePath { get; set; }
         public string Title { get; set; }
         public int Volume { get; set; }
-        public float Number { get; set; }
+        public string Number { get; set; }
+        public int Count { get; set; }
         public Guid Id { get; set; }
         public int Month { get; set; }
         public int Year { get; set; }
@@ -143,6 +144,38 @@ namespace ComicRackWebViewer
         public string ScanInfo { get; set; }
         public string Opened { get; set; }
         public int LastPageRead { get; set; }
+        
+        public string ShadowSeries { get; set; }
+        public string ShadowTitle { get; set; }
+        public int ShadowVolume { get; set; }
+        public string ShadowNumber { get; set; }
+        public int ShadowCount { get; set; }
+        public int ShadowYear { get; set; }
+        public string ShadowFormat { get; set; }
+        
+    }
+    
+    // For displaying in the ComicList
+    // Ideally I want to use the OData $select for this via Linq2Rest, but everytime I try to do
+    // some $select operations ComicRack hangs in the Linq2Rest library. I have no idea why :(
+    public class ComicExcerpt
+    {
+        public string FilePath { get; set; }
+        public Guid Id { get; set; }
+        public int Month { get; set; }
+        public int PageCount { get; set; }
+
+        public string Opened { get; set; }
+        public int LastPageRead { get; set; }
+        
+        public string ShadowSeries { get; set; }
+        public string ShadowTitle { get; set; }
+        public int ShadowVolume { get; set; }
+        public string ShadowNumber { get; set; }
+        public int ShadowCount { get; set; }
+        public int ShadowYear { get; set; }
+        public string ShadowFormat { get; set; }
+        
     }
 
 
@@ -179,26 +212,29 @@ namespace ComicRackWebViewer
          
         public static Comic ToComic(this ComicBook x)
         {
-          
-            float f;
-            if (!float.TryParse(x.Number, out f))
-            {
-                f = -1;
-            }
-            string title = x.Title;
-            if (string.IsNullOrEmpty(title))
-            {
-                title = x.Caption;
-            }
             return new Comic
                     {
-                        Title = title,
-                        Volume = x.Volume,
                         Id = x.Id,
                         FilePath = x.FilePath,
-                        Number = f,
+                        
+                        ShadowTitle = x.ShadowTitle,
+                        ShadowVolume = x.ShadowVolume,
+                        ShadowNumber = x.ShadowNumber,
+                        ShadowYear = x.ShadowYear,
+                        ShadowSeries = x.ShadowSeries,
+                        ShadowFormat = x.ShadowFormat,
+                        ShadowCount = x.ShadowCount,
+                                                
+                        Title = x.Title,
+                        Volume = x.Volume,
+                        Number = x.Number,
                         Year = x.Year,
+                        Series = x.Series,
+                        Format = x.Format,
+                        Count = x.Count,
+                                                
                         Month = x.Month,
+                        
                         Date = new ComicDate(x.Year, x.Month),
                         PageCount = x.PageCount,
                         AlternateCount = x.AlternateCount,
@@ -206,8 +242,7 @@ namespace ComicRackWebViewer
                         Summary = x.Summary,
                         Publisher = x.Publisher,
                         Imprint = x.Imprint,
-                        Series = x.Series,
-                        Format = x.Format,
+                        
                         Rating = x.Rating,
                         Writer = x.Writer,
                         Penciller = x.Penciller,
@@ -228,13 +263,35 @@ namespace ComicRackWebViewer
                         LastPageRead = x.LastPageRead
                     };
         }
+        
+        public static ComicExcerpt ToComicExcerpt(this ComicBook x)
+        {
+            return new ComicExcerpt
+                    {
+                        Id = x.Id,
+                        FilePath = x.FilePath,
+                        
+                        ShadowTitle = x.ShadowTitle,
+                        ShadowVolume = x.ShadowVolume,
+                        ShadowNumber = x.ShadowNumber,
+                        ShadowYear = x.ShadowYear,
+                        ShadowSeries = x.ShadowSeries,
+                        ShadowFormat = x.ShadowFormat,
+                        ShadowCount = x.ShadowCount,
+                                               
+                        Month = x.Month,
+                        PageCount = x.PageCount,
+                        Opened = x.OpenedTimeAsText,
+                        LastPageRead = x.LastPageRead
+                    };
+        }
 
         public static Series ToSeries(this ComicBook x)
         {
             return new Series
                     {
-                        Title = x.Series,
-                        Volume = x.Volume,
+                        Title = x.ShadowSeries,
+                        Volume = x.ShadowVolume,
                         Id = x.Id,
                     };
         }

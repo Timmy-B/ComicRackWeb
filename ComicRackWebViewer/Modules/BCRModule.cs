@@ -17,10 +17,9 @@ using Nancy.OData;
 using Nancy.ModelBinding;
 using Nancy.Responses;
 
+
+
 /*
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
 using Linq2Rest.Parser;
 
 namespace Nancy.OData
@@ -61,10 +60,20 @@ namespace Nancy.OData
         public static IEnumerable<object> MyApplyODataUriFilter<T>(this NancyContext context, IEnumerable<T> modelItems)
         {
             var nv = MyParseUriOptions(context);
+            
+            
+            NameValueCollection selectNV = new NameValueCollection();
+            selectNV.Add("$select", nv.Get("$select"));
+            nv.Remove("$select");
 
             var parser = new ParameterParser<T>();
             var filter = parser.Parse(nv);
-            return filter.Filter(modelItems);
+            var objects = filter.Filter(modelItems);
+            
+            var parser2 = new ParameterParser<T>();
+            var filter2 = parser2.Parse(selectNV);
+            var objects2 = filter2.Filter(objects.Cast<T>());
+            return objects2;
         }
 
         public static Response MyAsOData<T>(this IResponseFormatter formatter, IEnumerable<T> modelItems, HttpStatusCode code = HttpStatusCode.OK)
@@ -86,6 +95,7 @@ namespace Nancy.OData
         }
     }
 }
+
 */
 
 namespace ComicRackWebViewer
@@ -112,59 +122,6 @@ namespace ComicRackWebViewer
         public BCRModule()
             : base("/BCR")
         {
-            // Undoubtedly Nancy has a better way to do error handling, but the documentation is severely lacking.
-            // For now, rewrite the response with a JSON object.
-            /* After hook isn't called if there is an unhandled exception....
-            After += (ctx) => { 
-
-                NancyContext c = ctx as NancyContext;// Modify ctx.Response
-                
-                // Error handling
-                // If this is an error response then we need to alter it, because the default error handling intends to show a page, but 
-                // the error page will never be visible to the user.
-                // Instead we will send a JSON error object with the error details.
-                                
-                if (c.Response.StatusCode != HttpStatusCode.OK)
-                {
-                  string message = "";
-                  string details = "";
-                  
-                  if (c.Response.StatusCode == HttpStatusCode.InternalServerError)
-                  {
-                    object errorObject;
-                    
-                    c.Items.TryGetValue(NancyEngine.ERROR_EXCEPTION, out errorObject);
-                    
-                    var error = errorObject as Exception;
-                    
-                    //string trace = context.Trace.TraceLog;.ToString();
-                    if (error != null)
-                    {
-                      message = "EXCEPTION";
-                      details = error.ToString();
-                    }
-                    else
-                    {
-                      message = "INTERNAL SERVER ERROR";
-                      details = error.ToString();
-                    }
-                  }
-                  else
-                  if (c.Response.StatusCode == HttpStatusCode.NotFound)
-                  {
-                    message = "NOT FOUND";
-                  }
-                  else
-                  {
-                    message = "UNKNOWN";
-                  }
-                                                    
-                  c.Response.ContentType = "application/json";
-                  c.Response = Response.AsJson(new { message = message, details = details }, c.Response.StatusCode);
-                }
-            };
-            */
-           
             Get["/"] = x => { return Response.AsRedirect("/tablet/index.html", RedirectResponse.RedirectType.Permanent); };
             
             Get["/Lists"] = x => { 
@@ -202,7 +159,7 @@ namespace ComicRackWebViewer
         	  Get["/Lists/{id}/Comics/count"] = x => {
               try 
               {
-        	      return Response.AsText(Context.ApplyODataUriFilter(API.GetIssuesOfListFromId(new Guid(x.id), Context).Comics).Count().ToString());
+        	      return Response.AsText(Context.ApplyODataUriFilter(API.GetIssuesOfListFromId(new Guid(x.id), Context)).Count().ToString());
               }
               catch(Exception e)
         	    {
@@ -214,10 +171,11 @@ namespace ComicRackWebViewer
             Get["/Lists/{id}/Comics"] = x => { 
         	    try
         	    {
-        	      bool wantsCount = Request.Query["$inlinecount"].HasValue;
-        	      var rawcomics = API.GetIssuesOfListFromId(new Guid(x.id), Context).Comics;
+        	      var rawcomics = API.GetIssuesOfListFromId(new Guid(x.id), Context);
         	      var comics = Context.ApplyODataUriFilter(rawcomics);
+        	      
         	      return Response.AsJson(comics, HttpStatusCode.OK);
+        	      
         	      //IEnumerable<Comic> comics = API.GetIssuesOfListFromId(new Guid(x.id), Context).Comics;
         	      //return Response.AsOData(comics); 
         	    }
@@ -230,7 +188,7 @@ namespace ComicRackWebViewer
         	  Get["/Comics"] = x => { 
         	    try
         	    {
-        	      return Response.AsOData(API.GetComics().Select(c => c.ToComic()));
+        	      return Response.AsOData(API.GetComics().Select(c => c.ToComicExcerpt()));
         	    }
         	    catch(Exception e)
         	    {

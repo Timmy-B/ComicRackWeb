@@ -34,22 +34,15 @@ namespace ComicRackWebViewer
             };
         }
         
-        public static BooksList GetIssuesOfListFromId(Guid id, NancyContext context)
+        public static IEnumerable<ComicExcerpt> GetIssuesOfListFromId(Guid id, NancyContext context)
         {
             var list = Program.Database.ComicLists.FindItem(id);
             if (list == null)
             {
-                return new BooksList
-                {
-                    Comics = Enumerable.Empty<Comic>(),
-                    Id = id
-                };
+              return Enumerable.Empty<ComicExcerpt>();
             }
-            return new BooksList
-            {
-                Comics = list.GetBooks().Select(x => x.ToComic()),
-                Id = id
-            };
+            
+            return list.GetBooks().Select(x => x.ToComicExcerpt());
         }
 
         public static IEnumerable<Series> GetSeries()
@@ -61,25 +54,25 @@ namespace ComicRackWebViewer
         {
             var books = Plugin.Application.GetLibraryBooks();
             var book = books.Where(x => x.Id == id).First();
-            var series = books.Where(x => x.Series == book.Series)
-                .Where(x => x.Volume == book.Volume)
+            var series = books.Where(x => x.ShadowSeries == book.ShadowSeries)
+                .Where(x => x.ShadowVolume == book.ShadowVolume)
                 .Select(x => x.ToComic())
-                .OrderBy(x => x.Number).ToList();
+                .OrderBy(x => x.ShadowNumber).ToList();
             return new BooksList
             {
                 Comics = context.ApplyODataUriFilter(series).Cast<Comic>(),
-                Name = book.Series
+                Name = book.ShadowSeries
             };
         }
         
-        public static IEnumerable<Comic> GetComicsFromSeries(Guid id)
+        public static IEnumerable<ComicExcerpt> GetComicsFromSeries(Guid id)
         {
             var books = Plugin.Application.GetLibraryBooks();
             var book = books.Where(x => x.Id == id).First();
-            var series = books.Where(x => x.Series == book.Series)
-                .Where(x => x.Volume == book.Volume)
-                .Select(x => x.ToComic())
-                .OrderBy(x => x.Number).ToList();
+            var series = books.Where(x => x.ShadowSeries == book.ShadowSeries)
+                .Where(x => x.ShadowVolume == book.ShadowVolume)
+                .Select(x => x.ToComicExcerpt())
+                .OrderBy(x => x.ShadowNumber).ToList();
             
             return series;
         }
