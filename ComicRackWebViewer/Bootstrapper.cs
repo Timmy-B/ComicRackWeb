@@ -69,6 +69,17 @@ namespace ComicRackWebViewer
             
             if (BCRSettingsStore.Instance.nancy_diagnostics_password == "")
               DiagnosticsHook.Disable(pipelines);
+            
+            // Make sure static content isn't cached, because this really messes up the ipad browsers (Atomic Browser specifically) 
+            // when the app is frequently updated.
+            pipelines.AfterRequest += ctx => {
+              var c = ctx as NancyContext; // just for autocompletion in SharpDevelop....
+              //string value;
+              //if (c.Response.Headers.TryGetValue("Cache-Control", value))
+              {
+                c.Response.Headers.Add("Cache-Control", "no-cache");
+              }
+            };
         }
        
 
