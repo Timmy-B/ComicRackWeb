@@ -159,7 +159,7 @@ namespace ComicRackWebViewer
             string hostNameUri = string.Format("http://{0}:{1}", Dns.GetHostName(), port);
             uriParams.Add(new Uri(hostNameUri));
 
-            if (address.Trim().Length > 0)
+            if (address != null && address.Trim().Length > 0)
             {
               string external_address = string.Format("http://{0}:{1}/", address, port);
               uriParams.Add(new Uri(external_address));
