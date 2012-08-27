@@ -188,7 +188,8 @@ namespace ComicRackWebViewer
         	  Get["/Comics"] = x => { 
         	    try
         	    {
-        	      return Response.AsOData(API.GetComics().Select(c => c.ToComicExcerpt()));
+        	      var comics = Context.ApplyODataUriFilter(API.GetComics().Select(c => c.ToComic())).Cast<Comic>();
+        	      return Response.AsJson(comics.Select(c => c.ToComicExcerpt()), HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
         	    {

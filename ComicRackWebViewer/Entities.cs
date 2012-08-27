@@ -275,6 +275,29 @@ namespace ComicRackWebViewer
                         LastPageRead = x.LastPageRead
                     };
         }
+        
+        public static ComicExcerpt ToComicExcerpt(this Comic x)
+        {
+            return new ComicExcerpt
+                    {
+                        Id = x.Id,
+                        FilePath = x.FilePath,
+                        Caption = x.Caption,
+                        
+                        ShadowTitle = x.ShadowTitle,
+                        ShadowVolume = x.ShadowVolume,
+                        ShadowNumber = x.ShadowNumber,
+                        ShadowYear = x.ShadowYear,
+                        ShadowSeries = x.ShadowSeries,
+                        ShadowFormat = x.ShadowFormat,
+                        ShadowCount = x.ShadowCount,
+                                               
+                        Month = x.Month,
+                        PageCount = x.PageCount,
+                        Opened = x.Opened,
+                        LastPageRead = x.LastPageRead
+                    };
+        }
 
         public static Series ToSeries(this ComicBook x)
         {
