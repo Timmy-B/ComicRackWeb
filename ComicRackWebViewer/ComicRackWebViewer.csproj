@@ -138,16 +138,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Views\ComicBook.cshtml">
+    <None Include="original\Views\ComicBook.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Views\Index.cshtml">
+    <None Include="original\Views\Index.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Views\PublishersList.cshtml">
+    <None Include="original\Views\PublishersList.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Views\IssuesList.cshtml">
+    <None Include="original\Views\IssuesList.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Package.ini">
@@ -160,7 +160,7 @@
     <None Include="Program.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Views\SeriesList.cshtml">
+    <None Include="original\Views\SeriesList.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -172,62 +172,65 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Views\add2home.css">
+    <None Include="original\Views\add2home.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Views\add2home.js">
+    <None Include="original\Views\add2home.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Views\CRLogo.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Photoswipe\code.photoswipe-3.0.4.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Photoswipe\error.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Photoswipe\icons%402x.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Photoswipe\icons.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Photoswipe\klass.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Photoswipe\loader.gif">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Photoswipe\styles.css">
+    <None Include="original\Views\CRLogo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Photoswipe\photoswipe.css">
+    <None Include="original\Photoswipe\code.photoswipe-3.0.4.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="original\Photoswipe\error.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="original\Photoswipe\icons%402x.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="original\Photoswipe\icons.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="original\Photoswipe\klass.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="original\Photoswipe\loader.gif">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="original\Photoswipe\styles.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Views\ComicInfoPanel.cshtml">
+    <None Include="original\Photoswipe\photoswipe.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Views\jquery-1.7.1.min.js">
+    <None Include="original\Views\ComicInfoPanel.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <Content Include="Views\logo.png">
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="original\Views\jquery-1.7.1.min.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Content Include="original\Views\logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\spacer.png">
+    <Content Include="original\Views\spacer.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Views\styling.css">
+    <Content Include="original\Views\styling.css">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="original" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
