@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 
 using System.Drawing;
 
-namespace ComicRackWebViewer
+namespace BCR
 {
     public class BCRSettings
     {
@@ -155,7 +155,7 @@ namespace ComicRackWebViewer
             BCRSettings settings = (BCRSettings)deserializer.Deserialize(textReader);
             UpdateFrom(settings);
           }
-          catch(Exception e)
+          catch//(Exception e)
           {
             // ignore, use default values.
           }
@@ -195,7 +195,7 @@ namespace ComicRackWebViewer
             file.Close();
             file.Dispose();
           }
-          catch(Exception e)
+          catch//(Exception e)
           {
             // ignore....
           }

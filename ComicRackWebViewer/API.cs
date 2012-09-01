@@ -34,16 +34,6 @@ namespace ComicRackWebViewer
             };
         }
         
-        public static IEnumerable<ComicExcerpt> GetIssuesOfListFromId(Guid id, NancyContext context)
-        {
-            var list = Program.Database.ComicLists.FindItem(id);
-            if (list == null)
-            {
-              return Enumerable.Empty<ComicExcerpt>();
-            }
-            
-            return list.GetBooks().Select(x => x.ToComicExcerpt());
-        }
 
         public static IEnumerable<Series> GetSeries()
         {
@@ -57,7 +47,7 @@ namespace ComicRackWebViewer
             var series = books.Where(x => x.ShadowSeries == book.ShadowSeries)
                 .Where(x => x.ShadowVolume == book.ShadowVolume)
                 .Select(x => x.ToComic())
-                .OrderBy(x => x.ShadowNumber).ToList();
+                .OrderBy(x => x.Number).ToList();
             return new BooksList
             {
                 Comics = context.ApplyODataUriFilter(series).Cast<Comic>(),
@@ -65,18 +55,6 @@ namespace ComicRackWebViewer
             };
         }
         
-        public static IEnumerable<ComicExcerpt> GetComicsFromSeries(Guid id)
-        {
-            var books = Plugin.Application.GetLibraryBooks();
-            var book = books.Where(x => x.Id == id).First();
-            var series = books.Where(x => x.ShadowSeries == book.ShadowSeries)
-                .Where(x => x.ShadowVolume == book.ShadowVolume)
-                .Select(x => x.ToComicExcerpt())
-                .OrderBy(x => x.ShadowNumber).ToList();
-            
-            return series;
-        }
-
         public static Response GetThumbnailImage(Guid id, int page, IResponseFormatter response)
         {
             var bitmap = Image.FromStream(new MemoryStream(GetPageImageBytes(id, page)), false, false);
@@ -87,6 +65,7 @@ namespace ComicRackWebViewer
             MemoryStream stream = GetBytesFromImage(thumbnail);
             return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
         }
+        
 
         public static MemoryStream GetBytesFromImage(Image image)
         {
@@ -110,7 +89,7 @@ namespace ComicRackWebViewer
               }
               return provider.GetByteImage(index); // ComicRack returns the page converted to a jpeg image.....
             }
-            catch (Exception e)
+            catch //(Exception e)
             {
                 //MessageBox.Show(e.ToString());
                 return null;
@@ -142,62 +121,7 @@ namespace ComicRackWebViewer
             //return the image
             return (Image)bmp;
         }
-        
-        public static Response GetPageImage(Guid id, int page, int width, int height, IResponseFormatter response)
-        {
-            string filename = string.Format("{0}-p{1}-w{2}-h{3}.jpg", id, page, width, height);
-            try
-            {
-              MemoryStream stream = BCRSettingsStore.Instance.LoadFromCache(filename, !(width == -1 && height == -1));
-              if (stream == null)
-                return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
-            }
-            catch (Exception e)
-            {
-              // Image is not in the cache.
-            }
-            
-            var bytes = GetPageImageBytes(id, page);
-            if (bytes == null)
-            {
-              return HttpStatusCode.NotFound;
-            }
-            
-            if (width == -1 && height == -1)
-            {
-              // Return original image.
-              MemoryStream mem = new MemoryStream(bytes);
-              BCRSettingsStore.Instance.SaveToCache(filename, mem, false);
-              
-              return response.FromStream(mem, MimeTypes.GetMimeType(".jpg"));
-            }
-            else
-            {
-              var bitmap = Image.FromStream(new MemoryStream(bytes), false, false);
-              if (width == -1)
-              {
-                double ratio = height / (double)bitmap.Height;
-                width = (int)(bitmap.Width * ratio);
-              }
-              else
-              if (height == -1)
-              {
-                double ratio = width / (double)bitmap.Width;
-                height = (int)(bitmap.Height * ratio);
-              }
-                  
-              // Use high quality resize.
-              var thumbnail = Resize(bitmap, width, height);
-              bitmap.Dispose();
-              MemoryStream stream = GetBytesFromImage(thumbnail);
-              thumbnail.Dispose();
-              
-              BCRSettingsStore.Instance.SaveToCache(filename, stream, true);
-                            
-              return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
-            }
-        }
-        
+                
         private static ImageProvider GetProvider(ComicBook comic)
         {
             var provider = comic.CreateImageProvider();
@@ -219,26 +143,13 @@ namespace ComicRackWebViewer
             var comic = GetComics().First(x => x.Id == id);
             return comic.ToComic();
           }
-          catch(Exception e)
+          catch//(Exception e)
           {
             //MessageBox.Show(e.ToString());
             return null;
           }
         }
-        
-        public static ComicBook GetComicBook(Guid id)
-        {
-          try
-          {
-            var comic = GetComics().First(x => x.Id == id);
-            return comic;
-          }
-          catch(Exception e)
-          {
-            //MessageBox.Show(e.ToString());
-            return null;
-          }
-        }
+       
 
         public static IQueryable<ComicBook> GetComics()
         {

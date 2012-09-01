@@ -130,42 +130,8 @@ namespace ComicRackWebViewer
         public string ScanInfo { get; set; }
         public string Opened { get; set; }
         public int LastPageRead { get; set; }
-        
-        public string ShadowSeries { get; set; }
-        public string ShadowTitle { get; set; }
-        public int ShadowVolume { get; set; }
-        public string ShadowNumber { get; set; }
-        public int ShadowCount { get; set; }
-        public int ShadowYear { get; set; }
-        public string ShadowFormat { get; set; }
-        
     }
     
-    // For displaying in the ComicList
-    // Ideally I want to use the OData $select for this via Linq2Rest, but everytime I try to do
-    // some $select operations ComicRack hangs in the Linq2Rest library. I have no idea why :(
-    public class ComicExcerpt
-    {
-        public string FilePath { get; set; }
-        public Guid Id { get; set; }
-        public int Month { get; set; }
-        public int PageCount { get; set; }
-
-        public string Opened { get; set; }
-        public int LastPageRead { get; set; }
-        
-        public string Caption { get; set; }
-        
-        public string ShadowSeries { get; set; }
-        public string ShadowTitle { get; set; }
-        public int ShadowVolume { get; set; }
-        public string ShadowNumber { get; set; }
-        public int ShadowCount { get; set; }
-        public int ShadowYear { get; set; }
-        public string ShadowFormat { get; set; }
-        
-    }
-
 
     public static class EntityExtensions
     {
@@ -205,14 +171,6 @@ namespace ComicRackWebViewer
                         Id = x.Id,
                         FilePath = x.FilePath,
                         Caption = x.Caption,
-                        
-                        ShadowTitle = x.ShadowTitle,
-                        ShadowVolume = x.ShadowVolume,
-                        ShadowNumber = x.ShadowNumber,
-                        ShadowYear = x.ShadowYear,
-                        ShadowSeries = x.ShadowSeries,
-                        ShadowFormat = x.ShadowFormat,
-                        ShadowCount = x.ShadowCount,
                                                 
                         Title = x.Title,
                         Volume = x.Volume,
@@ -253,51 +211,6 @@ namespace ComicRackWebViewer
                     };
         }
         
-        public static ComicExcerpt ToComicExcerpt(this ComicBook x)
-        {
-            return new ComicExcerpt
-                    {
-                        Id = x.Id,
-                        FilePath = x.FilePath,
-                        Caption = x.Caption,
-                        
-                        ShadowTitle = x.ShadowTitle,
-                        ShadowVolume = x.ShadowVolume,
-                        ShadowNumber = x.ShadowNumber,
-                        ShadowYear = x.ShadowYear,
-                        ShadowSeries = x.ShadowSeries,
-                        ShadowFormat = x.ShadowFormat,
-                        ShadowCount = x.ShadowCount,
-                                               
-                        Month = x.Month,
-                        PageCount = x.PageCount,
-                        Opened = x.OpenedTimeAsText,
-                        LastPageRead = x.LastPageRead
-                    };
-        }
-        
-        public static ComicExcerpt ToComicExcerpt(this Comic x)
-        {
-            return new ComicExcerpt
-                    {
-                        Id = x.Id,
-                        FilePath = x.FilePath,
-                        Caption = x.Caption,
-                        
-                        ShadowTitle = x.ShadowTitle,
-                        ShadowVolume = x.ShadowVolume,
-                        ShadowNumber = x.ShadowNumber,
-                        ShadowYear = x.ShadowYear,
-                        ShadowSeries = x.ShadowSeries,
-                        ShadowFormat = x.ShadowFormat,
-                        ShadowCount = x.ShadowCount,
-                                               
-                        Month = x.Month,
-                        PageCount = x.PageCount,
-                        Opened = x.Opened,
-                        LastPageRead = x.LastPageRead
-                    };
-        }
 
         public static Series ToSeries(this ComicBook x)
         {

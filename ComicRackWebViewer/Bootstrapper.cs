@@ -11,7 +11,8 @@ using Nancy.Diagnostics;
 using TinyIoC;
 using Nancy.ErrorHandling;
 using Nancy.Extensions;
-  
+using BCR;
+
 namespace ComicRackWebViewer
 {
   /*

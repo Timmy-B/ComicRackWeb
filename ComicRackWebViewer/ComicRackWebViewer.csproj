@@ -115,6 +115,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API.cs" />
+    <Compile Include="BCRAPI.cs" />
+    <Compile Include="BCREntities.cs" />
     <Compile Include="BCRInstaller.cs" />
     <Compile Include="BCRSettings.cs" />
     <Compile Include="BCRSettingsWindow.xaml.cs">

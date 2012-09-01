@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Diagnostics;
 using cYo.Common;
+using cYo.Common.IO;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Viewer;
@@ -16,8 +17,7 @@ using Nancy;
 using Nancy.OData;
 using Nancy.ModelBinding;
 using Nancy.Responses;
-
-
+using ComicRackWebViewer;
 
 /*
 using Linq2Rest.Parser;
@@ -98,7 +98,7 @@ namespace Nancy.OData
 
 */
 
-namespace ComicRackWebViewer
+namespace BCR
 {
     public static class BCRExtensions
     {
@@ -111,12 +111,55 @@ namespace ComicRackWebViewer
                   Contents = stream => (new StreamWriter(stream) { AutoFlush = true }).Write("Request: " + request.Url + "\nError: " + message)
               };
       }
+    
+    
+      public static List<ComicBook> GetFolderBookList(string folder, bool includeSubFolders)
+      {
+        List<ComicBook> list = new List<ComicBook>();
+        try
+        {
+          IEnumerable<string> fileExtensions = Providers.Readers.GetFileExtensions();
+          foreach (string file in FileUtility.GetFiles(folder, includeSubFolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly, new string[0]))
+          {
+            string f = file;
+            if (Enumerable.Any<string>(fileExtensions, (Func<string, bool>) (ext => f.EndsWith(ext, StringComparison.OrdinalIgnoreCase))))
+            {
+              ComicBook comicBook = Program.BookFactory.Create(file, CreateBookOption.AddToTemporary, list.Count > 100 ? RefreshInfoOptions.DontReadInformation : RefreshInfoOptions.None);
+              if (comicBook != null)
+                list.Add(comicBook);
+            }
+          }
+        }
+        catch
+        {
+        }
+        return list;
+      }
+      
+      public static List<string> GetFolderBookList2(string folder, bool includeSubFolders)
+      {
+        List<string> list = new List<string>();
+        try
+        {
+          IEnumerable<string> fileExtensions = Providers.Readers.GetFileExtensions();
+          foreach (string file in FileUtility.GetFiles(folder, includeSubFolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly, new string[0]))
+          {
+            string f = file;
+            if (Enumerable.Any<string>(fileExtensions, (Func<string, bool>) (ext => f.EndsWith(ext, StringComparison.OrdinalIgnoreCase))))
+            {
+              list.Add(file);
+            }
+          }
+        }
+        catch
+        {
+        }
+        return list;
+      }
     }
     
-
-	
-
     
+   
     public class BCRModule : NancyModule
     {
         public BCRModule()
@@ -159,7 +202,7 @@ namespace ComicRackWebViewer
         	  Get["/Lists/{id}/Comics/count"] = x => {
               try 
               {
-        	      return Response.AsText(Context.ApplyODataUriFilter(API.GetIssuesOfListFromId(new Guid(x.id), Context)).Count().ToString());
+        	      return Response.AsText(Context.ApplyODataUriFilter(BCR.GetIssuesOfListFromId(new Guid(x.id), Context)).Count().ToString());
               }
               catch(Exception e)
         	    {
@@ -171,12 +214,12 @@ namespace ComicRackWebViewer
             Get["/Lists/{id}/Comics"] = x => { 
         	    try
         	    {
-        	      var rawcomics = API.GetIssuesOfListFromId(new Guid(x.id), Context);
+        	      var rawcomics = BCR.GetIssuesOfListFromId(new Guid(x.id), Context);
         	      var comics = Context.ApplyODataUriFilter(rawcomics);
         	      
         	      return Response.AsJson(comics, HttpStatusCode.OK);
         	      
-        	      //IEnumerable<Comic> comics = API.GetIssuesOfListFromId(new Guid(x.id), Context).Comics;
+        	      //IEnumerable<Comic> comics = BCR.GetIssuesOfListFromId(new Guid(x.id), Context).Comics;
         	      //return Response.AsOData(comics); 
         	    }
         	    catch(Exception e)
@@ -188,7 +231,7 @@ namespace ComicRackWebViewer
         	  Get["/Comics"] = x => { 
         	    try
         	    {
-        	      var comics = Context.ApplyODataUriFilter(API.GetComics().Select(c => c.ToComic())).Cast<Comic>();
+        	      var comics = Context.ApplyODataUriFilter(BCR.GetComics().Select(c => c.ToComic())).Cast<Comic>();
         	      return Response.AsJson(comics.Select(c => c.ToComicExcerpt()), HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
@@ -201,7 +244,7 @@ namespace ComicRackWebViewer
             Get["/Comics/{id}"] = x => { 
         	    try
         	    {
-                Comic comic = API.GetComic(new Guid(x.id));
+                Comic comic = BCR.GetComic(new Guid(x.id));
                 if (comic == null)
                 {
                   return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
@@ -225,7 +268,7 @@ namespace ComicRackWebViewer
                 int maxWidth = Request.Query.maxWidth.HasValue ? int.Parse(Request.Query.maxWidth) : -1;
                 int maxHeight = Request.Query.maxHeight.HasValue ? int.Parse(Request.Query.maxHeight) : -1;
                 
-                return API.GetPageImage(new Guid(x.id), int.Parse(x.page), width, height, Response);
+                return BCR.GetPageImage(new Guid(x.id), int.Parse(x.page), width, height, Response);
               }
               catch(Exception e)
         	    {
@@ -237,7 +280,7 @@ namespace ComicRackWebViewer
         	  Get["/Comics/{id}/{property}"] = x => { 
         	    try
         	    {
-                Comic comic = API.GetComic(new Guid(x.id));
+                Comic comic = BCR.GetComic(new Guid(x.id));
                 if (comic == null)
                 {
                   return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
@@ -259,7 +302,7 @@ namespace ComicRackWebViewer
         	    try
         	    {
           	    // Get the ComicBook entry from the library, so we can change it.
-          	    ComicBook book = API.GetComicBook(new Guid(x.id));
+          	    ComicBook book = BCR.GetComicBook(new Guid(x.id));
           	    if (book == null)
           	    {
           	      return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
@@ -292,7 +335,7 @@ namespace ComicRackWebViewer
           	    
           	    
           	    // Now get the ComicBook entry from the library, so we can change it.
-          	    ComicBook book = API.GetComicBook(x.id);
+          	    ComicBook book = BCR.GetComicBook(x.id);
           	    if (book == null)
           	    {
           	      return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
@@ -341,7 +384,7 @@ namespace ComicRackWebViewer
         	  Get["/Series"] = x => {
         	    try 
         	    {
-        	      return Response.AsOData(API.GetSeries(), HttpStatusCode.OK);
+        	      return Response.AsOData(BCR.GetSeries(), HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
         	    {
@@ -353,7 +396,31 @@ namespace ComicRackWebViewer
         	  Get["/Series/{id}"] = x => {
         	    try 
         	    {
-        	      return Response.AsOData(API.GetComicsFromSeries(new Guid(x.id)), HttpStatusCode.OK);
+        	      return Response.AsOData(BCR.GetComicsFromSeries(new Guid(x.id)), HttpStatusCode.OK);
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
+        	  };
+        	  
+        	  Get["/Series/{id}/Volumes"] = x => {
+        	    try 
+        	    {
+        	      return Response.AsOData(BCR.GetVolumesFromSeries(new Guid(x.id)), HttpStatusCode.OK);
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
+        	  };
+        	  
+        	  Get["/Series/{id}/Volumes/{volume}"] = x => {
+        	    try 
+        	    {
+        	      int volume = int.Parse(x.volume);
+        	      var comics = BCR.GetComicsFromSeriesVolume(new Guid(x.id), volume);
+        	      return Response.AsOData(comics, HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
         	    {
@@ -364,7 +431,7 @@ namespace ComicRackWebViewer
         	  Get["/Series/{id}/count"] = x => {
         	    try 
         	    {
-        	      return Response.AsText(Context.ApplyODataUriFilter(API.GetComicsFromSeries(new Guid(x.id))).Count().ToString());
+        	      return Response.AsText(Context.ApplyODataUriFilter(BCR.GetComicsFromSeries(new Guid(x.id))).Count().ToString());
         	    }
         	    catch(Exception e)
         	    {
@@ -376,7 +443,7 @@ namespace ComicRackWebViewer
         	  Get["/Publishers"] = x => {
         	    try 
         	    {
-        	      return Response.AsOData(API.GetPublishers(), HttpStatusCode.OK);
+        	      return Response.AsOData(BCR.GetPublishers(), HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
         	    {
@@ -400,6 +467,39 @@ namespace ComicRackWebViewer
         	    }
         	  };
         	  
+        	  Get["/Folder"] = x => {
+        	    try 
+        	    {
+        	      //return Response.AsOData(BCR.GetPublishers(), HttpStatusCode.OK);
+        	      
+        	      var folders = Program.Database.WatchFolders as cYo.Projects.ComicRack.Engine.Database.WatchFolderCollection;
+        	      
+        	      List<string> books = BCRExtensions.GetFolderBookList2(folders.Folders.First(), true);
+        	      return Response.AsJson(books, HttpStatusCode.OK);
+        	      
+        	      //return Response.AsRedirect("/tablet/resources/images/empty_1x1.png", RedirectResponse.RedirectType.Permanent);
+        	      
+        	      
+        	      
+        	      
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
+        	  };
+        	  
+        	  Get["/Folder/{id}"] = x => {
+        	    try 
+        	    {
+        	      return Response.AsRedirect("/tablet/resources/images/empty_1x1.png", RedirectResponse.RedirectType.Permanent);
+        	      
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
+        	  };
         }
 
     }
