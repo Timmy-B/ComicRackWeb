@@ -14,15 +14,15 @@ using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Viewer;
 using Nancy;
-using Nancy.OData;
+//using Nancy.OData;
 using Nancy.ModelBinding;
 using Nancy.Responses;
 using ComicRackWebViewer;
 
-/*
+
 using Linq2Rest.Parser;
 
-namespace Nancy.OData
+namespace BCR
 {
     public static class ODataExtensions
     {
@@ -57,26 +57,35 @@ namespace Nancy.OData
             }
             return nv;
         }
-        public static IEnumerable<object> MyApplyODataUriFilter<T>(this NancyContext context, IEnumerable<T> modelItems)
+        public static IEnumerable<object> ApplyODataUriFilter<T>(this NancyContext context, IEnumerable<T> modelItems, ref int totalCount)
         {
             var nv = MyParseUriOptions(context);
-            
-            
+                        
             NameValueCollection selectNV = new NameValueCollection();
-            selectNV.Add("$select", nv.Get("$select"));
+            // $select is broken somehow....remove it for now
+            //selectNV.Add("$select", nv.Get("$select"));
             nv.Remove("$select");
+            
+            // We want the total count of the query before limiting the result set with $top and $skip
+            selectNV.Add("$skip", nv.Get("$skip"));
+            nv.Remove("$skip");
+            selectNV.Add("$top", nv.Get("$top"));
+            nv.Remove("$top");
 
+            // Now do a query that returns all records
             var parser = new ParameterParser<T>();
             var filter = parser.Parse(nv);
             var objects = filter.Filter(modelItems);
+            totalCount = objects.Count();
             
+            // Now limit the resultset
             var parser2 = new ParameterParser<T>();
             var filter2 = parser2.Parse(selectNV);
             var objects2 = filter2.Filter(objects.Cast<T>());
             return objects2;
         }
 
-        public static Response MyAsOData<T>(this IResponseFormatter formatter, IEnumerable<T> modelItems, HttpStatusCode code = HttpStatusCode.OK)
+        public static Response AsOData<T>(this IResponseFormatter formatter, IEnumerable<T> modelItems, HttpStatusCode code = HttpStatusCode.OK)
         {
             bool isJson = formatter.Context.Request.Headers.Accept.Select(x => x.Item1).Where(x => x.StartsWith("application/json", StringComparison.InvariantCultureIgnoreCase)).Any();
 
@@ -84,19 +93,23 @@ namespace Nancy.OData
             string value = nv.Get("$format");
             if (string.Compare(value, "json", true) == 0)
             {
-                isJson = true;
+              isJson = true;
             }
 
+            // BCR only supports json, no need to supply the $format every time....
+            isJson = true;
+            
             if (isJson)
             {
-                return formatter.AsJson(formatter.Context.MyApplyODataUriFilter(modelItems), code);
+              int totalCount = 0;
+              return formatter.AsJson(formatter.Context.ApplyODataUriFilter(modelItems, ref totalCount), code);
             }
             throw new NotImplementedException("Atom feeds not implemented");
         }
     }
 }
 
-*/
+
 
 namespace BCR
 {
@@ -202,7 +215,8 @@ namespace BCR
         	  Get["/Lists/{id}/Comics/count"] = x => {
               try 
               {
-        	      return Response.AsText(Context.ApplyODataUriFilter(BCR.GetIssuesOfListFromId(new Guid(x.id), Context)).Count().ToString());
+                int totalCount = 0;
+        	      return Response.AsText(Context.ApplyODataUriFilter(BCR.GetIssuesOfListFromId(new Guid(x.id), Context), ref totalCount).Count().ToString());
               }
               catch(Exception e)
         	    {
@@ -215,9 +229,10 @@ namespace BCR
         	    try
         	    {
         	      var rawcomics = BCR.GetIssuesOfListFromId(new Guid(x.id), Context);
-        	      var comics = Context.ApplyODataUriFilter(rawcomics);
-        	      
-        	      return Response.AsJson(comics, HttpStatusCode.OK);
+        	      int totalCount = 0;
+        	      var comics = Context.ApplyODataUriFilter(rawcomics, ref totalCount);
+        	      var result = new { totalCount = totalCount, items = comics };
+        	      return Response.AsJson(result, HttpStatusCode.OK);
         	      
         	      //IEnumerable<Comic> comics = BCR.GetIssuesOfListFromId(new Guid(x.id), Context).Comics;
         	      //return Response.AsOData(comics); 
@@ -231,8 +246,10 @@ namespace BCR
         	  Get["/Comics"] = x => { 
         	    try
         	    {
-        	      var comics = Context.ApplyODataUriFilter(BCR.GetComics().Select(c => c.ToComic())).Cast<Comic>();
-        	      return Response.AsJson(comics.Select(c => c.ToComicExcerpt()), HttpStatusCode.OK);
+        	      int totalCount = 0;
+        	      var comics = Context.ApplyODataUriFilter(BCR.GetComics().Select(c => c.ToComicExcerpt()), ref totalCount).Cast<ComicExcerpt>();
+        	      var result = new { totalCount = totalCount, items = comics };
+        	      return Response.AsJson(result, HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
         	    {
@@ -384,7 +401,10 @@ namespace BCR
         	  Get["/Series"] = x => {
         	    try 
         	    {
-        	      return Response.AsOData(BCR.GetSeries(), HttpStatusCode.OK);
+        	      int totalCount = 0;
+        	      var series = Context.ApplyODataUriFilter(BCR.GetSeries(), ref totalCount);
+        	      var result = new { totalCount = totalCount, items = series };
+        	      return Response.AsJson(result, HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
         	    {
@@ -396,7 +416,22 @@ namespace BCR
         	  Get["/Series/{id}"] = x => {
         	    try 
         	    {
-        	      return Response.AsOData(BCR.GetComicsFromSeries(new Guid(x.id)), HttpStatusCode.OK);
+        	      int totalCount = 0;
+        	      var series = Context.ApplyODataUriFilter(BCR.GetComicsFromSeries(new Guid(x.id)), ref totalCount);
+        	      var result = new { totalCount = totalCount, items = series };
+        	      return Response.AsJson(result, HttpStatusCode.OK);
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
+        	  };
+        	  
+        	  Get["/Series/{id}/count"] = x => {
+        	    try 
+        	    {
+        	      int totalCount = 0;
+        	      return Response.AsText(Context.ApplyODataUriFilter(BCR.GetComicsFromSeries(new Guid(x.id)), ref totalCount).Count().ToString());
         	    }
         	    catch(Exception e)
         	    {
@@ -428,16 +463,7 @@ namespace BCR
         	    }
         	  };
         	  
-        	  Get["/Series/{id}/count"] = x => {
-        	    try 
-        	    {
-        	      return Response.AsText(Context.ApplyODataUriFilter(BCR.GetComicsFromSeries(new Guid(x.id))).Count().ToString());
-        	    }
-        	    catch(Exception e)
-        	    {
-        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
-        	    }
-        	  };
+        	  
         	  
         	  
         	  Get["/Publishers"] = x => {

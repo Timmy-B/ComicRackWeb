@@ -29,8 +29,8 @@ Ext.define('Comic.store.Series', {
       storeId: 'Series',
       autoLoad: false,
       pageSize: null,
-      //defaultRootProperty: 'Lists',
-      //nodeParam: 'Id',
+      defaultRootProperty: 'items',
+      //nodeParam: 'items',
       //defaultRootId: "bla",
       
       sorters: [
@@ -70,7 +70,11 @@ Ext.define('Comic.store.Series', {
             type: 'restodata',
             url : '/BCR/Series',
             format: 'json',
-            
+            reader: {
+              type: 'json',
+              rootProperty: 'items',
+              totalProperty: 'totalCount',
+            },
             listeners:{
               exception:function(proxy, response, orientation){
                   console.error('Failure Notification', response.responseText);

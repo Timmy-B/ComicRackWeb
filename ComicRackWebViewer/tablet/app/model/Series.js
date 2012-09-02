@@ -18,7 +18,13 @@
 */  
 Ext.define('Comic.model.Series', {
     extend: 'Ext.data.Model',
-    
+    statics: {
+      getDisplayText: function(series)
+      {
+        
+        return series.Title + (series.Volume != -1 ? ' V' + series.Volume : '');
+      },
+    },
     config: {
       fields: [ 
         { name: 'Id', type: 'string' },
@@ -28,5 +34,7 @@ Ext.define('Comic.model.Series', {
       ],
      idProperty: 'Id',
              
-    }
+    },
+    
+    
  });

@@ -29,8 +29,17 @@ Ext.define('Comic.store.ComicList', {
       model: 'Comic.model.ComicInfo',
       storeId: 'ComicList',
       
+      
+            
       proxy: {
         type: 'restodata',
+        
+        reader: {
+              type: 'json',
+              rootProperty: 'items',
+              totalProperty: 'totalCount',
+            },
+            
         //extraParams: { $select: 'Id,Series,Volume,Number,Title,Year,Month,FilePath,PageCount,LastPageRead,Opened' },
         listeners:{
           exception:function(proxy, response, orientation){

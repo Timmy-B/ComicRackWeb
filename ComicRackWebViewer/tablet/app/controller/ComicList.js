@@ -147,6 +147,7 @@ Ext.define('Comic.controller.ComicList', {
       store.load({
         callback: function(records, operation, success) {
             comiclistview.setMasked(false);
+            me.getComiclisttoolbar().setTitle(me.title + ' [#: ' + store.getTotalCount() + ']');
         },
         scope: me
       });
@@ -218,6 +219,7 @@ Ext.define('Comic.controller.ComicList', {
       store.setRemoteFilter(true);
       store.setRemoteGroup(true);
 
+      me.title = title;
 			me.getComiclisttoolbar().setTitle(title);
       me.getComiclistview().setStore(store);
       

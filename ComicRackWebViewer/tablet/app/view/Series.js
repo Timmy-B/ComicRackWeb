@@ -36,7 +36,7 @@ var TheSeriesItemTemplate = new Ext.XTemplate(
       // member functions:
       getTitleText: function(series)
       {
-        return series.Title + (series.Volume != -1 ? ' V' + series.Volume : '');
+        return Comic.model.Series.getDisplayText(series);
       },
     }
 ); 
@@ -80,9 +80,17 @@ Ext.define('Comic.view.Series', {
               align: 'right',
               iconCls: 'refresh',
               iconMask: true,
-            }
-          ] 
-        }
+            },
+            
+          ]
+          
+        },
+        {
+          xtype: 'searchfield',
+          docked: 'top',
+          placeHolder: 'Filter...',
+        },
+
       ],
       
       plugins: [
