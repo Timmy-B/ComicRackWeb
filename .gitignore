@@ -2,6 +2,7 @@
 ComicRackWebViewer/bin/Debug/
 ComicRackWebViewer/bin/
 ComicRackWebViewer/obj/
+ComicRackWebViewer/tablet/build
 *.crplugin
 *.user
 packages/
