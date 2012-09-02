@@ -58,6 +58,7 @@ Ext.define('Comic.view.Series', {
       title: 'Series',
       //displayField: 'name',
       store: 'Series',
+      emptyText: '<center>No series found.</center>',
       
       grouped     : true,
       indexBar    : {

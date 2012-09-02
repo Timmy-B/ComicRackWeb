@@ -19,7 +19,7 @@
   
 // Use one template instance for all list items instead of creating one for each list item separately.....
 var TheComicListItemTemplate = new Ext.XTemplate(
-    '<img src="/BCR/Comics/{Id}/Pages/0?height=64"/>{[this.getTitleText(values)]}<span class="progress">{[this.getProgressText(values)]}</span><span class="date_last_read">{[this.getOpenedDate(values)]}</span>',
+    '<img class="cl-img" src="/BCR/Comics/{Id}/Pages/0?height=64"/>{[this.getTitleText(values)]}</br><span class="progress">{[this.getProgressText(values)]}</span><span class="date_last_read">{[this.getOpenedDate(values)]}</span>',
     {
       // XTemplate configuration:
       disableFormats: true,
@@ -27,21 +27,6 @@ var TheComicListItemTemplate = new Ext.XTemplate(
       getTitleText: function(comic)
       {
         return comic.Caption;
-        /*
-        var s = '';
-        if (comic.ShadowSeries)
-          s += comic.ShadowSeries + (comic.ShadowVolume!=-1 ? ' V' + comic.ShadowVolume : '') + (comic.ShadowNumber != -1 ? ' #' + comic.ShadowNumber : '');
-          else
-          s += comic.FilePath;
-          
-        if (comic.ShadowTitle)
-          s += ': ' + comic.ShadowTitle;
-        
-        if (comic.ShadowYear > 0)
-          s += '<br/>[' + comic.ShadowYear + '/' + comic.Month + ']';
-         
-        return s;
-        */
       },
       getProgressText: function(comic)
       {
@@ -60,6 +45,7 @@ var TheComicListItemTemplate = new Ext.XTemplate(
     }
 ); 
 
+
 Ext.define('Comic.view.ComicList', {
     extend: 'Ext.ux.BufferedList',
     xtype: 'comiclistview',
@@ -70,11 +56,12 @@ Ext.define('Comic.view.ComicList', {
       'Comic.view.ComicListSort',
     ],
     
+        
     config: {
       title: 'List',
       itemTpl: TheComicListItemTemplate,
-      baseCls: 'filesystem-list',
-      
+      baseCls: 'comiclist',
+        
       plugins: [
         {
           xclass: 'Ext.plugin.ListPaging',

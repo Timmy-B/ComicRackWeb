@@ -24,26 +24,23 @@
 	src: url('Comic_Book.ttf');
 }
 */
-.filesystem-list {
+.filesystem-list, .comiclist {
   background: #FFF;
   
   /*font-family: Comic_Book; */
 }
 
-.filesystem-list-item {
+.filesystem-list-item, .comiclist-item {
   
   padding: 0.65em;
-  height: 80px;
-  
+  height: 85px;
   margin: 0.4em;
   padding: 0.65em;
   background: #EEE;
   border: 1px solid #dedede;
-  height: 80px;
-  
 }
 
-.filesystem-list .x-item-selected {
+.filesystem-list .x-item-selected, .comiclist-item .x-item-selected {
   border: 3px solid #AAF;
   background: #EEF;
 }
@@ -113,10 +110,20 @@ background: transparent url(img/background_1.jpg) 0 0;
 
 .filesystem-list-item img {
   float: left;
-  top: 10px;
-  height: 60px;
+  //top: 10px;
+  height: 64px;
   //background: #00F;
   margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.comiclist-item .cl-img {
+  float: left;
+  //top: 10px;
+  height: 64px;
+  //background: #00F;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 .filesystem-list-item .name {
@@ -131,7 +138,7 @@ background: transparent url(img/background_1.jpg) 0 0;
   
 }
 
-.filesystem-list-item .progress {
+.comiclist-item .progress {
   float: left;
   font-size: 11px;
   font-weight: bold;
@@ -155,7 +162,7 @@ background: transparent url(img/background_1.jpg) 0 0;
   background-image: linear-gradient(#5F9CC5,#396B9E);
 }
 
-.filesystem-list-item .date_last_read {
+.comiclist-item .date_last_read {
   float: right;
 }
 
