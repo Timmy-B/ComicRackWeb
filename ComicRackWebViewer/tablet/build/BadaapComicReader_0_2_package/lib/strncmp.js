@@ -1,1 +1,0 @@
-if(typeof(phpjs)==="undefined"){phpjs={}}phpjs.strncmp=function(e,c,d){var b=(e+"").substr(0,d);var a=(c+"").substr(0,d);return((b==a)?0:((b>a)?1:-1))};

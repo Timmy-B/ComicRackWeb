@@ -1,1 +1,0 @@
-if(!Ext.browser.is.WebKit){alert("The current browser is unsupported.\n\nSupported browsers:\nGoogle Chrome\nApple Safari\nMobile Safari (iOS)\nAndroid Browser\nBlackBerry Browser")}var addToHomeConfig={returningVisitor:true,expire:720};
