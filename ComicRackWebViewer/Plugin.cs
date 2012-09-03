@@ -8,9 +8,9 @@ namespace ComicRackWebViewer
     {
         internal static IApplication Application;
         private static WebServicePanel panel;
-        private static Version requiredVersion = new Version(0, 9, 155);
+        private static Version requiredVersion = new Version(0, 9, 156);
         
-        public static void Initialize(IApplication app)
+        public static bool Initialize(IApplication app)
         {
           try
           {
@@ -19,20 +19,24 @@ namespace ComicRackWebViewer
             if (comicVersion < requiredVersion)
             {
               MessageBox.Show("Version check failed!\n\nThe ComicRack Web Viewer Plugin requires an updated version of ComicRack\nComicRack version required: " + requiredVersion + "\n\nThe Web Viewer is now disabled.", "ComicRack Web Viewer Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
-              return;
+              return false;
             }
             
             BCRInstaller.Instance.Install();
+            return true;
           }
           catch (Exception e)
           {
             MessageBox.Show(e.ToString());
           }
+          
+          return false;
         }
         
         public static void Run(IApplication app)
         {
-            Initialize(app);
+          if (Initialize(app))
+          {
             try
             {
               /*
@@ -55,11 +59,13 @@ namespace ComicRackWebViewer
             {
                 MessageBox.Show(e.ToString());
             }
+          }
         }
 
         public static void RunAtStartup(IApplication app)
         {
-            Initialize(app);
+          if (Initialize(app))
+          {
             try
             {
               /*
@@ -81,6 +87,7 @@ namespace ComicRackWebViewer
             {
                 MessageBox.Show(e.ToString());
             }
+          }
         }
 
         static void panel_Closed(object sender, EventArgs e)
