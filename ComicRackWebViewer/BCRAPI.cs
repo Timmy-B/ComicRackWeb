@@ -150,8 +150,8 @@ namespace BCR
         
         public static Response GetPageImage(Guid id, int page, int width, int height, IResponseFormatter response)
         {
-            int max_dimension_long = 4096; 
-            int max_dimension_short = 3072; 
+            int max_dimension_long = BCRSettingsStore.Instance.max_dimension_long; 
+            int max_dimension_short = BCRSettingsStore.Instance.max_dimension_short; 
             int max_width = 0;
             int max_height = 0;
             bool thumbnail = !(width == -1 && height == -1);
@@ -209,7 +209,6 @@ namespace BCR
                 // Use high quality resize.
                 var image = Resize(bitmap, width, height);
                 bitmap.Dispose();
-                stream.Dispose();
                 stream = GetBytesFromImage(image);
                 image.Dispose();
                 
@@ -221,7 +220,6 @@ namespace BCR
               else
               {
                 // Resizing is unnecessary.
-                stream.Dispose();
                 stream = GetBytesFromImage(bitmap);
                 bitmap.Dispose();
                 if (!fromCache)
