@@ -11,7 +11,7 @@ Requirements:
 - A working Sencha Touch 2.0 and Sencha SDK Tools build environment.
 
 *** Sencha Touch installation ***
-Badaap Comic Reader v1.6 is tested and build with Sencha Touch 2.1.0beta2 and the Sencha SDK Tools 2.0.0-beta3.
+Badaap Comic Reader is tested and build with Sencha Touch 2.1.0beta2 and the Sencha SDK Tools 2.0.0-beta3.
 
 In order to build BCR, you must download and install the Sencha Touch 2.0 libraries and the Sencha SDK Tools.
 

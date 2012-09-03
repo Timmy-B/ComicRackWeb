@@ -58,6 +58,7 @@ namespace BCR
             var books = ComicRackWebViewer.Plugin.Application.GetLibraryBooks();
             var book = books.Where(x => x.Id == id).First();
             var series = books.Where(x => x.ShadowSeries == book.ShadowSeries)
+                .Where(x => x.ShadowVolume == book.ShadowVolume)
                 .Select(x => x.ToComicExcerpt())
                 .OrderBy(x => x.ShadowVolume)
                 .ThenBy(x => x.ShadowNumber).ToList();
@@ -88,16 +89,6 @@ namespace BCR
             return series;
         }
 
-        public static Response GetThumbnailImage(Guid id, int page, IResponseFormatter response)
-        {
-            var bitmap = Image.FromStream(new MemoryStream(GetPageImageBytes(id, page)), false, false);
-            double ratio = 200D / (double)bitmap.Height;
-            int width = (int)(bitmap.Width * ratio);
-            var callback = new Image.GetThumbnailImageAbort(() => true);
-            var thumbnail = bitmap.GetThumbnailImage(width, 200, callback, IntPtr.Zero);
-            MemoryStream stream = GetBytesFromImage(thumbnail);
-            return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
-        }
 
         public static MemoryStream GetBytesFromImage(Image image)
         {
@@ -146,6 +137,9 @@ namespace BCR
             //create a new graphic from the Bitmap
             Graphics graphic = Graphics.FromImage((Image)bmp);
             graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphic.SmoothingMode  = SmoothingMode.HighQuality;
+            graphic.CompositingQuality = CompositingQuality.HighQuality;
+            graphic.PixelOffsetMode = PixelOffsetMode.HighQuality; 
             //draw the newly resized image
             graphic.DrawImage(img, 0, 0, width, height);
             //dispose and free up the resources
@@ -156,35 +150,90 @@ namespace BCR
         
         public static Response GetPageImage(Guid id, int page, int width, int height, IResponseFormatter response)
         {
+            int max_dimension_long = 4096; 
+            int max_dimension_short = 3072; 
+            int max_width = 0;
+            int max_height = 0;
+            bool thumbnail = !(width == -1 && height == -1);
+            bool fromCache = false;
+            
             string filename = string.Format("{0}-p{1}-w{2}-h{3}.jpg", id, page, width, height);
+            MemoryStream stream;
+            
             try
             {
-              MemoryStream stream = BCRSettingsStore.Instance.LoadFromCache(filename, !(width == -1 && height == -1));
-              if (stream == null)
+              stream = BCRSettingsStore.Instance.LoadFromCache(filename, thumbnail);
+              fromCache = stream != null;
+              if (stream != null && thumbnail)
                 return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
             }
             catch //(Exception e)
             {
-              // Image is not in the cache.
+              // Image is not in the cache, get it via ComicRack.
+              var bytes = GetPageImageBytes(id, page);
+              if (bytes == null)
+              {
+                return HttpStatusCode.NotFound;
+              }
+              
+              stream = new MemoryStream(bytes);
             }
             
-            var bytes = GetPageImageBytes(id, page);
-            if (bytes == null)
-            {
-              return HttpStatusCode.NotFound;
-            }
+            var bitmap = Image.FromStream(stream, false, false);
             
             if (width == -1 && height == -1)
             {
               // Return original image.
-              MemoryStream mem = new MemoryStream(bytes);
-              BCRSettingsStore.Instance.SaveToCache(filename, mem, false);
+              // But resize it if it exceeds the maximum dimensions.
+                            
+              if (bitmap.Width >= bitmap.Height)
+              {
+                max_width = max_dimension_long;
+                max_height = max_dimension_short;
+              }
+              else
+              {
+                max_width = max_dimension_short;
+                max_height = max_dimension_long;
+              }
               
-              return response.FromStream(mem, MimeTypes.GetMimeType(".jpg"));
+              if (bitmap.Width > max_width || bitmap.Height > max_height)
+              {
+                double scaleW = (double)max_width / (double)bitmap.Width;
+                double scaleH = (double)max_height / (double)bitmap.Height;
+                double scale = Math.Min(scaleW, scaleH);
+                
+                width = (int)Math.Floor(scale * bitmap.Width);
+                height = (int)Math.Floor(scale * bitmap.Height);
+                
+                // Use high quality resize.
+                var image = Resize(bitmap, width, height);
+                bitmap.Dispose();
+                stream.Dispose();
+                stream = GetBytesFromImage(image);
+                image.Dispose();
+                
+                // TODO: figure out how to store these maxed out images so we load them the next time without checking the image size...
+                //BCRSettingsStore.Instance.SaveToCache(filename, stream, true);
+                              
+                return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
+              }
+              else
+              {
+                // Resizing is unnecessary.
+                stream.Dispose();
+                stream = GetBytesFromImage(bitmap);
+                bitmap.Dispose();
+                if (!fromCache)
+                {
+                  BCRSettingsStore.Instance.SaveToCache(filename, stream, false);
+                }
+                
+                return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
+              }
             }
             else
             {
-              var bitmap = Image.FromStream(new MemoryStream(bytes), false, false);
               if (width == -1)
               {
                 double ratio = height / (double)bitmap.Height;
@@ -198,10 +247,10 @@ namespace BCR
               }
                   
               // Use high quality resize.
-              var thumbnail = Resize(bitmap, width, height);
+              var image = Resize(bitmap, width, height);
               bitmap.Dispose();
-              MemoryStream stream = GetBytesFromImage(thumbnail);
-              thumbnail.Dispose();
+              stream = GetBytesFromImage(image);
+              image.Dispose();
               
               BCRSettingsStore.Instance.SaveToCache(filename, stream, true);
                             

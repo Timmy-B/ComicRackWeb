@@ -24,6 +24,8 @@ namespace BCR
         public string nancy_diagnostics_password { get; set; }
         public int webserver_port { get; set; }
         public string webserver_externalip { get; set; }
+        public int max_dimension_long { get; set; }
+        public int max_dimension_short { get; set; }
         
         public BCRSettings()
         {
@@ -41,6 +43,10 @@ namespace BCR
           nancy_request_tracing = true;
           nancy_diagnostics_password = "diagnostics";
           
+          // Maximum image dimensions for ipad.
+          max_dimension_long = 4096; 
+          max_dimension_short = 3072; 
+            
           webserver_port = 8080;
           webserver_externalip = ""; 
         }
@@ -117,6 +123,8 @@ namespace BCR
           
           webserver_port = data.webserver_port;
           webserver_externalip = data.webserver_externalip; 
+          max_dimension_long = data.max_dimension_long;
+          max_dimension_short = data.max_dimension_short;
           Save();
         }
         
@@ -134,6 +142,8 @@ namespace BCR
           data.use_page_change_area = use_page_change_area;
           data.page_change_area_width = page_change_area_width;
           data.cache_size = cache_size; 
+          data.max_dimension_long = max_dimension_long;
+          data.max_dimension_short = max_dimension_short;
           
           data.nancy_request_tracing = nancy_request_tracing;
           data.nancy_diagnostics_password = nancy_diagnostics_password;
