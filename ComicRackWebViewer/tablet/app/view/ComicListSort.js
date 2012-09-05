@@ -87,7 +87,7 @@ Ext.define('Comic.view.ComicListSort', {
                 value: 4
               },
               {
-                text: 'Volume',
+                text: 'Number',
                 value: 5
               },
               {
