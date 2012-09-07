@@ -470,6 +470,11 @@ Ext.define('Comic.controller.Comic', {
 
       Comic.RemoteApi.SetComicInfo(Comic.viewstate.current_comic_id, { OpenedTime: now, OpenedCount: 1, CurrentPage: me.current_page_nr, LastPageRead: me.current_page_nr });
       
+      imageviewer.loadImage(Comic.RemoteApi.GetImageUrl(me.current_comic.Id, pagenr));
+      me.getLoadingIndicator().show();
+      me.PreloadPages();
+      
+      /*
       if (me.cache[pagenr] && me.cache[pagenr].img)
       { 
         //scroller.scrollTo(0,0,false);
@@ -482,6 +487,9 @@ Ext.define('Comic.controller.Comic', {
       }
       
       me.PreloadPages();
+      */
+      
+      
     }, 
     
    
@@ -524,6 +532,7 @@ Ext.define('Comic.controller.Comic', {
           listeners: {
             load: function( /*Ext.Img*/ image, /*Ext.EventObject*/ e, /*Object*/ eOpts )
               {
+                /*
                 if (me.waiting_for_page == pagenr)
                 {
                   me.waiting_for_page = -1;
@@ -532,6 +541,7 @@ Ext.define('Comic.controller.Comic', {
                     me.getImageviewer().loadImage(image.getSrc());
                   }
                 }
+                */
               },
             error: function( /*Ext.Img*/ image, /*Ext.EventObject*/ e, /*Object*/ eOpts )
               {
@@ -568,7 +578,7 @@ Ext.define('Comic.controller.Comic', {
       }
       
       // Preload the next and previous pages.
-      for (i = me.current_page_nr; i <= me.current_page_nr + me.preload_count; i++)
+      for (i = me.current_page_nr + 1; i <= me.current_page_nr + me.preload_count; i++)
         me.PreloadPage(i);
         
       for (i = me.current_page_nr - 1; i >= me.current_page_nr - me.preload_count; i--)
