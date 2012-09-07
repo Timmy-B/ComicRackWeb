@@ -73,6 +73,9 @@
     <Reference Include="cYo.Common">
       <HintPath>..\..\..\Program Files\ComicRack\cYo.Common.dll</HintPath>
     </Reference>
+    <Reference Include="FreeImageNET">
+      <HintPath>FreeImage\FreeImageNET.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>C:\Program Files\ComicRack\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -506,6 +509,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ProfilingSessions\Session20120907_142511.sdps" />
+    <Content Include="ProfilingSessions\Session20120907_142550.sdps" />
     <None Include="original\Views\jquery-1.7.1.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

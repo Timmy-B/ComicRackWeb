@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using cYo.Projects.ComicRack.Plugins.Automation;
+using FreeImageAPI;
 
 namespace ComicRackWebViewer
 {
@@ -10,6 +11,12 @@ namespace ComicRackWebViewer
         private static WebServicePanel panel;
         private static Version requiredVersion = new Version(0, 9, 156);
         
+        static void FreeImage_Message(FREE_IMAGE_FORMAT fif, string message)
+    		{
+          string m = message;
+    			
+    		}
+            
         public static bool Initialize(IApplication app)
         {
           try
@@ -23,6 +30,15 @@ namespace ComicRackWebViewer
             }
             
             BCRInstaller.Instance.Install();
+            
+            if (!FreeImage.IsAvailable())
+            {
+              MessageBox.Show("FreeImage.dll seems to be missing. Aborting.", "ComicRack Web Viewer Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
+              return false;
+            }
+
+            FreeImageEngine.Message += new OutputMessageFunction(FreeImage_Message);
+            
             return true;
           }
           catch (Exception e)

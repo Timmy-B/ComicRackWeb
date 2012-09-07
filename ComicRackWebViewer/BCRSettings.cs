@@ -24,9 +24,29 @@ namespace BCR
         public string nancy_diagnostics_password { get; set; }
         public int webserver_port { get; set; }
         public string webserver_externalip { get; set; }
+                
+        
+        // TODO: maximum image size should be per requesting target device instead of using one global setting.
+        
+        // Image conversion settings
+        // If use_progressive_jpeg is enabled, images are recompressed to progressive jpeg format.
+        // This is done, because the iPad (IOS 5 and lower) have a limit of 2 megapixels on images in normal jpeg format.
+        // All normal jpeg images larger than 2 MP are subsampled to abominable quality.
+        // Subsampling doesn't occur for progressive jpeg and for png file.
+        // IOS 6 should have a larger limit of 5 MP, which will still be too small for HD comics.
+        // As the images will be recompressed, some quality loss may occur, but it's way better than subsampling.
+        public bool use_progressive_jpeg { get; set; }
+        public int progressive_jpeg_quality { get; set; }
+        public int progressive_jpeg_size_threshold { get; set; }
+        
+        // Maximum image dimensions
+        public int maximum_imagesize { get; set; }
+        
+        public bool use_max_dimension { get; set; }
         public int max_dimension_long { get; set; }
         public int max_dimension_short { get; set; }
-        
+                
+          
         public BCRSettings()
         {
           open_current_comic_at_launch = true; 
@@ -43,12 +63,20 @@ namespace BCR
           nancy_request_tracing = true;
           nancy_diagnostics_password = "diagnostics";
           
-          // Maximum image dimensions for ipad.
-          max_dimension_long = 4096; 
+          // Maximum image dimensions for images.
+          // If you never zoom in, then set this to the size of your tablet screen, e.g. 2048x1536 for ipad 3
+          use_max_dimension = false;
+          max_dimension_long = 4096;
           max_dimension_short = 3072; 
-            
+          
           webserver_port = 8080;
           webserver_externalip = ""; 
+          
+          maximum_imagesize = 5*1024*1024; // IOS5 : 5 megapixels
+          
+          use_progressive_jpeg = true;
+          progressive_jpeg_size_threshold = 2*1024*1024; // 2 megapixels
+          progressive_jpeg_quality = 90; // 10..100 %
         }
     }
      
@@ -181,14 +209,46 @@ namespace BCR
           writer.Close();
         }
        
+        public static bool GetImageInfoFromCache(string filename, ref int width, ref int height)
+        {
+          /*
+          StreamReader streamReader = new StreamReader(cache_folder + filename);
+          
+          string text = streamReader.ReadToEnd();
+          streamReader.Close();
+          
+          
+          var reader = new StreamReader(File.OpenRead(@"C:\test.csv"));
+          List<string> listA = new List<string>();
+          List<string> listB = new List<string>();
+          while (!reader.EndOfStream)
+          {
+              var line = reader.ReadLine();
+              var values = line.Split(';');
+  
+              listA.Add(values[0]);
+              listB.Add(values[1]);
+          }
+
+          */
+          return false;
+        }
+        
         public MemoryStream LoadFromCache(string filename, bool thumbnail)
         {
           if (cache_size <= 0)
             return null;
           
-          byte[] content = File.ReadAllBytes((thumbnail ? thumbnail_folder : cache_folder) + filename);
-          MemoryStream stream = new MemoryStream(content);
-          return stream;
+          try 
+          {
+            byte[] content = File.ReadAllBytes((thumbnail ? thumbnail_folder : cache_folder) + filename);
+            MemoryStream stream = new MemoryStream(content);
+            return stream;
+          }
+          catch
+          {
+            return null;
+          }
         }
         
         public void SaveToCache(string filename, MemoryStream image, bool thumbnail)
