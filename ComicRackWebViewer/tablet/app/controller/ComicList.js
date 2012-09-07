@@ -146,8 +146,15 @@ Ext.define('Comic.controller.ComicList', {
       
       store.load({
         callback: function(records, operation, success) {
+            
+
+            var scrollable = comiclistview.getScrollable();
+            if (scrollable)
+              scrollable.getScroller().scrollToTop();
+              
             comiclistview.setMasked(false);
             me.getComiclisttoolbar().setTitle(me.title + ' [#: ' + store.getTotalCount() + ']');
+            
         },
         scope: me
       });
