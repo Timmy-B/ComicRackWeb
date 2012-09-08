@@ -14,6 +14,7 @@ using System.Windows;
 
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using FreeImageAPI;
 
 namespace ComicRackWebViewer
 {
@@ -24,7 +25,7 @@ namespace ComicRackWebViewer
   {
     private const string INSTALLER_FILE = "BCRPlugin.zip";
     private const string VERSION_FILE = "BCRVersion.txt";
-    private const string VERSION = "1.8";
+    private const string VERSION = "1.9";
     
     private static BCRInstaller instance = new BCRInstaller();
     
@@ -38,10 +39,22 @@ namespace ComicRackWebViewer
     {
     }
     
-    public void Install()
+    public bool Install()
     {
       string path = typeof(BCRInstaller).Assembly.Location;
       string dir = path.Substring(0, path.Length - Path.GetFileName(path).Length);
+      
+      // Install the correct FreeImage.dll
+      if (!FreeImage.IsAvailable())
+      {
+        System.IO.File.Copy(dir + (Environment.Is64BitProcess ? "FreeImage.64bit.dll" : "FreeImage.32bit.dll"), dir + "FreeImage.dll", true);
+      }
+     
+      if (!FreeImage.IsAvailable())
+      {
+        MessageBox.Show("FreeImage.dll seems to be missing. Aborting.", "ComicRack Web Viewer Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
+        return false;
+      }
       
       // check version.txt in order to decide if this is an upgrade.
       if (File.Exists(dir + VERSION_FILE))
@@ -52,21 +65,28 @@ namespace ComicRackWebViewer
         
         if (text.StartsWith(VERSION))
         {
-          return;
+          return true;
         }
       }
       
       // Create/Update the version file.
       System.IO.File.WriteAllText(dir + VERSION_FILE, VERSION);
-      Unzip(dir + INSTALLER_FILE, dir);
+      if (!Unzip(dir + INSTALLER_FILE, dir))
+      {
+        MessageBox.Show("Error while installing the web viewer site. Aborting.", "ComicRack Web Viewer Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
+        return false;
+      }
+        
+      
+      return true;      
     }
     
-    public void Unzip(string ZipFile, string DestinationFolder)
+    public bool Unzip(string ZipFile, string DestinationFolder)
     {
   		if ( !File.Exists(ZipFile) ) 
   		{
   			Console.WriteLine("Cannot find file '{0}'", ZipFile);
-  			return;
+  			return false;
   		}
   
   		using (ZipInputStream s = new ZipInputStream(File.OpenRead(ZipFile))) 
@@ -107,6 +127,7 @@ namespace ComicRackWebViewer
   				}
   			}
   		}
+  		return true;
   	}
   }
 }

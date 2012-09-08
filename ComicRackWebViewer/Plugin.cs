@@ -29,13 +29,8 @@ namespace ComicRackWebViewer
               return false;
             }
             
-            BCRInstaller.Instance.Install();
-            
-            if (!FreeImage.IsAvailable())
-            {
-              MessageBox.Show("FreeImage.dll seems to be missing. Aborting.", "ComicRack Web Viewer Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (!BCRInstaller.Instance.Install())
               return false;
-            }
 
             FreeImageEngine.Message += new OutputMessageFunction(FreeImage_Message);
             
