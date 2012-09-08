@@ -173,6 +173,7 @@ Ext.define('Comic.controller.Comic', {
           scope: me,
           singletap: me.onSingleTap,
           doubletap: me.onDoubleTap,
+          drag: me.onDrag,
           dragend: me.onDragEnd,
       });  
     },
@@ -236,6 +237,33 @@ Ext.define('Comic.controller.Comic', {
       }
     },
     
+    onDrag: function(/*Ext.event.Event*/ event, /*HTMLElement*/ node, /*Object*/ options, /*Object*/ eOpts) 
+    { 
+      var me = this;
+          imageviewer = me.getImageviewer(),
+          scroller = imageviewer.getScrollable().getScroller(),
+          nextPageIcon = me.getNextPageIcon(),
+          prevPageIcon = me.getPrevPageIcon();
+      
+      if ((scroller.position.x < scroller.getMinPosition().x - Comic.settings.page_turn_drag_threshold) || 
+          (scroller.position.y < scroller.getMinPosition().y - Comic.settings.page_turn_drag_threshold))
+      {
+        prevPageIcon.show();
+      }
+      else
+      if ((scroller.position.x > scroller.getMaxPosition().x + Comic.settings.page_turn_drag_threshold) || 
+          (scroller.position.y > scroller.getMaxPosition().y + Comic.settings.page_turn_drag_threshold))
+      {
+        nextPageIcon.show();
+      }
+      else
+      {
+        prevPageIcon.hide();
+        nextPageIcon.hide();
+      }
+        
+    },
+    
     onDragEnd: function(/*Ext.event.Event*/ event, /*HTMLElement*/ node, /*Object*/ options, /*Object*/ eOpts) 
     { 
       var me = this;
@@ -267,13 +295,17 @@ Ext.define('Comic.controller.Comic', {
     
     onNextButton: function() 
     {
-      var me = this;
+      var me = this,
+          nextPageIcon = me.getNextPageIcon();
+          
       if (me.current_page_nr < (me.current_comic.PageCount-1))
       {
-        var nextPageIcon = me.getNextPageIcon();
+        
         nextPageIcon.show();
         Ext.defer(function() { this.hide(); }, 500, nextPageIcon);
-        me.ShowPage(++me.current_page_nr);
+        Ext.defer(function() { me.ShowPage(++me.current_page_nr); }, 150);
+        //me.ShowPage(++me.current_page_nr);
+        
       }
       else
       {
@@ -285,24 +317,26 @@ Ext.define('Comic.controller.Comic', {
         else
         */
         {
-          this.onBackButton();
+          me.onBackButton();
         }
       }
     },
     
     onPreviousButton: function() 
     {
-      var me = this;
+      var me = this,
+          prevPageIcon = me.getPrevPageIcon();
+          
       if (me.current_page_nr > 0)
       {
-        var prevPageIcon = me.getPrevPageIcon();
         prevPageIcon.show();
         Ext.defer(function() { this.hide(); }, 500, prevPageIcon);
-        me.ShowPage(--me.current_page_nr);
+        Ext.defer(function() { me.ShowPage(--me.current_page_nr); }, 150);
+        //me.ShowPage(--me.current_page_nr);
       }
       else
       {
-        this.onBackButton();
+        me.onBackButton();
       }
     },   
     
@@ -413,7 +447,9 @@ Ext.define('Comic.controller.Comic', {
           imageviewer = me.getImageviewer(),
           scroller = imageviewer.getScrollable().getScroller();
           
+      
       console.log('onImageLoaded');
+      //scroller.stopAnimation();
       me.getLoadingIndicator().hide();
       
       if (me.current_comic)
@@ -451,7 +487,7 @@ Ext.define('Comic.controller.Comic', {
          titlebar = me.getComictitle(),
          progressbutton = me.getProgressbutton();
          
-      scroller.stopAnimation();
+      //scroller.stopAnimation();
       
       if (pagenr < 0 || pagenr >= me.current_comic.PageCount)
       {
@@ -471,10 +507,7 @@ Ext.define('Comic.controller.Comic', {
       Comic.RemoteApi.SetComicInfo(Comic.viewstate.current_comic_id, { OpenedTime: now, OpenedCount: 1, CurrentPage: me.current_page_nr, LastPageRead: me.current_page_nr });
       
       imageviewer.loadImage(Comic.RemoteApi.GetImageUrl(me.current_comic.Id, pagenr));
-      me.getLoadingIndicator().show();
-      me.PreloadPages();
       
-      /*
       if (me.cache[pagenr] && me.cache[pagenr].img)
       { 
         //scroller.scrollTo(0,0,false);
@@ -487,9 +520,6 @@ Ext.define('Comic.controller.Comic', {
       }
       
       me.PreloadPages();
-      */
-      
-      
     }, 
     
    
@@ -578,7 +608,7 @@ Ext.define('Comic.controller.Comic', {
       }
       
       // Preload the next and previous pages.
-      for (i = me.current_page_nr + 1; i <= me.current_page_nr + me.preload_count; i++)
+      for (i = me.current_page_nr; i <= me.current_page_nr + me.preload_count; i++)
         me.PreloadPage(i);
         
       for (i = me.current_page_nr - 1; i >= me.current_page_nr - me.preload_count; i--)
