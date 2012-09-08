@@ -31,7 +31,7 @@ namespace ComicRackWebViewer
             addressTextBox.Text = BCRSettingsStore.Instance.webserver_externalip;
             portTextBox.Text = BCRSettingsStore.Instance.webserver_port.ToString();
             actualPort = BCRSettingsStore.Instance.webserver_port;
-            //bindAll.IsChecked = bool.Parse(Settings.GetSetting("bindAll") ?? "false");
+
             SetEnabledState();
         }
 
@@ -62,10 +62,8 @@ namespace ComicRackWebViewer
             startServiceButton.IsEnabled = actualPort.HasValue && host == null;
             stopServiceButton.IsEnabled = host != null;
             portTextBox.IsEnabled = host == null;
-            //if (!bindAll.IsChecked ?? false)
-            {
-                addressTextBox.IsEnabled = host == null;
-            }
+            addressTextBox.IsEnabled = host == null;
+
             if (host == null)
             {
                 Status.Text = "Stopped";
@@ -90,12 +88,11 @@ namespace ComicRackWebViewer
             portTextBox.IsEnabled = false;
             addressTextBox.IsEnabled = false;
             Mouse.SetCursor(Cursors.Wait);
-            //bool bind = bindAll.IsChecked ?? false;
-            Task.Factory.StartNew(() => LoadService(true));
+            Task.Factory.StartNew(() => LoadService());
             Status.Text = "Starting";
         }
 
-        public void LoadService(bool bindAll)
+        public void LoadService()
         {
             if (host != null)
             {
@@ -106,7 +103,7 @@ namespace ComicRackWebViewer
             
             
             host = new NancyHost(new Bootstrapper(), GetUriParams(port));
-            //host = new NancyHost(new Bootstrapper(), GetUris(bindAll).ToArray());
+
             try
             {
                 host.Start();
@@ -129,22 +126,6 @@ namespace ComicRackWebViewer
             }
         }
 
-        private IEnumerable<Uri> GetUris(bool bindAll)
-        {
-            if (bindAll)
-            {
-                foreach (var ip in GetLocalIPs())
-                {
-                    string url = string.Format("http://{1}:{0}/", actualPort.Value, ip);
-                    yield return new Uri(url);
-                }
-            }
-            else
-            {
-                string url = string.Format("http://{1}:{0}/", actualPort.Value, address);
-                yield return new Uri(url);
-            }
-        }
 
         private static IEnumerable<string> GetLocalIPs()
         {
@@ -198,8 +179,7 @@ namespace ComicRackWebViewer
                 BCRSettingsStore.Instance.webserver_externalip = addressTextBox.Text.Trim();
                 BCRSettingsStore.Instance.webserver_port = actualPort.HasValue ? actualPort.Value : 8080;
                 BCRSettingsStore.Instance.Save();
-              
-                //Settings.SaveSetting("bindAll", (bindAll.IsChecked ?? false).ToString());
+
                 StartService();
             }
             else
@@ -232,9 +212,15 @@ namespace ComicRackWebViewer
             addressTextBox.IsEnabled = false;
         }
 
-        private void bindAll_Unchecked_1(object sender, RoutedEventArgs e)
+    
+        private void button1_Click(object sender, RoutedEventArgs e)
         {
-            addressTextBox.IsEnabled = true;
+          var cursor = this.Cursor; 
+          this.Cursor = Cursors.Wait;
+          
+          BCRSettingsStore.Instance.ClearPageCache();
+          
+          this.Cursor = cursor;
         }
     }
 }

@@ -74,9 +74,12 @@ namespace BCR
           
           maximum_imagesize = 5*1024*1024; // IOS5 : 5 megapixels
           
+          
           use_progressive_jpeg = true;
           progressive_jpeg_size_threshold = 2*1024*1024; // 2 megapixels
           progressive_jpeg_quality = 90; // 10..100 %
+          
+          
         }
     }
      
@@ -271,9 +274,28 @@ namespace BCR
           }
         }
         
-        public void ClearCache()
+        public void ClearPageCache()
         {
+          DirectoryInfo d = new DirectoryInfo(cache_folder);
+          
+          FileInfo[] fis = d.GetFiles();
+          
+          foreach (FileInfo fi in fis) 
+          {      
+            File.Delete(fi.FullName);
+          }
+        }
         
+        public void ClearThumbnailsCache()
+        {
+          DirectoryInfo d = new DirectoryInfo(thumbnail_folder);
+          
+          FileInfo[] fis = d.GetFiles();
+          
+          foreach (FileInfo fi in fis) 
+          {      
+            File.Delete(fi.FullName);
+          }
         }
         
         private static int CompareFileDate(FileInfo x, FileInfo y)
