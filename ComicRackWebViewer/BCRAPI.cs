@@ -177,6 +177,7 @@ namespace BCR
             int max_width = 0;
             int max_height = 0;
             bool thumbnail = !(width == -1 && height == -1);
+            bool processed = false;
             
             MemoryStream stream = null;
             
@@ -334,6 +335,8 @@ namespace BCR
             // Resize ?
             if (result_width != bitmap_width || result_height != bitmap_height)
             {
+                processed = true;
+                
               #if USE_DIB || USE_FIB
                 //FREE_IMAGE_FILTER resizer = FREE_IMAGE_FILTER.FILTER_BICUBIC;
                 FREE_IMAGE_FILTER resizer = FREE_IMAGE_FILTER.FILTER_LANCZOS3;
@@ -359,13 +362,12 @@ namespace BCR
             // Check if the image must be converted to progressive jpeg
             if (BCRSettingsStore.Instance.use_progressive_jpeg && (result_width * result_height) >= BCRSettingsStore.Instance.progressive_jpeg_size_threshold)
             {
-              // Convert image to progressive jpeg
-              FREE_IMAGE_SAVE_FLAGS quality = BCRSettingsStore.Instance.progressive_jpeg_quality == 0 ? FREE_IMAGE_SAVE_FLAGS.JPEG_QUALITYNORMAL :
-                                (BCRSettingsStore.Instance.progressive_jpeg_quality == 1 ? FREE_IMAGE_SAVE_FLAGS.JPEG_QUALITYGOOD : FREE_IMAGE_SAVE_FLAGS.JPEG_QUALITYSUPERB);
+              processed = true;
               
-              // Override enum.
-              // FreeImage source code reveals that lower 7 bits of the enum are used for low-level quality control.
-              quality = (FREE_IMAGE_SAVE_FLAGS)90;
+              // Convert image to progressive jpeg
+              
+              // FreeImage source code reveals that lower 7 bits of the FREE_IMAGE_SAVE_FLAGS enum are used for low-level quality control.
+              FREE_IMAGE_SAVE_FLAGS quality = (FREE_IMAGE_SAVE_FLAGS)BCRSettingsStore.Instance.progressive_jpeg_quality;
               FREE_IMAGE_SAVE_FLAGS flags = FREE_IMAGE_SAVE_FLAGS.JPEG_SUBSAMPLING_444 | FREE_IMAGE_SAVE_FLAGS.JPEG_PROGRESSIVE | quality;
 
               #if USE_DIB || USE_FIB
@@ -397,11 +399,12 @@ namespace BCR
                 dib.SetNull();
                 
               #endif              
-              
-              
             }
             else
+            if (processed) 
             {
+              // image was rescaled, make new stream with rescaled bitmap
+              
               #if USE_DIB || USE_FIB
               
                 FREE_IMAGE_SAVE_FLAGS flags = FREE_IMAGE_SAVE_FLAGS.JPEG_SUBSAMPLING_444 | FREE_IMAGE_SAVE_FLAGS.JPEG_OPTIMIZE | FREE_IMAGE_SAVE_FLAGS.JPEG_QUALITYNORMAL;
@@ -420,10 +423,19 @@ namespace BCR
               #else
               
                 stream = GetBytesFromImage(bitmap);
-                bitmap.Dispose();
+   
               #endif           
               // For now, images that were resized because they exceeded the maximum dimensions are not saved to the cache.
             }
+            
+            #if USE_DIB
+              FreeImage.Unload(dib);
+              dib.SetNull();
+            #elif USE_FIB
+              fib.Dispose();
+            #elif USE_GDI
+              bitmap.Dispose();            
+            #endif
             
             // Always save thumbnails to the cache
             if (thumbnail)
@@ -431,8 +443,9 @@ namespace BCR
               BCRSettingsStore.Instance.SaveToCache(filename, stream, true);
             }
             else
+            if (processed)
             {
-              // Store rescaled and progressive jpegs in the cache for now.
+              // Store rescaled and/or progressive jpegs in the cache for now.
               string processed_filename = string.Format("{0}-p{1}-processed.jpg", id, page);
               BCRSettingsStore.Instance.SaveToCache(processed_filename, stream, false);
             }
