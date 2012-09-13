@@ -189,6 +189,10 @@ Ext.define('Comic.controller.Series', {
 
                 return true;
             });
+            var scrollable = me.getSeriesview().getScrollable();
+            if (scrollable)
+              scrollable.getScroller().scrollToTop();
+
         }
       }, 300, me);
         
