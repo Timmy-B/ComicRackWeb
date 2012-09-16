@@ -56,7 +56,8 @@ Ext.define('Comic.RemoteApi', {
       method: 'PUT',
       params: comic_info,
       success: function(response){
-      }
+      },
+      callback: callback,
     });
   },
   
