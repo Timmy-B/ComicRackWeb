@@ -221,7 +221,7 @@ Ext.define('Comic.controller.ComicList', {
         url += '?$filter=' + params.filter;
       
       store.getProxy().setUrl(url);
-      store.setPageSize(500);
+      store.setPageSize(250);
       store.setRemoteSort(true);
       store.setRemoteFilter(true);
       store.setRemoteGroup(true);
