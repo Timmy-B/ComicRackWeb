@@ -44,7 +44,7 @@ Ext.define('Comic.view.ImageViewer',{
               indicators: false
             },  
             loadingMessage:'Loading...',
-            html: '<figure><img></figure>',
+            html: '<figure><img/></figure>',
 
     },
     xtype: 'imageviewer',
@@ -150,13 +150,30 @@ Ext.define('Comic.view.ImageViewer',{
             me.setImageSrc(src);
     },
     
+    replaceImage: function(oldImg, newImg) {
+        oldImg.dom.parentNode.insertBefore(newImg.dom, oldImg.dom);
+        
+        delete Ext.cache[oldImg.id];
+        Ext.removeNode(oldImg.dom);
+        oldImg.id = Ext.id(oldImg.dom = newImg.dom);
+        Ext.dom.Element.addToCache(oldImg.isFlyweight ? new Ext.dom.Element(oldImg.dom) : oldImg);
+        newImg.dom = null;
+        
+        return oldImg;
+    },
+    
     // replace the imgEl with another img DOM element.
     // untested....
     setImage: function(el) {
       var me = this;
       if (me.imgEl)
       {
-        me.imgEl.replace(el);
+        //me.imgEl.replaceWith(el);
+        el.replace(me.imgEl);
+        me.imgEl.dom = el.dom;
+        el.dom = null;
+        //me.replaceImage(me.imgEl, el);
+
         me.imgEl.dom.onload = Ext.Function.bind(me.onLoad, me, me.imgEl, 0);
         me.imgEl.dom.onerror = function() {
                 me.fireEvent('error', me, el, e);
