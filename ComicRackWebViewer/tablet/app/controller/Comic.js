@@ -94,10 +94,12 @@ Ext.define('Comic.controller.Comic', {
     
     init : function()
     {
+        
       // called before application.launch()
       var me = this;
             
-      me.preload_count = 1; // number of pages to preload before and after the current page.
+      me.preload_count = 0; // number of pages to preload before and after the current page.
+                            // if 0, preloading is disabled.
       
       me.cache = []; // cache of preloaded page info
       me.waiting_for_page = -1; // page that must be displayed once loaded.
@@ -227,7 +229,8 @@ Ext.define('Comic.controller.Comic', {
             */
                         
             me.current_page_nr = me.current_comic.LastPageRead | 0;
-            me.ShowPage(me.current_page_nr);
+            // use defer so control initialization can finish first
+            Ext.defer(function() { me.ShowPage(me.current_page_nr); } , 10);
           }
           else
           {
@@ -288,9 +291,11 @@ Ext.define('Comic.controller.Comic', {
               
     onProgressButton: function() 
     {
+    /*
       var me = this;
       delete me.cache[me.current_page_nr];
       me.ShowPage(me.current_page_nr);
+    */
     },
     
     onNextButton: function() 
@@ -302,7 +307,7 @@ Ext.define('Comic.controller.Comic', {
       {
         
         nextPageIcon.show();
-        Ext.defer(function() { this.hide(); }, 500, nextPageIcon);
+        //Ext.defer(function() { this.hide(); }, 500, nextPageIcon);
         Ext.defer(function() { me.ShowPage(++me.current_page_nr); }, 150);
         //me.ShowPage(++me.current_page_nr);
         
@@ -445,12 +450,26 @@ Ext.define('Comic.controller.Comic', {
     {
       var me = this,
           imageviewer = me.getImageviewer(),
-          scroller = imageviewer.getScrollable().getScroller();
+          scroller = imageviewer.getScrollable().getScroller(),
+          nextPageIcon = me.getNextPageIcon(),
+          previousPageIcon = me.getPrevPageIcon();
           
       
-      console.log('onImageLoaded');
+      console.log('comic onImageLoaded');
       //scroller.stopAnimation();
       me.getLoadingIndicator().hide();
+            
+      nextPageIcon.hide();
+      previousPageIcon.hide();
+      
+      scroller.scrollTo(0,0,false);
+            
+      if (me.preload_count > 0)
+        Ext.defer(function() { 
+          //me.PreloadPages(); 
+          me.PreloadPage(me.current_page_nr+1);
+        }, 10 );
+
       
       if (me.current_comic)
       {
@@ -487,7 +506,6 @@ Ext.define('Comic.controller.Comic', {
          titlebar = me.getComictitle(),
          progressbutton = me.getProgressbutton();
          
-      //scroller.stopAnimation();
       
       if (pagenr < 0 || pagenr >= me.current_comic.PageCount)
       {
@@ -500,26 +518,36 @@ Ext.define('Comic.controller.Comic', {
       
       progressbutton.setText("" + (pagenr + 1)+ "/" + me.current_comic.PageCount);
       
-      me.getSlider().setValue((me.current_page_nr / (me.current_comic.PageCount-1)) * SLIDER_RANGE);
-      
       var now = (new Date()).toJSON(); 
 
-      Comic.RemoteApi.SetComicInfo(Comic.viewstate.current_comic_id, { OpenedTime: now, OpenedCount: 1, CurrentPage: me.current_page_nr, LastPageRead: me.current_page_nr });
+      Comic.RemoteApi.SetComicInfo(Comic.viewstate.current_comic_id, { OpenedTime: now, OpenedCount: 1, CurrentPage: me.current_page_nr, LastPageRead: me.current_page_nr },
+      function() {
       
-      imageviewer.loadImage(Comic.RemoteApi.GetImageUrl(me.current_comic.Id, pagenr));
-      
-      if (me.cache[pagenr] && me.cache[pagenr].img)
-      { 
-        //scroller.scrollTo(0,0,false);
-        imageviewer.loadImage(me.cache[pagenr].src);
-      }
-      else
-      {
-        me.waiting_for_page = pagenr;
-        me.getLoadingIndicator().show();
-      }
-      
-      me.PreloadPages();
+        scroller.scrollTo(0,0,false);
+
+        me.getSlider().setValue((pagenr / (me.current_comic.PageCount-1)) * SLIDER_RANGE);
+        
+        if ((me.preload_count > 0) && me.cache[pagenr] && me.cache[pagenr].img)
+        { 
+          console.log("showpage from cache");
+          
+          imageviewer.loadImage(me.cache[pagenr].src);
+          /*
+          imageviewer.setImage(me.cache[pagenr].img);
+          me.cache[pagenr].img = null;
+          delete me.cache[pagenr].img;
+          */
+        }
+        else
+        {
+          console.log("showpage loadimage");
+         
+          me.waiting_for_page = pagenr;
+          me.getLoadingIndicator().show();
+          
+          imageviewer.loadImage(Comic.RemoteApi.GetImageUrl(me.current_comic.Id, pagenr));
+        }
+      });
     }, 
     
    
@@ -556,32 +584,41 @@ Ext.define('Comic.controller.Comic', {
         return;
       }
       
-      me.cache[pagenr].img = Ext.create('Ext.Img', {
-          src: me.cache[pagenr].src,
-          mode: 'element', // create <img> instead of <div>
-          listeners: {
-            load: function( /*Ext.Img*/ image, /*Ext.EventObject*/ e, /*Object*/ eOpts )
+      console.log("cache preload");
+      
+      me.cache[pagenr].img = Ext.dom.Element.get(new Image());
+      me.cache[pagenr].img.dom.src = me.cache[pagenr].src;
+      me.cache[pagenr].img.dom.onload = function()
               {
-                /*
-                if (me.waiting_for_page == pagenr)
-                {
-                  me.waiting_for_page = -1;
-                  if (me.getImageviewer())
-                  {
-                    me.getImageviewer().loadImage(image.getSrc());
-                  }
-                }
-                */
-              },
-            error: function( /*Ext.Img*/ image, /*Ext.EventObject*/ e, /*Object*/ eOpts )
+                console.log("cache onload");
+              };
+      me.cache[pagenr].img.dom.onerror = function()
               {
-                Ext.Msg.alert('Error while loading image ' + image.getSrc());
-                console.log('Error while loading image ' + image.getSrc());
-                me.cache[pagenr].img.destroy();
-                delete me.cache[pagenr].img;
-              },
-          }
-      });
+                //Ext.Msg.alert('Error while loading image ' + image.getSrc());
+                console.log('Error while loading image ' );
+                //me.cache[pagenr].img.destroy();
+                //delete me.cache[pagenr].img;
+              };
+      
+      
+      
+      //me.cache[pagenr].img = Ext.create('Ext.Img', {
+      //    src: me.cache[pagenr].src,
+      //    mode: 'element', // create <img> instead of <div>
+      //    listeners: {
+      //      load: function( /*Ext.Img*/ image, /*Ext.EventObject*/ e, /*Object*/ eOpts )
+      //        {
+      //          console.log("cache onload");
+      //        },
+      //      error: function( /*Ext.Img*/ image, /*Ext.EventObject*/ e, /*Object*/ eOpts )
+      //        {
+      //          Ext.Msg.alert('Error while loading image ' + image.getSrc());
+      //          console.log('Error while loading image ' + image.getSrc());
+      //          me.cache[pagenr].img.destroy();
+      //          delete me.cache[pagenr].img;
+      //        },
+      //    }
+      //});
     },
 
     PreloadPages: function()
@@ -608,7 +645,7 @@ Ext.define('Comic.controller.Comic', {
       }
       
       // Preload the next and previous pages.
-      for (i = me.current_page_nr; i <= me.current_page_nr + me.preload_count; i++)
+      for (i = me.current_page_nr+1; i <= me.current_page_nr + me.preload_count; i++)
         me.PreloadPage(i);
         
       for (i = me.current_page_nr - 1; i >= me.current_page_nr - me.preload_count; i--)
