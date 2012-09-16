@@ -463,7 +463,8 @@ Ext.define('Comic.controller.Comic', {
       previousPageIcon.hide();
       
       scroller.scrollTo(0,0,false);
-            
+      me.getSlider().setValue((me.current_page_nr / (me.current_comic.PageCount-1)) * SLIDER_RANGE);
+      
       if (me.preload_count > 0)
         Ext.defer(function() { 
           //me.PreloadPages(); 
