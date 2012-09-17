@@ -616,7 +616,6 @@ Ext.define('Comic.view.ImageViewer',{
         me.adjustScroller();
         
         Ext.repaint();
-         
     },
 
     applyTransform: function() {
@@ -674,5 +673,5 @@ Ext.define('Comic.view.ImageViewer',{
         }
         scroller.scrollTo(x*-1,y*-1);
     },        
-    });
+});
     

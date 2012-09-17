@@ -462,7 +462,7 @@ Ext.define('Comic.controller.Comic', {
       nextPageIcon.hide();
       previousPageIcon.hide();
       
-      scroller.scrollTo(0,0,false);
+      scroller.scrollTo(0,0);
       me.getSlider().setValue((me.current_page_nr / (me.current_comic.PageCount-1)) * SLIDER_RANGE);
       
       if (me.preload_count > 0)
@@ -524,7 +524,8 @@ Ext.define('Comic.controller.Comic', {
       Comic.RemoteApi.SetComicInfo(Comic.viewstate.current_comic_id, { OpenedTime: now, OpenedCount: 1, CurrentPage: me.current_page_nr, LastPageRead: me.current_page_nr },
       function() {
       
-        scroller.scrollTo(0,0,false);
+        
+        scroller.scrollTo(0,0);
 
         me.getSlider().setValue((pagenr / (me.current_comic.PageCount-1)) * SLIDER_RANGE);
         
