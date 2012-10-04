@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Nancy.Hosting.Self;
+
+
 using BCR;
+
 
 namespace ComicRackWebViewer
 {
@@ -20,17 +22,17 @@ namespace ComicRackWebViewer
     public partial class WebServicePanel : Window
     {
         private static ManualResetEvent mre = new ManualResetEvent(false);
-        private static NancyHost host;
+        private static BCR.WebHost host;
         private int? actualPort;
-        private string address;
+        private bool allowExternal;
 
 
         public WebServicePanel()
         {
             InitializeComponent();
-            addressTextBox.Text = BCRSettingsStore.Instance.webserver_externalip;
             portTextBox.Text = BCRSettingsStore.Instance.webserver_port.ToString();
             actualPort = BCRSettingsStore.Instance.webserver_port;
+            allowExternal = BCRSettingsStore.Instance.webserver_allow_external;
 
             SetEnabledState();
         }
@@ -62,7 +64,6 @@ namespace ComicRackWebViewer
             startServiceButton.IsEnabled = actualPort.HasValue && host == null;
             stopServiceButton.IsEnabled = host != null;
             portTextBox.IsEnabled = host == null;
-            addressTextBox.IsEnabled = host == null;
 
             if (host == null)
             {
@@ -77,16 +78,19 @@ namespace ComicRackWebViewer
                 {
                     Status.Text += uri.ToString() + " ";
                 }
+                
+                if (allowExternal)
+                {
+                  Status.Text += string.Format("http://+:{0}/", port);
+                }
             }
             Mouse.SetCursor(null);
         }
 
         public void StartService()
         {
-            address = addressTextBox.Text;
             startServiceButton.IsEnabled = false;
             portTextBox.IsEnabled = false;
-            addressTextBox.IsEnabled = false;
             Mouse.SetCursor(Cursors.Wait);
             Task.Factory.StartNew(() => LoadService());
             Status.Text = "Starting";
@@ -102,7 +106,7 @@ namespace ComicRackWebViewer
             int port = actualPort.Value;
             
             
-            host = new NancyHost(new Bootstrapper(), GetUriParams(port));
+            host = new WebHost(new Bootstrapper(), allowExternal, port, GetUriParams(port));
 
             try
             {
@@ -135,18 +139,17 @@ namespace ComicRackWebViewer
         private Uri[] GetUriParams(int port)
         {
             var uriParams = new List<Uri>();
+            
+            // No need to enumerate addresses, as the httplistener will respond to all requests regardless of host name.
+            if (allowExternal)
+              return uriParams.ToArray();
+            
+            // Enumerate all local addresses.
             string hostName = Dns.GetHostName();
 
             // Host name URI
             string hostNameUri = string.Format("http://{0}:{1}", Dns.GetHostName(), port);
             uriParams.Add(new Uri(hostNameUri));
-
-            if (address != null && address.Trim().Length > 0)
-            {
-              string external_address = string.Format("http://{0}:{1}/", address, port);
-              uriParams.Add(new Uri(external_address));
-            }
-            
 
             // Host address URI(s)
             var hostEntry = Dns.GetHostEntry(hostName);
@@ -160,10 +163,9 @@ namespace ComicRackWebViewer
                 }
             }
 
-
-
             // Localhost URI
             uriParams.Add(new Uri(string.Format("http://localhost:{0}", port)));
+            
             return uriParams.ToArray();
         }
         
@@ -176,7 +178,6 @@ namespace ComicRackWebViewer
         {
             if (IsCurrentlyRunningAsAdmin())
             {
-                BCRSettingsStore.Instance.webserver_externalip = addressTextBox.Text.Trim();
                 BCRSettingsStore.Instance.webserver_port = actualPort.HasValue ? actualPort.Value : 8080;
                 BCRSettingsStore.Instance.Save();
 
@@ -204,12 +205,6 @@ namespace ComicRackWebViewer
                 pricipal = null;
             }
             return isAdmin;
-        }
-
-        private void CheckBox_Checked_1(object sender, RoutedEventArgs e)
-        {
-            IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
-            addressTextBox.IsEnabled = false;
         }
 
     

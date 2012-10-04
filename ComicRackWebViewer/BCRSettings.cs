@@ -23,7 +23,7 @@ namespace BCR
         public bool nancy_request_tracing { get; set; }
         public string nancy_diagnostics_password { get; set; }
         public int webserver_port { get; set; }
-        public string webserver_externalip { get; set; }
+        public bool webserver_allow_external { get; set; }
                 
         
         // TODO: maximum image size should be per requesting target device instead of using one global setting.
@@ -70,16 +70,13 @@ namespace BCR
           max_dimension_short = 3072; 
           
           webserver_port = 8080;
-          webserver_externalip = ""; 
+          webserver_allow_external = true;
           
           maximum_imagesize = 5*1024*1024; // IOS5 : 5 megapixels
-          
-          
+                    
           use_progressive_jpeg = true;
           progressive_jpeg_size_threshold = 2*1024*1024; // 2 megapixels
           progressive_jpeg_quality = 90; // 10..100 %
-          
-          
         }
     }
      
@@ -153,7 +150,8 @@ namespace BCR
           nancy_diagnostics_password = data.nancy_diagnostics_password;
           
           webserver_port = data.webserver_port;
-          webserver_externalip = data.webserver_externalip; 
+          webserver_allow_external = data.webserver_allow_external;
+          
           max_dimension_long = data.max_dimension_long;
           max_dimension_short = data.max_dimension_short;
           Save();
@@ -180,7 +178,7 @@ namespace BCR
           data.nancy_diagnostics_password = nancy_diagnostics_password;
           
           data.webserver_port = webserver_port;
-          data.webserver_externalip = webserver_externalip;
+          data.webserver_allow_external = webserver_allow_external;
           
           return data;
         }

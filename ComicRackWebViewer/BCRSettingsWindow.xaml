@@ -1,9 +1,51 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Window
   x:Class="ComicRackWebViewer.BCRSettingsWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   Title="ComicRackWebViewer"
   Height="347"
   Width="420">
+  <Window.Resources>
+    <Style
+      x:Key="Link"
+      TargetType="Button">
+      <Setter
+        Property="VerticalAlignment"
+        Value="Center" />
+      <Setter
+        Property="HorizontalAlignment"
+        Value="Center" />
+      <Setter
+        Property="Cursor"
+        Value="Hand" />
+      <Setter
+        Property="Foreground"
+        Value="Blue" />
+      <Setter
+        Property="Background"
+        Value="Transparent" />
+      <Setter
+        Property="Template">
+        <Setter.Value>
+          <ControlTemplate
+            TargetType="Button">
+            <TextBlock
+              TextDecorations="Underline"
+              Text="{TemplateBinding Content}"
+              Background="{TemplateBinding Background}" />
+            <ControlTemplate.Triggers>
+              <Trigger
+                Property="IsPressed"
+                Value="True">
+                <Setter
+                  Property="Foreground"
+                  Value="Red" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </Window.Resources>
   <TabControl
     HorizontalAlignment="Stretch"
     Height="299"
@@ -30,51 +72,51 @@
           Content="Use external address"
           Visibility="Hidden" />
         <TextBlock
-          Margin="5"
-          Grid.Row="1"
-          TextAlignment="Right"
-          VerticalAlignment="Center"
-          Text="External address to Bind to:" />
-        <TextBox
-          Grid.Column="1"
-          Grid.Row="1"
-          Margin="5"
-          x:Name="addressTextBox"
-          VerticalAlignment="Center"
-          Text="" />
-        <TextBlock
           Text="Port to Bind to:"
-          Grid.Row="2"
-          Margin="5"
           TextAlignment="Right"
-          VerticalAlignment="Center" />
+          Grid.Column="0"
+          Grid.Row="0"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Center"
+          Margin="2,0,8,0"
+          Height="15.96" />
         <TextBox
-          Grid.Column="1"
-          Grid.Row="2"
           Text="8080"
-          Margin="5"
           x:Name="portTextBox"
-          
-          VerticalAlignment="Center" />
+          Grid.Column="1"
+          Grid.Row="0"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Center"
+          Margin="2,0,8,0"
+          Height="21.96" />
         <Button
-          Grid.Row="3"
-          Margin="5"
           x:Name="startServiceButton"
           Content="Start"
-           />
+          Grid.Column="0"
+          Grid.Row="1"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          Margin="2,8,8,2"
+          Height="43.408000000000008" />
         <Button
-          Grid.Column="1"
-          Margin="5"
           x:Name="stopServiceButton"
           Content="Stop"
-          
-          Grid.Row="3" />
+          Grid.Column="1"
+          Grid.Row="1"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          Margin="2,8,8,2"
+          Height="43.408000000000008" />
         <TextBlock
           x:Name="Status"
-          Grid.Row="4"
+          TextWrapping="Wrap"
+          Grid.Column="0"
           Grid.ColumnSpan="2"
-          Margin="5"
-          TextWrapping="Wrap" />
+          Grid.Row="2"
+          HorizontalAlignment="Stretch"
+          VerticalAlignment="Stretch"
+          Margin="2,8,8,2"
+          Height="43.408" />
       </Grid>
     </TabItem>
     <TabItem
@@ -148,29 +190,27 @@
           Height="20"
           Content="Enable request logging"
           Grid.ColumnSpan="2" />
+        <TextBox
+          Grid.Column="0"
+          Grid.ColumnSpan="2"
+          Grid.Row="3"
+          Margin="26.5,0,40.5,14.2360000000002"
+          Width="120"
+          Height="Auto"
+          TextWrapping="Wrap"
+          AcceptsReturn="True">
+          <Hyperlink>http://localhost:port/_Nancy</Hyperlink>
+        </TextBox>
         <TextBlock
           Grid.Column="0"
-          Grid.Row="3"
-          Grid.RowSpan="2"
+          Grid.ColumnSpan="2"
+          Grid.Row="4"
           HorizontalAlignment="Stretch"
           VerticalAlignment="Stretch"
-          Margin="7.5,0.315999999999946,8,8.00000000000006"
-          Width="358.5"
-          Height="98.5"
-          TextWrapping="Wrap"
-          Text="The diagnostics interface can be found at:\nhttp://localhost:port/_Nancy"
-          Grid.ColumnSpan="3" />
-        <Label
-          Content="Label"
-          Grid.Column="0"
-          Grid.Row="1"
-          Grid.RowSpan="2"
-          HorizontalAlignment="Left"
-          VerticalAlignment="Stretch"
-          Margin="20.5,32.132,0,45.684"
-          Width="130"
-          Height="29"
-          Grid.ColumnSpan="2" />
+          Text="The diagnostics interface can be found at:"
+          TextWrapping="Wrap">
+          <Hyperlink>http://localhost:port/_Nancy</Hyperlink>
+        </TextBlock>
       </Grid>
     </TabItem>
   </TabControl>
