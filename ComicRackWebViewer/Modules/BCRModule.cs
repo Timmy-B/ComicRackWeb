@@ -439,6 +439,20 @@ namespace BCR
         	    }
             };
             
+            Get["/Comics/{id}/Pages/{page}/size"] = x => {
+              try
+              {
+                int width = 0;
+                int height = 0;
+                BCR.GetPageImageSize(new Guid(x.id), int.Parse(x.page), ref width, ref height);
+                return Response.AsJson(new { width = width, height = height}, HttpStatusCode.OK);
+              }
+              catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
+            };
+            
         	  // Get one property.
         	  Get["/Comics/{id}/{property}"] = x => { 
         	    try

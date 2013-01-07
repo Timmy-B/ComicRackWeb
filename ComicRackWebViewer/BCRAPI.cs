@@ -168,6 +168,47 @@ namespace BCR
         }
         
         
+        public static bool GetPageImageSize(Guid id, int page, ref int width, ref int height)
+        {
+          MemoryStream stream = null;
+          /*
+          // Check if a processed (rescaled and/or progressive) image is cached.
+          string processed_filename = string.Format("{0}-p{1}-processed.jpg", id, page);
+          stream = BCRSettingsStore.Instance.LoadFromCache(processed_filename, false);
+          if (stream != null)
+            return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
+          */
+        
+          if (stream == null)
+          {
+            // Check if original image is in the cache.
+            string org_filename = string.Format("{0}-p{1}.jpg", id, page);
+            stream = BCRSettingsStore.Instance.LoadFromCache(org_filename, false);
+            
+            if (stream == null)
+            {
+              // Image is not in the cache, get it via ComicRack.
+              var bytes = GetPageImageBytes(id, page);
+              if (bytes == null)
+              {
+                return false;
+              }
+              
+              stream = new MemoryStream(bytes);
+              
+              // Always save the original page to the cache
+              BCRSettingsStore.Instance.SaveToCache(org_filename, stream, false);
+            }
+          }
+          
+          stream.Seek(0, SeekOrigin.Begin);
+
+          Bitmap bitmap = new Bitmap(stream, false);
+          width = (int)bitmap.Width;
+          height = (int)bitmap.Height;
+          bitmap.Dispose();
+          return true;    
+        }
         
         public static Response GetPageImage(Guid id, int page, int width, int height, IResponseFormatter response)
         {

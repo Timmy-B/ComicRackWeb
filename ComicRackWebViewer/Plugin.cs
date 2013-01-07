@@ -9,7 +9,7 @@ namespace ComicRackWebViewer
     {
         internal static IApplication Application;
         private static WebServicePanel panel;
-        private static Version requiredVersion = new Version(0, 9, 156);
+        private static Version requiredVersion = new Version(0, 9, 158);
         
         static void FreeImage_Message(FREE_IMAGE_FORMAT fif, string message)
     		{
