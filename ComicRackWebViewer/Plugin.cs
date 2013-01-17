@@ -9,7 +9,6 @@ namespace ComicRackWebViewer
     {
         internal static IApplication Application;
         private static WebServicePanel panel;
-        private static Version requiredVersion = new Version(0, 9, 158);
         
         static void FreeImage_Message(FREE_IMAGE_FORMAT fif, string message)
     		{
@@ -22,12 +21,6 @@ namespace ComicRackWebViewer
           try
           {
             Application = app;
-            var comicVersion = new Version(app.ProductVersion);
-            if (comicVersion < requiredVersion)
-            {
-              MessageBox.Show("Version check failed!\n\nThe ComicRack Web Viewer Plugin requires an updated version of ComicRack\nComicRack version required: " + requiredVersion + "\n\nThe Web Viewer is now disabled.", "ComicRack Web Viewer Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
-              return false;
-            }
             
             if (!BCRInstaller.Instance.Install())
               return false;
@@ -50,14 +43,6 @@ namespace ComicRackWebViewer
           {
             try
             {
-              /*
-                var comicVersion = new Version(app.ProductVersion);
-                if (comicVersion < requiredVersion)
-                {
-                  MessageBox.Show("Version check failed!\n\nThe ComicRack Web Viewer Plugin requires an updated version of ComicRack\nComicRack version required: " + requiredVersion + "\n\nThe Web Viewer is now disabled.", "ComicRack Web Viewer Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
-                  return;
-                }
-              */
                 if (panel == null)
                 {
                     panel = new WebServicePanel();
@@ -79,14 +64,6 @@ namespace ComicRackWebViewer
           {
             try
             {
-              /*
-                var comicVersion = new Version(app.ProductVersion);
-                if (comicVersion < requiredVersion)
-                {
-                  return;
-                }
-              */
-                
                 if (panel == null)
                 {
                     panel = new WebServicePanel();

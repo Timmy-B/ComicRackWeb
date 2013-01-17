@@ -4,10 +4,13 @@ clr.AddReferenceByPartialName("IronPython")
 clr.AddReferenceByPartialName("Microsoft.Scripting")
 clr.AddReferenceByPartialName("ComicRackWebViewer")
 
-from ComicRackWebViewer import Plugin
+clr.AddReference('System')
+from System import Version
 
-#Version check + additional install operations:
-#Plugin.RunWhenComicRackStarts(ComicRack.App)
+clr.AddReference("System.Windows.Forms")
+from System.Windows.Forms import MessageBox, MessageBoxButtons, MessageBoxIcon
+
+from ComicRackWebViewer import Plugin
 
 #@Name	ComicRack Web
 #@Key	ComicRackWebViewer
@@ -15,12 +18,25 @@ from ComicRackWebViewer import Plugin
 #@Image nancy.jpg
 #@Description ComicRack Web
 def ComicRackWebViewer(books):
+ 
+  if IsVersionOK():
     Plugin.Run(ComicRack.App)
-
+  
+           
 #@Name ComicRack Web (Startup)
 #@Hook Startup
 #@Enabled false
 #@Image nancy.jpg
 #@Description ComicRack Web (Startup)
 def ComicRackWebViewerStartup():
+  if IsVersionOK():
     Plugin.RunAtStartup(ComicRack.App)
+   
+      
+def IsVersionOK():
+  requiredVersion = Version(0, 9, 159)
+  if str(ComicRack.App.ProductVersion) != str(requiredVersion):
+    MessageBox.Show( ComicRack.MainWindow, "Version check failed!\n\nThe ComicRack Web Viewer Plugin requires an updated version of ComicRack.\nComicRack version required: " + str(requiredVersion) + ".\nExiting...", "Incompatible ComicRack version", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+  
+  return str(ComicRack.App.ProductVersion) == str(requiredVersion)
+    
