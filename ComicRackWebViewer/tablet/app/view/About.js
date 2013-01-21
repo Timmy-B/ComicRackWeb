@@ -38,7 +38,7 @@ Ext.define('Comic.view.About', {
             xtype: 'textfield',
             name: 'version',
             label: 'Version',
-            value: '1.14',
+            value: '1.15',
             readOnly: true
           },
           {
