@@ -25,7 +25,7 @@ namespace ComicRackWebViewer
   {
     private const string INSTALLER_FILE = "BCRPlugin.zip";
     private const string VERSION_FILE = "BCRVersion.txt";
-    private const string VERSION = "1.16";
+    private const string VERSION = "1.17";
     
     private static BCRInstaller instance = new BCRInstaller();
     

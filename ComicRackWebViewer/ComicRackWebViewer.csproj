@@ -63,6 +63,8 @@
   <ItemGroup>
     <Reference Include="ComicRack">
       <HintPath>..\..\..\Program Files\ComicRack\ComicRack.exe</HintPath>
+      <Private>True</Private>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="ComicRack.Engine">
       <HintPath>..\..\..\Program Files\ComicRack\ComicRack.Engine.dll</HintPath>
