@@ -98,7 +98,7 @@ Ext.define('Comic.controller.Comic', {
       // called before application.launch()
       var me = this;
             
-      me.preload_count = 0; // number of pages to preload before and after the current page.
+      me.preload_count = 1; // number of pages to preload before and after the current page.
                             // if 0, preloading is disabled.
       
       me.cache = []; // cache of preloaded page info
@@ -513,7 +513,19 @@ Ext.define('Comic.controller.Comic', {
         console.log("pagenr " + pagenr + " out of bounds [0.."+(me.current_comic.PageCount-1)+"]");
         return;
       }
+      /*
+      var cachedpages = "";
+      function addcache(element, index, array) {
+        {
+          if (element.img)
+            cachedpages = cachedpages + " " + index;
+        }
+      }
+      me.cache.forEach(addcache);
+      titlebar.setTitle(me.comic_title + " " + (pagenr + 1)+ "/" + me.current_comic.PageCount + cachedpages);
+      */
       
+        
       titlebar.setTitle(me.comic_title + " " + (pagenr + 1)+ "/" + me.current_comic.PageCount);
       // todo: show loading indicator in toolbar and remove it when image is loaded.
       

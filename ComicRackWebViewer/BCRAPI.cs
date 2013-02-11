@@ -133,6 +133,10 @@ namespace BCR
             try
             {
               ComicBook comic = GetComics().First(x => x.Id == id);
+              // Webcomics are not (yet) supported. If I don't filter them here, ComicRack hangs.
+              if (comic.IsDynamicSource)
+                return null;
+              
               var index = comic.TranslatePageToImageIndex(page);
               var provider = GetProvider(comic);
               if (provider == null)

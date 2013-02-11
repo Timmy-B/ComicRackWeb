@@ -543,6 +543,10 @@ Ext.define('Ext.ux.BufferedList', {
 		{
 			var	record 			= this.getRecordAt(i);
 			var data 				= record.getData(true);
+      
+      // Workaround to get the record index in the item template...
+      data.store_index = i;
+      
 			var itemConfig 	= this.container.getItemElementConfig(i, data);
 			itemConfig.itemIndex = i;
 

@@ -28,8 +28,6 @@ Ext.define('Comic.store.TreeList', {
       storeId: 'TreeList',
       autoLoad: true,
       defaultRootProperty: 'Lists',
-      //nodeParam: 'Id',
-      //defaultRootId: "bla",
 
       proxy: {
             type: 'restodata',

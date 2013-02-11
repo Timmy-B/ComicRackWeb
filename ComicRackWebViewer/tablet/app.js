@@ -32,9 +32,11 @@ Ext.Loader.setConfig({
 // Simple remote logging without AJAX.
 function RemoteLog(severity, message) 
 {
+  console.log("RemoteLog["+severity+"] "+message);
+  /* Disabled, as server-side logging is not yet implemented.....
   var img = new Image();
-      console.log("RemoteLog["+severity+"] "+message);
-      img.src = "/BCR/Log?sev=" + encodeURIComponent(severity) + "&msg=" + encodeURIComponent(message)+"&_dc="+encodeURIComponent(Date.now());
+  img.src = "/BCR/Log?sev=" + encodeURIComponent(severity) + "&msg=" + encodeURIComponent(message)+"&_dc="+encodeURIComponent(Date.now());
+  */
 }
 
 RemoteLog(1, "BCR initializing....");

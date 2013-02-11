@@ -22,6 +22,7 @@ Ext.define('Comic.model.ComicInfo', {
      requires: ['Comic.RestODataProxy'],
      config: {
       fields: [
+          { name: 'store_index', type: 'int' },
           
           { name: 'Id', type: 'string' },
           { name: 'FilePath', type: 'string' },

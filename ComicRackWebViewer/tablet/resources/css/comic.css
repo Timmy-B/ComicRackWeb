@@ -24,13 +24,16 @@
 	src: url('Comic_Book.ttf');
 }
 */
-.filesystem-list, .comiclist {
+
+/******************************************************************/
+/* file list styles */
+.filesystem-list {
   background: #FFF;
   
   /*font-family: Comic_Book; */
 }
 
-.filesystem-list-item, .comiclist-item {
+.filesystem-list-item {
   
   padding: 0.65em;
   height: 85px;
@@ -40,16 +43,9 @@
   border: 1px solid #dedede;
 }
 
-.filesystem-list .x-item-selected, .comiclist-item .x-item-selected {
+.filesystem-list .x-item-selected {
   border: 3px solid #AAF;
   background: #EEF;
-}
-
-.date_last_read {
-  margin-left: 10px;
-  background: #DDE;
-  border: 1px solid #dedede;
-  padding: 2px;
 }
 
 
@@ -117,15 +113,6 @@ background: transparent url(img/background_1.jpg) 0 0;
   margin-bottom: 10px;
 }
 
-.comiclist-item .cl-img {
-  float: left;
-  //top: 10px;
-  height: 64px;
-  //background: #00F;
-  margin-right: 10px;
-  margin-bottom: 10px;
-}
-
 .filesystem-list-item .name {
   margin-left: 70px;
   min-height: 50px;
@@ -137,6 +124,47 @@ background: transparent url(img/background_1.jpg) 0 0;
 .filesystem-list-item .comic {
   
 }
+
+/******************************************************************/
+/* comic list styles */
+.comiclist {
+  background: #FFF;
+  
+  /*font-family: Comic_Book; */
+}
+
+.comiclist-item {
+  
+  padding: 0.65em;
+  height: 85px;
+  margin: 0.4em;
+  padding: 0.65em;
+  background: #EEE;
+  border: 1px solid #dedede;
+}
+
+.comiclist-item .x-item-selected {
+  border: 3px solid #AAF;
+  background: #EEF;
+}
+
+.date_last_read {
+  margin-left: 10px;
+  background: #DDE;
+  border: 1px solid #dedede;
+  padding: 2px;
+}
+
+/* cover image */
+.comiclist-item .cl-img {
+  float: left;
+  //top: 10px;
+  height: 64px;
+  //background: #00F;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
 
 .comiclist-item .progress {
   float: left;
@@ -167,9 +195,10 @@ background: transparent url(img/background_1.jpg) 0 0;
 }
 
 
+/******************************************************************/
+/* comic info styles */
 .comicinfo-header {
   
-
 }
   
 .comicinfo-header img {

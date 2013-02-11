@@ -16,6 +16,13 @@
   You should have received a copy of the GNU General Public License
   along with Badaap Comic Reader.  If not, see <http://www.gnu.org/licenses/>.
 */  
+
+/*
+  The TreeList view show a list of all the lists in ComicRack and uses drill down navigation.
+  When a leaf is clicked, the 'showlist' event is fired.
+  The ComicList view listen for this event and shows the selected list.
+*/
+
 Ext.define('Comic.controller.TreeList', {
     extend: 'Ext.app.Controller',
 
@@ -42,7 +49,7 @@ Ext.define('Comic.controller.TreeList', {
             tap: 'onRefreshButton'
           },
           pullrefresh: {
-            refresh: 'onPullRefresh',
+            refresh: 'onRefreshButton',
           },
         },
     },
@@ -70,15 +77,6 @@ Ext.define('Comic.controller.TreeList', {
       */
     },
     
-    onPullRefresh: function(plugin)
-    {
-      //alert("onPullRefresh");
-      // reloading the list's store doesn't work, because the treestore doesn't assign a proxy to its substores....
-      //plugin.getList().getStore().load();
-      
-      // just reload the complete tree
-      this.onRefreshButton();
-    },
     onTreeListLeafItemTap: function(/*Ext.dataview.NestedList*/ nestedlist, /*Ext.List*/ list, /*Number*/ index, /*Ext.dom.Element*/ target, /*Ext.data.Record*/ record, /*Ext.event.Event*/ e, /*Object*/ eOpts)
     {
       var me = this;

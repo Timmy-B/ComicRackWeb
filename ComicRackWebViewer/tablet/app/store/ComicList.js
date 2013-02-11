@@ -46,7 +46,7 @@ Ext.define('Comic.store.ComicList', {
               // empty list ?
               console.error('Failed to load Comic store for ' + proxy.getUrl(), response.responseText);
               //Ext.Msg.alert('Loading failed', response.statusText);
-          }
+          },
         },
       }
     },    

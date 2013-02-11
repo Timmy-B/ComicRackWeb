@@ -19,15 +19,11 @@
   
 // Use one template instance for all list items instead of creating one for each list item separately.....
 var TheComicListItemTemplate = new Ext.XTemplate(
-    '<img class="cl-img" src="/BCR/Comics/{Id}/Pages/0?height=64"/>{[this.getTitleText(values)]}</br><span class="progress">{[this.getProgressText(values)]}</span><span class="date_last_read">{[this.getOpenedDate(values)]}</span>',
+    '<img class="cl-img" src="/BCR/Comics/{Id}/Pages/0?height=64"/>{Caption}</br><span class="progress">{[this.getProgressText(values)]}</span><span class="date_last_read">{[this.getOpenedDate(values)]}</span>',
     {
       // XTemplate configuration:
       disableFormats: true,
       // member functions:
-      getTitleText: function(comic)
-      {
-        return comic.Caption;
-      },
       getProgressText: function(comic)
       {
         if (comic.PageCount == 0)
@@ -61,6 +57,7 @@ Ext.define('Comic.view.ComicList', {
       title: 'List',
       itemTpl: TheComicListItemTemplate,
       baseCls: 'comiclist',
+
         
       plugins: [
         {
