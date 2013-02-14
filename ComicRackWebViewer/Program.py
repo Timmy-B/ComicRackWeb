@@ -34,9 +34,9 @@ def ComicRackWebViewerStartup():
    
       
 def IsVersionOK():
-  requiredVersion = Version(0, 9, 161)
+  requiredVersion = Version(0, 9, 162)
   if str(ComicRack.App.ProductVersion) != str(requiredVersion):
-    MessageBox.Show( ComicRack.MainWindow, "Version check failed!\n\nThe ComicRack Web Viewer Plugin requires an updated version of ComicRack.\nComicRack version required: " + str(requiredVersion) + ".\nExiting...", "Incompatible ComicRack version", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+    MessageBox.Show( ComicRack.MainWindow, "Version check failed!\n\nThe ComicRack Web Viewer Plugin requires a different version of ComicRack.\nComicRack version required: " + str(requiredVersion) + ".\nExiting...", "Incompatible ComicRack version", MessageBoxButtons.OK, MessageBoxIcon.Warning)
   
   return str(ComicRack.App.ProductVersion) == str(requiredVersion)
     
