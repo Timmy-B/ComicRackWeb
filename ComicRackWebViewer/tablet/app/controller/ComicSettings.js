@@ -146,7 +146,7 @@ Ext.define('Comic.controller.ComicSettings', {
     },
     
     
-    onChangeUsePageTurnDrag: function( field, slider, thumb, newValue, oldValue, eOpts )
+    onChangeUsePageTurnDrag: function( checkbox, newValue, oldValue, eOpts  )
     {
       var pageTurnDragThreshold = this.getPageTurnDragThreshold();
       
@@ -161,7 +161,7 @@ Ext.define('Comic.controller.ComicSettings', {
         //pageTurnDragThreshold.setValue(pageTurnDragThreshold.getMinValue());
       }
     },
-    onChangeUsePageChangeArea: function( field, slider, thumb, newValue, oldValue, eOpts )
+    onChangeUsePageChangeArea: function( checkbox, newValue, oldValue, eOpts )
     {
       var pageChangeAreaWidth = this.getPageChangeAreaWidth();
       

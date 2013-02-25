@@ -19,7 +19,7 @@
   
 // Use one template instance for all list items instead of creating one for each list item separately.....
 var TheComicListItemTemplate = new Ext.XTemplate(
-    '<img class="cl-img" src="/BCR/Comics/{Id}/Pages/0?height=64"/>{Caption}</br><span class="progress">{[this.getProgressText(values)]}</span><span class="date_last_read">{[this.getOpenedDate(values)]}</span>',
+    '<div class="comiclist-item-inner"><img height="64px" class="cl-img" src="/BCR/Comics/{Id}/Pages/0?height=64"/>{Caption}</br><span class="progress">{[this.getProgressText(values)]}</span><span class="date_last_read">{[this.getOpenedDate(values)]}</span></div>',
     {
       // XTemplate configuration:
       disableFormats: true,
@@ -43,12 +43,13 @@ var TheComicListItemTemplate = new Ext.XTemplate(
 
 
 Ext.define('Comic.view.ComicList', {
-    extend: 'Ext.ux.BufferedList',
+    //extend: 'Ext.ux.BufferedList',
+    extend: 'Ext.dataview.List',
     xtype: 'comiclistview',
     
     requires: [ 
       'Ext.plugin.ListPaging',
-      'Ext.ux.BufferedList',
+      'Ext.dataview.List',
       'Comic.view.ComicListSort',
     ],
     
@@ -56,8 +57,12 @@ Ext.define('Comic.view.ComicList', {
     config: {
       title: 'List',
       itemTpl: TheComicListItemTemplate,
-      baseCls: 'comiclist',
-
+      cls: 'comiclist',
+      itemCls: 'comiclist-item',
+      itemHeight: 88,
+      variableHeights: false,
+      
+      displayField: 'Caption',
         
       plugins: [
         {

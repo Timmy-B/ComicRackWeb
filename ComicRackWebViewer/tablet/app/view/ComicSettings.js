@@ -21,7 +21,7 @@ Ext.define('Comic.view.ComicSettings', {
   extend: 'Ext.form.Panel',
   xtype: 'comicsettingsview',
   requires: [
-    'Ext.ux.IOS5Toggle',
+    //'Ext.ux.IOS5Toggle',
     'Ext.ux.IconSpinner',
     'Ext.field.Select',
   ],
@@ -30,6 +30,7 @@ Ext.define('Comic.view.ComicSettings', {
     hideOnMaskTap: true,
     modal: true,
     padding: '0 10 10 10',
+    /*
     showAnimation: {
         type: 'popIn',
         duration: 250,
@@ -40,6 +41,7 @@ Ext.define('Comic.view.ComicSettings', {
         duration: 250,
         easing: 'ease-out'
     },
+    */
     width: Ext.os.deviceType == 'Phone' ? 260 : 600,
     height: Ext.os.deviceType == 'Phone' ? 220 : 500,    
     items: [
@@ -48,13 +50,13 @@ Ext.define('Comic.view.ComicSettings', {
         title: 'Interface Settings',
         items: [
           {
-            xtype: 'ios5togglefield',
+            xtype: 'checkboxfield',
             label: 'Open current comic at app launch',
             labelWidth: '60%',
             name: 'open_current_comic_at_launch',
           },
           {
-            xtype: 'ios5togglefield',
+            xtype: 'checkboxfield',
             label: 'Open next comic on comic finish',
             labelWidth: '60%',
             name: 'open_next_comic',
@@ -120,7 +122,7 @@ Ext.define('Comic.view.ComicSettings', {
             ]
           },
           {
-            xtype: 'ios5togglefield',
+            xtype: 'checkboxfield',
             name: 'use_page_turn_drag',
             label: 'Drag page to change page',
             labelWidth: '60%',
@@ -136,7 +138,7 @@ Ext.define('Comic.view.ComicSettings', {
             cycle: true
           },
           {
-            xtype: 'ios5togglefield',
+            xtype: 'checkboxfield',
             name: 'use_page_change_area',
             label: 'Tap sides to change page',
             labelWidth: '60%',

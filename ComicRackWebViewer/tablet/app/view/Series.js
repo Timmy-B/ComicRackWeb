@@ -43,13 +43,13 @@ var TheSeriesItemTemplate = new Ext.XTemplate(
 
 
 Ext.define('Comic.view.Series', {
-    extend: 'Ext.ux.BufferedList',
+    extend: 'Ext.dataview.List',
     xtype: 'seriesview',
     
     requires: [ 
       'Comic.store.Series',
       'Ext.plugin.PullRefresh',
-      'Ext.ux.BufferedList',
+      'Ext.dataview.List',
     ],
     
     config: {

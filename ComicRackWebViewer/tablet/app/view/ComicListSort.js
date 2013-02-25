@@ -31,7 +31,9 @@ Ext.define('Comic.view.ComicListSort', {
     centered: true,
     hideOnMaskTap: true,
     modal: true,
+    
     padding: '0 10 10 10',
+    /*
     showAnimation: {
         type: 'popIn',
         duration: 250,
@@ -42,6 +44,7 @@ Ext.define('Comic.view.ComicListSort', {
         duration: 250,
         easing: 'ease-out'
     },
+    */
     width: Ext.os.deviceType == 'Phone' ? 260 : 600,
     height: Ext.os.deviceType == 'Phone' ? 220 : 500,    
     

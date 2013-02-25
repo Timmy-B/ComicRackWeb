@@ -1,1 +1,0 @@
-place the Sencha Touch SDK files here.

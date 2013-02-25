@@ -23,6 +23,14 @@
   in both directions.
       
 */
+
+dc
+dc
+dc
+dc
+d
+c
+
 Ext.define('Comic.Scrollerfix', {
     override: 'Ext.scroll.Scroller',
     onDragStart: function(e) {

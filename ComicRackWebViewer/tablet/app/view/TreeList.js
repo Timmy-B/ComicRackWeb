@@ -25,7 +25,7 @@ var ComicListItemIcons = { ComicLibraryListItem : 'resources/images/ComicLibrary
 
 // Use one template instance for all list items instead of creating one for each list item separately.....
 var TheTreeListItemTemplate = new Ext.XTemplate(
-    '<img src="{[this.getIcon(values)]}" height="64"/>{Name}',
+    '<img src="{[this.getIcon(values)]}" height="64px"/>{Name}',
     {
       // XTemplate configuration:
       disableFormats: true,
@@ -49,7 +49,7 @@ Ext.define('Comic.view.TreeList', {
     requires: [ 
       'Comic.store.TreeList',
       'Ext.plugin.PullRefresh',
-      'Ext.ux.BufferedList',
+      'Ext.dataview.List',
     ],
     
     config: {
@@ -58,7 +58,7 @@ Ext.define('Comic.view.TreeList', {
       toolbar: {
         docked: "top", 
         xtype: "titlebar", 
-        ui: "light", 
+        //ui: "light", 
         inline: true, 
         items: [ 
           {
@@ -72,11 +72,22 @@ Ext.define('Comic.view.TreeList', {
       },
       displayField: 'Name',
       store: 'TreeList',
-      onItemDisclosure: true,
+      onItemDisclosure: false,
+      //baseCls: 'filesystem',
+      //itemCls: 'filesystem',
+      //itemHeight: 100,
+      
+      
       listConfig : {
-        xtype: 'bufferedlist',
+        xtype: 'list',
         itemTpl: TheTreeListItemTemplate,
-        baseCls: 'filesystem-list',
+        
+        itemHeight: 85,
+        variableHeights: true,
+        //cls: 'filesystem-list',
+        //baseCls: 'filesystem-list',
+        //itemCls: 'filesystem-list-item',
+                
         plugins: [
           {
               xclass: 'Ext.plugin.PullRefresh',
@@ -87,17 +98,9 @@ Ext.define('Comic.view.TreeList', {
                 },
           }
         ],
-        /*
-        listeners: [
-        {
-          itemtaphold: function(list) {
-            list.getParent().onItemTapHold(list)
-          }
-        }
-          //{ event: 'itemtaphold', fn: 'onItemTapHold', scope: me },
-        ],
-        */
+        
       },
+      
     },
     
     onItemTapHold: function(list, index, target, record, e) {

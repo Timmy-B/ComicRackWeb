@@ -86,7 +86,7 @@ Ext.application({
     ],
         
     requires: [
-      'Comic.Scrollerfix',
+      //'Comic.Scrollerfix',
       'Ext.MessageBox',
       'Comic.RemoteApi'
     ],
