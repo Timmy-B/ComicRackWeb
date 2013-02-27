@@ -16,6 +16,8 @@
   You should have received a copy of the GNU General Public License
   along with Badaap Comic Reader.  If not, see <http://www.gnu.org/licenses/>.
 */  
+
+/*
 Ext.define('Comic.model.File', {
     extend: 'Ext.data.Model',
     requires: ['ExtDirectAPI'],
@@ -26,14 +28,15 @@ Ext.define('Comic.model.File', {
         'leaf', 
         'file_count',
         'folder_count',
-        'comic', // the entire comic record...
+        'comic' // the entire comic record...
       ],
              
       proxy: {
         type: 'direct',
         directFn: 'Ext.app.Comics.ListFolder',
-        paramsAsHash: true,
+        paramsAsHash: true
       }
 
     }
  });
+*/

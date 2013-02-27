@@ -21,13 +21,13 @@ Ext.define('Comic.controller.Main', {
 
     config: {
         refs: {
-          mainview: 'mainview',
-        },
+          mainview: 'mainview'
+        }
     },
 
     init: function()
     {
       var me = this;
-    },
+    }
     
 });

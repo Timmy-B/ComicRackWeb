@@ -25,7 +25,7 @@ Ext.define('Comic.view.TabPanel', {
         'Comic.view.TreeList',
         'Comic.view.Series',
         'Comic.view.Search',
-        'Comic.view.About',
+        'Comic.view.About'
     ],
     
     config: {
@@ -53,7 +53,7 @@ Ext.define('Comic.view.TabPanel', {
               xtype: 'aboutview',
               title: 'About',
               iconCls: 'info'
-          },
+          }
       ]
   }
 });

@@ -66,7 +66,7 @@ var store = Ext.create('Ext.data.Store',{
           {album: 'Album 136', artist: 'Mirakelman', year:'2005', artwork: './artwork/136_cover.jpg'},
           {album: 'Album 137', artist: 'Mirakelman', year:'2005', artwork: './artwork/137_cover.jpg'},
 			    {album: 'Album 138', artist: 'Mirakelman', year:'2005', artwork: './artwork/138_cover.jpg'},
-			    {album: 'Album 139', artist: 'Mirakelman', year:'2005', artwork: './artwork/139_cover.jpg'},                    
+			    {album: 'Album 139', artist: 'Mirakelman', year:'2005', artwork: './artwork/139_cover.jpg'}                    
 			]
 		});
     
@@ -103,7 +103,7 @@ Ext.define('Comic.view.ComicGrid', {
             }
           ]
         }
-      ],
+      ]
     }
 
 });

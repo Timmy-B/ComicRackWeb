@@ -20,7 +20,7 @@ Ext.define('Comic.store.TreeList', {
     extend: 'Ext.data.TreeStore',
     requires: [
         'Comic.model.List',
-        'Comic.RestODataProxy',
+        'Comic.RestODataProxy'
         ],
     
     config: {
@@ -40,5 +40,5 @@ Ext.define('Comic.store.TreeList', {
             }
             
         }
-    },    
+    }    
 });

@@ -17,9 +17,6 @@
   along with Badaap Comic Reader.  If not, see <http://www.gnu.org/licenses/>.
 */  
 
-// Make sure each store has a unique, just to prevent bugs caused by name clashing.
-var storeName = 'ComicList-';
-var storeCount = 0;
 
 Ext.define('Comic.controller.ComicList', {
     extend: 'Ext.app.Controller',
@@ -29,7 +26,7 @@ Ext.define('Comic.controller.ComicList', {
           'Comic.view.Series',
           'Comic.view.TreeList',
           'Comic.store.ComicList',
-          'Comic.view.ComicListSort',
+          'Comic.view.ComicListSort'
     ],
     
     config: {
@@ -45,14 +42,14 @@ Ext.define('Comic.controller.ComicList', {
           comiclistsortview: { selector: 'comiclistsortview', xtype: 'comiclistsortview', autoCreate: true },
           
           comicview: { selector: 'comicview', xtype: 'comicview', autoCreate: true },
-          comicinfoview: { selector: 'comicinfoview', xtype: 'comicinfoview', autoCreate: true },
+          comicinfoview: { selector: 'comicinfoview', xtype: 'comicinfoview', autoCreate: true }
         },
         
         control: {
         
           comiclistview: {
             initialize: 'onComicListViewInitialize',
-            itemtap: 'onComicListViewItemTap',
+            itemtap: 'onComicListViewItemTap'
           },
           
           searchview: {
@@ -78,15 +75,20 @@ Ext.define('Comic.controller.ComicList', {
           comiclistsortview: {
             show: 'onSortShow',
             hide: 'onSortHide'
-          },
+          }
           
-        },
+        }
     },
     
     init : function()
     {
       // called before application.launch()
       var me = this;
+      
+      // Make sure each store has a unique, just to prevent bugs caused by name clashing.
+      me.storeName = 'ComicList-';
+      me.storeCount = 0;
+
       
       Comic.sortsettings = {};
       Comic.sortsettings.filter = "";
@@ -104,23 +106,23 @@ Ext.define('Comic.controller.ComicList', {
         5: 'ShadowNumber',
         6: 'ShadowYear', 
         7: 'FilePath',
-        8: 'Opened',
+        8: 'Opened'
       };
     },
      
     onRefreshButton: function()
     {
       var me = this,
-          comiclistview = me.getComiclistview()
+          comiclistview = me.getComiclistview(),
           store = comiclistview.getStore(),
-          filter = '';
+          filter = '',
+          sorters = [];
 
       comiclistview.setMasked({
             xtype: 'loadmask',
             message: 'Loading...'
         });
         
-      sorters = [];
       sorters.push({
           property : Comic.sortsettings.sortfields[Comic.sortsettings.orderby_1],
           direction: Comic.sortsettings.direction_1 == 0 ? 'asc' : 'desc'
@@ -149,7 +151,9 @@ Ext.define('Comic.controller.ComicList', {
            
             var scrollable = comiclistview.getScrollable();
             if (scrollable)
+            {
               scrollable.getScroller().scrollToTop();
+            }
               
             comiclistview.setMasked(false);
             me.getComiclisttoolbar().setTitle(me.title + ' [#: ' + store.getTotalCount() + ']');
@@ -212,12 +216,14 @@ Ext.define('Comic.controller.ComicList', {
     SetStore: function(params, title)
     {
       var me = this,
-          oldstore = me.getComiclistview().getStore();
-      
-      var store = Ext.create('Comic.store.ComicList', { storeId : storeName + storeCount++ });
-      var url = params.url;
+          oldstore = me.getComiclistview().getStore(),
+          store = Ext.create('Comic.store.ComicList', { storeId : me.storeName + me.storeCount++ }),
+          url = params.url;
+          
       if (params.filter)
+      {
         url += '?$filter=' + params.filter;
+      }
       
       store.getProxy().setUrl(url);
       store.setPageSize(250);
@@ -230,7 +236,9 @@ Ext.define('Comic.controller.ComicList', {
       me.getComiclistview().setStore(store);
       
       if (oldstore)
+      {
         oldstore.destroy();
+      }
 			
       me.onRefreshButton();
     },
@@ -256,7 +264,7 @@ Ext.define('Comic.controller.ComicList', {
         orderby_1: Comic.sortsettings.orderby_1,
         direction_1: Comic.sortsettings.direction_1,
         orderby_2: Comic.sortsettings.orderby_2,
-        direction_2: Comic.sortsettings.direction_2,
+        direction_2: Comic.sortsettings.direction_2
       });
     },
     
@@ -272,5 +280,5 @@ Ext.define('Comic.controller.ComicList', {
       Comic.sortsettings.direction_2 = values.direction_2;
       
       me.onRefreshButton();
-    },
+    }
 });

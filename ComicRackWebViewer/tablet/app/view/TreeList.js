@@ -20,12 +20,12 @@
 var ComicListItemIcons = { ComicLibraryListItem : 'resources/images/ComicLibraryListItem.png',
                            ComicListItemFolder : 'resources/images/ComicListItemFolder.png',
                            ComicSmartListItem : 'resources/images/ComicSmartListItem.png',
-                           ComicIdListItem : 'resources/images/ComicIdListItem.png',
+                           ComicIdListItem : 'resources/images/ComicIdListItem.png'
                          };
 
 // Use one template instance for all list items instead of creating one for each list item separately.....
 var TheTreeListItemTemplate = new Ext.XTemplate(
-    '<img src="{[this.getIcon(values)]}" height="64px"/>{Name}',
+    '<img src="{[this.getIcon(values)]}" height="40px" style="vertical-align:middle;"/>{Name}',
     {
       // XTemplate configuration:
       disableFormats: true,
@@ -33,10 +33,14 @@ var TheTreeListItemTemplate = new Ext.XTemplate(
       getIcon: function(item)
       {
         if (ComicListItemIcons[item.Type])
+        {
           return ComicListItemIcons[item.Type];
+        }
         else
+        {
           return 'resources/images/ComicListItemUnknown.png';
-      },
+        }
+      }
     }
 ); 
 
@@ -49,7 +53,7 @@ Ext.define('Comic.view.TreeList', {
     requires: [ 
       'Comic.store.TreeList',
       'Ext.plugin.PullRefresh',
-      'Ext.dataview.List',
+      'Ext.dataview.List'
     ],
     
     config: {
@@ -66,7 +70,7 @@ Ext.define('Comic.view.TreeList', {
             itemId: 'refreshbutton',
             align: 'right',
             iconCls: 'refresh',
-            iconMask: true,
+            iconMask: true
           }
         ] 
       },
@@ -82,7 +86,7 @@ Ext.define('Comic.view.TreeList', {
         xtype: 'list',
         itemTpl: TheTreeListItemTemplate,
         
-        itemHeight: 85,
+        //itemHeight: 47,
         variableHeights: true,
         //cls: 'filesystem-list',
         //baseCls: 'filesystem-list',
@@ -95,17 +99,17 @@ Ext.define('Comic.view.TreeList', {
               pullRefreshText: 'Pull down to refresh...',
               refreshFn: function(plugin) {
                     plugin.fireEvent('refresh', plugin);
-                },
+                }
           }
-        ],
+        ]
         
-      },
+      }
       
     },
     
     onItemTapHold: function(list, index, target, record, e) {
       alert('onItemTapHold');
-      return;
+      /*
         var me = this,
             store = list.getStore(),
             node = store.getAt(index);
@@ -114,10 +118,10 @@ Ext.define('Comic.view.TreeList', {
         if (node.isLeaf()) {
             me.fireEvent('leafitemtaphold', this, list, index, target, record, e);
         }
-
+      */
     },
     
     getTitleTextTpl: function() {
       return '{' + this.getDisplayField() + '}';
-    },
+    }
 });

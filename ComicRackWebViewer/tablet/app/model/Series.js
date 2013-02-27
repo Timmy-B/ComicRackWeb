@@ -21,20 +21,19 @@ Ext.define('Comic.model.Series', {
     statics: {
       getDisplayText: function(series)
       {
-        
         return series.Title + (series.Volume != -1 ? ' V' + series.Volume : '');
-      },
+      }
     },
     config: {
       fields: [ 
         { name: 'Id', type: 'string' },
         { name: 'Title', type: 'string' },
         { name: 'Volume', type: 'int' },
-        { name: 'Count', type: 'int' },
+        { name: 'Count', type: 'int' }
       ],
-     idProperty: 'Id',
+     idProperty: 'Id'
              
-    },
+    }
     
     
  });

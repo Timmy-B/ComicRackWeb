@@ -26,7 +26,7 @@ Ext.define('Comic.controller.Comic', {
       'Comic.view.ComicSettings',
       'Comic.view.ComicInfo',
       'Comic.RemoteApi',
-      'Comic.store.ComicBook',
+      'Comic.store.ComicBook'
     ],
 
     config: {
@@ -47,7 +47,7 @@ Ext.define('Comic.controller.Comic', {
           loadingIndicator: 'comicview #loadingIndicator',
           imageviewer: 'comicview #imageviewer',
           comicsettingsview: { selector: 'comicsettingsview', xtype: 'comicsettingsview', autoCreate: true },
-          comicinfoview: { selector: 'comicinfoview', xtype: 'comicinfoview', autoCreate: true },
+          comicinfoview: { selector: 'comicinfoview', xtype: 'comicinfoview', autoCreate: true }
         },
         
         control: {
@@ -55,7 +55,7 @@ Ext.define('Comic.controller.Comic', {
             show: 'onShow', // also triggered when the comic view is popped from the main navigation view.... so use active event instead
             hide: 'onHide',
             singletap: 'onTap',
-            activate: 'onActivate',
+            activate: 'onActivate'
           },
           
           slider: {
@@ -85,11 +85,11 @@ Ext.define('Comic.controller.Comic', {
             imageError: 'onImageError',
             zoomByTap: 'onZoomByTap',
             initDone: 'onImageViewerInitDone',
-            singletap: 'onSingleTap',
-          },
+            singletap: 'onSingleTap'
+          }
           
           
-        },
+        }
     },
     
     init : function()
@@ -125,8 +125,8 @@ Ext.define('Comic.controller.Comic', {
     
     UpdateSettings: function()
     {
-      var me = this;
-      var imageviewer = me.getImageviewer();
+      var me = this,
+          imageviewer = me.getImageviewer();
       // 1: Fit width, 2: Full page
       if (Comic.settings.page_fit_mode == 2)
       {
@@ -148,8 +148,8 @@ Ext.define('Comic.controller.Comic', {
     
     onImageViewerInitDone: function()
     {
-      var me = this;
-      var imageviewer = me.getImageviewer();
+      var me = this,
+          imageviewer = me.getImageviewer();
       
       imageviewer.setResizeOnLoad(true);
       imageviewer.setErrorImage('resources/no_image_available.jpg');
@@ -176,7 +176,7 @@ Ext.define('Comic.controller.Comic', {
           singletap: me.onSingleTap,
           doubletap: me.onDoubleTap,
           drag: me.onDrag,
-          dragend: me.onDragEnd,
+          dragend: me.onDragEnd
       });  
     },
     
@@ -242,7 +242,7 @@ Ext.define('Comic.controller.Comic', {
     
     onDrag: function(/*Ext.event.Event*/ event, /*HTMLElement*/ node, /*Object*/ options, /*Object*/ eOpts) 
     { 
-      var me = this;
+      var me = this,
           imageviewer = me.getImageviewer(),
           scroller = imageviewer.getScrollable().getScroller(),
           nextPageIcon = me.getNextPageIcon(),
@@ -269,17 +269,21 @@ Ext.define('Comic.controller.Comic', {
     
     onDragEnd: function(/*Ext.event.Event*/ event, /*HTMLElement*/ node, /*Object*/ options, /*Object*/ eOpts) 
     { 
-      var me = this;
-      var imageviewer = me.getImageviewer();
-      var scroller = imageviewer.getScrollable().getScroller();
+      var me = this,
+          imageviewer = me.getImageviewer(),
+          scroller = imageviewer.getScrollable().getScroller();
       
       if ((scroller.position.x < scroller.getMinPosition().x - Comic.settings.page_turn_drag_threshold) || 
           (scroller.position.y < scroller.getMinPosition().y - Comic.settings.page_turn_drag_threshold))
+      {
         this.onPreviousButton();
+      }
       else
       if ((scroller.position.x > scroller.getMaxPosition().x + Comic.settings.page_turn_drag_threshold) || 
           (scroller.position.y > scroller.getMaxPosition().y + Comic.settings.page_turn_drag_threshold))
+      {
         this.onNextButton();
+      }
     },
     
     onSliderChange: function(slider) 
@@ -355,9 +359,10 @@ Ext.define('Comic.controller.Comic', {
                                     current_comic_opened_from_type: Comic.viewstate.current_comic_opened_from_type,
                                     current_comic_opened_from_id: Comic.viewstate.current_comic_opened_from_id });
       
-      var me = this;
-      var d=new Date();
-      var n=d.toJSON(); 
+      var me = this,
+          d=new Date(),
+          n=d.toJSON(); 
+          
       Comic.context.record.beginEdit();
       Comic.context.record.set("Opened", n);
       Comic.context.record.set("OpenCount", 1);
@@ -417,8 +422,8 @@ Ext.define('Comic.controller.Comic', {
     
     onToggleToolbars: function(ev, t)
     {
-      var titlebar = this.getComictitle();
-      var toolbar = this.getToolbar();
+      var titlebar = this.getComictitle(),
+          toolbar = this.getToolbar();
             
       if (titlebar.isHidden())
       {
@@ -466,11 +471,12 @@ Ext.define('Comic.controller.Comic', {
       me.getSlider().setValue((me.current_page_nr / (me.current_comic.PageCount-1)) * SLIDER_RANGE);
       
       if (me.preload_count > 0)
+      {
         Ext.defer(function() { 
           //me.PreloadPages(); 
           me.PreloadPage(me.current_page_nr+1);
         }, 10 );
-
+      }
       
       if (me.current_comic)
       {
@@ -569,12 +575,16 @@ Ext.define('Comic.controller.Comic', {
     {
       var me = this;
       if (pagenr < 0 || pagenr >= me.current_comic.PageCount)
+      {
         return;
+      }
         
       if (me.cache[pagenr])
       {
         if (!me.cache[pagenr].img)
+        {
           me.PreloadImage(pagenr);
+        }
           
         return;
       }
@@ -586,11 +596,12 @@ Ext.define('Comic.controller.Comic', {
     
     PreloadImage: function(pagenr)
     {
-      var me = this,
-          pagenr = pagenr;
-      
+      var me = this;
+     
       if (pagenr < 0 || pagenr >= me.current_comic.PageCount)
+      {
         return;
+      }
         
       if (!me.cache[pagenr])
       {
@@ -660,11 +671,15 @@ Ext.define('Comic.controller.Comic', {
       
       // Preload the next and previous pages.
       for (i = me.current_page_nr+1; i <= me.current_page_nr + me.preload_count; i++)
+      {
         me.PreloadPage(i);
+      }
         
       for (i = me.current_page_nr - 1; i >= me.current_page_nr - me.preload_count; i--)
+      {
         me.PreloadPage(i);
-    },
+      }
+    }
 
 
 });

@@ -44,15 +44,19 @@ Ext.define('Comic.view.ImageViewer',{
               indicators: false
             },  
             loadingMessage:'Loading...',
-            html: '<figure><img/></figure>',
+            html: '<figure><img/></figure>'
 
     },
     xtype: 'imageviewer',
     initialize: function() {
         if(this.initOnActivate)
+        {
             this.addListener('activate', this.initViewer, this, {delay: 10, single: true});
+        }
         else
+        {
             this.addListener('painted', this.initViewer, this, {delay: 10, single: true});        
+        }
     },
     
     initViewer: function() {
@@ -65,10 +69,12 @@ Ext.define('Comic.view.ImageViewer',{
         
         // mask image viewer
         if(me.getLoadingMask())
+        {
             me.setMasked({
                    xtype: 'loadmask',
                    message:me.getLoadingMessage()
             });
+        }
 
         me.scaledFromBaseScale = false;
         
@@ -80,13 +86,13 @@ Ext.define('Comic.view.ImageViewer',{
         me.figEl.setStyle({
             overflow: 'hidden',
             display: 'block',
-            margin: 0,
+            margin: 0
         });
 
         me.imgEl.setStyle({
             '-webkit-user-drag': 'none',
             '-webkit-transform-origin': '0 0',
-            'visibility': 'hidden',
+            'visibility': 'hidden'
         });
 
         // show preview
@@ -96,7 +102,7 @@ Ext.define('Comic.view.ImageViewer',{
                 backgroundImage: 'url('+me.getPreviewSrc()+')',
                 backgroundPosition: 'center center',
                 backgroundRepeat: 'no-repeat',
-                webkitBackgroundSize: 'contain',
+                webkitBackgroundSize: 'contain'
             });
         }
 
@@ -128,14 +134,16 @@ Ext.define('Comic.view.ImageViewer',{
             //dragstart: me.onDragStart,
             //drag: me.onDrag,
             //dragend: me.onDragEnd,
-            taphold: me.onTapHold,
+            taphold: me.onTapHold
         });  
         
         me.fireEvent('initDone', me);
         
         // load image
         if(me.getImageSrc())
+        {
             me.loadImage(me.getImageSrc());
+        }
     },
 
     loadImage: function(src) {  
@@ -147,7 +155,9 @@ Ext.define('Comic.view.ImageViewer',{
             me.imgEl.dom.onerror = Ext.Function.bind(me.onError, me, me.imgEl, 0);
         }
         else
+        {
             me.setImageSrc(src);
+        }
     },
     
     replaceImage: function(oldImg, newImg) {
@@ -175,17 +185,21 @@ Ext.define('Comic.view.ImageViewer',{
         //me.replaceImage(me.imgEl, el);
 
         me.imgEl.dom.onload = Ext.Function.bind(me.onLoad, me, me.imgEl, 0);
-        me.imgEl.dom.onerror = function() {
+        me.imgEl.dom.onerror = function(e) {
                 me.fireEvent('error', me, el, e);
                 
                 if (me.getErrorImage())
+                {
                   this.src = me.getErrorImage();
+                }
             };
         
         me.fireEvent('load', me, me.imgEl, 0);
       }
       else
+      {
         me.setImageSrc(el.dom.src);
+      }
     },
 
 
@@ -208,13 +222,17 @@ Ext.define('Comic.view.ImageViewer',{
         var me = this;
         me.fireEvent('error', me, el, e);
         if (me.getErrorImage())
+        {
           el.src = me.getErrorImage();
+        }
     },
 
     onImageError: function() {
       var me = this;
       if (me.getLoadingMask())
+      {
         me.setMasked(false);
+      }
 
         me.fireEvent('imageError', me);
     },
@@ -232,12 +250,14 @@ Ext.define('Comic.view.ImageViewer',{
         if(me.getPreviewSrc())
         {
             me.element.setStyle({
-                backgroundImage: 'none',
+                backgroundImage: 'none'
             });
         }
 
         if(me.getLoadingMask())
+        {
             me.setMasked(false);
+        }
 
         me.fireEvent('imageLoaded', me);
     },
@@ -289,7 +309,8 @@ Ext.define('Comic.view.ImageViewer',{
     },
     
     onImagePinchEnd: function(ev) {
-        var me = this;
+        var me = this,
+            scale_threshold = 0;
             
         // Snap to minimum scale
         /*
@@ -304,11 +325,15 @@ Ext.define('Comic.view.ImageViewer',{
         if (me.scale < me.fitScale) 
         {
           // 0.8 so scaling will favor fitScale above baseScale for a more natural feel on the ipad.
-          var scale_threshold = 0.8*(me.baseScale + me.fitScale) / 2;
+          scale_threshold = 0.8*(me.baseScale + me.fitScale) / 2;
           if (me.scale >= scale_threshold)
+          {
             me.scale = me.fitScale;
+          }
           else
+          {
             me.scale = me.baseScale;
+          }
         }
         
         // set new translation
@@ -326,7 +351,8 @@ Ext.define('Comic.view.ImageViewer',{
         else
         {    
             //Resize to init size like ios
-            if(me.scale < me.baseScale && me.getResizeOnLoad()){
+            if(me.scale < me.baseScale && me.getResizeOnLoad())
+            {
                 me.resetZoom();
                 return;
             }
@@ -351,9 +377,13 @@ Ext.define('Comic.view.ImageViewer',{
             ev = {pageX : 0, pageY: 0},
             myScale = me.scale;
         if (myScale < me.getMaxScale())
-              myScale = me.scale + 0.05;
+        {
+          myScale = me.scale + 0.05;
+        }
         if (myScale >= me.getMaxScale())
-              myScale = me.getMaxScale();
+        {
+          myScale = me.getMaxScale();
+        }
               
         ev.pageX = me.viewportWidth / 2;
         ev.pageY = me.viewportHeight / 2;
@@ -365,9 +395,13 @@ Ext.define('Comic.view.ImageViewer',{
             ev = {pageX : 0, pageY: 0},
             myScale = me.scale;
         if (myScale > me.baseScale)
-                myScale = me.scale - 0.05;
+        {
+          myScale = me.scale - 0.05;
+        }
         if (myScale <= me.baseScale)
-                myScale = me.baseScale;
+        {
+          myScale = me.baseScale;
+        }
 
 
         ev.pageX = me.viewportWidth / 2;
@@ -379,10 +413,9 @@ Ext.define('Comic.view.ImageViewer',{
         var me = this,
             scroller = me.getScrollable().getScroller(),
             scrollPosition = scroller.position,
-            element = me.element;
-            
-        // zoom in toward tap position
-        var oldScale = this.scale,
+            element = me.element,
+            // zoom in toward tap position
+            oldScale = this.scale,
             newScale = scale,
             originViewportX = ev ? (ev.pageX - element.getX()) : 0,
             originViewportY = ev ? (ev.pageY - element.getY()) : 0,
@@ -403,19 +436,23 @@ Ext.define('Comic.view.ImageViewer',{
             
             // force repaint to solve occasional iOS rendering delay
             Ext.repaint();
-        },50)
+        },50);
     },
     
     onSingleTap: function(ev, t) {
       var me = this;
       if (!me.fireEvent('singletap', ev ,t) && me.getZoomOnSingleTap())
+      {
         me.fireEvent('zoomByTap', ev, t);
+      }
     },
     
     onDoubleTap: function(ev, t) {
       var me = this;
       if (!me.fireEvent('doubletap', ev ,t) && me.getZoomOnDoubleTap())
+      {
         me.fireEvent('zoomByTap', ev, t);
+      }
     },
     
     onZoomByTap: function(ev, t) {
@@ -425,7 +462,9 @@ Ext.define('Comic.view.ImageViewer',{
             element = me.element;
 
         if (!me.getZoomOnTapScale())
-            return false;
+        {
+          return false;
+        }
         
         // set scale and translation
         
@@ -497,7 +536,7 @@ Ext.define('Comic.view.ImageViewer',{
                 
                 // force repaint to solve occasional iOS rendering delay
                 Ext.repaint();
-            },50)
+            },50);
             
         }
     },
@@ -551,7 +590,7 @@ Ext.define('Comic.view.ImageViewer',{
         me.scaledFromBaseScale = false;
 
         // grab image size
-        if(typeof(me.imgEl) != 'undefined'){
+        if(me.imgEl !== undefined){
             me.imgWidth = me.imgEl.dom.width;
             me.imgHeight = me.imgEl.dom.height;
         }else{
@@ -629,7 +668,7 @@ Ext.define('Comic.view.ImageViewer',{
             me.imgEl.dom.style.webkitTransform = 
                 //'translate('+fixedX+'px, '+fixedY+'px)'
                 //+' scale('+fixedScale+','+fixedScale+')';
-                'matrix('+fixedScale+',0,0,'+fixedScale+','+fixedX+','+fixedY+')'
+                'matrix('+fixedScale+',0,0,'+fixedScale+','+fixedX+','+fixedY+')';
         }
         else
         {
@@ -656,7 +695,7 @@ Ext.define('Comic.view.ImageViewer',{
 
         me.figEl.setStyle({
             width: boundWidth + 'px',
-            height: boundHeight + 'px',
+            height: boundHeight + 'px'
         });
         
         // update scroller to new content size
@@ -672,6 +711,6 @@ Ext.define('Comic.view.ImageViewer',{
             y = me.scrollY;
         }
         scroller.scrollTo(x*-1,y*-1);
-    },        
+    }        
 });
     

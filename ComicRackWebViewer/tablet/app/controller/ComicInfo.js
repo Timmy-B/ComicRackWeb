@@ -29,19 +29,19 @@ Ext.define('Comic.controller.ComicInfo', {
           
           maintabpanel: 'mainview maintabpanel',
           comicinfofieldset: 'comicinfoview #comicinfofieldset',
-          coverimage: 'comicinfoview #coverimage',
+          coverimage: 'comicinfoview #coverimage'
         },
         
         control: {
         
           comicinfoview: {
-            activate: 'onActivate',
+            activate: 'onActivate'
           },
           
           backbutton: {
             tap: 'onBackButton'
-          },
-        },
+          }
+        }
     },
     
     init : function()
@@ -68,14 +68,15 @@ Ext.define('Comic.controller.ComicInfo', {
             return;
           }
           
-          var values = result.getData();
+          var values = result.getData(),
+              s = "";
           //values.Filename = comicinfoview.comic.filename;
           
-          var s="";
-          
-          s+='<span class="series">' + values.ShadowSeries + ' V' + values.ShadowVolume + ' #' + values.ShadowNumber + '</span><br/>';
+          s += '<span class="series">' + values.ShadowSeries + ' V' + values.ShadowVolume + ' #' + values.ShadowNumber + '</span><br/>';
           if (values.ShadowTitle)
+          {
             s += '<span class="title">'+values.ShadowTitle+'</span></br/>';
+          }
             
           s += 'Published: ' + values.ShadowYear + '/' + values.Month + '<br/>' + values.PageCount + ' pages</br/>';
           
@@ -97,7 +98,7 @@ Ext.define('Comic.controller.ComicInfo', {
     onBackButton: function() 
     {
       this.getMainview().pop(1);
-    },   
+    }   
    
 
 

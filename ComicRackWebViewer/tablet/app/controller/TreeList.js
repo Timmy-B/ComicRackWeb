@@ -31,7 +31,7 @@ Ext.define('Comic.controller.TreeList', {
           mainview: 'mainview',
           treelistview: 'treelistview',
           refreshbutton: 'treelistview #refreshbutton',
-          pullrefresh: 'treelistview #pullrefresh',
+          pullrefresh: 'treelistview #pullrefresh'
         },
         
         control: {
@@ -42,30 +42,38 @@ Ext.define('Comic.controller.TreeList', {
             initialize: 'onTreeListInitialize',
             leafitemtap: 'onTreeListLeafItemTap',
             itemtap: 'onTreeListItemTap', // also get comic list for folder items, because that's also what ComicRack does.
-            load: 'onTreeListLoad',
+            load: 'onTreeListLoad'
             
           },
           refreshbutton: {
             tap: 'onRefreshButton'
           },
           pullrefresh: {
-            refresh: 'onRefreshButton',
-          },
-        },
+            refresh: 'onRefreshButton'
+          }
+        }
+    },
+    
+    init: function() 
+    {
+      var me = this;
+      me.storeName = 'TreeList-';
+      me.storeCount = 0;
     },
     
     onRefreshButton: function()
     {
       var me = this,
-          treelistview = me.getTreelistview();
-          
+          treelistview = me.getTreelistview(),
+          oldstore = treelistview.getStore(),
+          store = Ext.create('Comic.store.TreeList', { storeId : me.storeName + me.storeCount++ });
+      
       treelistview.setMasked({
             xtype: 'loadmask',
             message: 'Loading...'
         });
         
-      var oldstore = treelistview.getStore();
-      var store = Ext.create('Comic.store.TreeList', { storeId : storeName + storeCount++ });
+      
       store.setPageSize(null);
       treelistview.setStore(store);
       oldstore.destroy();
@@ -88,7 +96,9 @@ Ext.define('Comic.controller.TreeList', {
       var me = this;
       
       if (record.data.leaf)
+      {
         return; // onTreeListLeafItemTap will follow...
+      }
       
       me.getTreelistview().fireEvent('showlist', record.data.Id, record.data.Name);
     },
@@ -113,21 +123,20 @@ Ext.define('Comic.controller.TreeList', {
     onTreeListLoad: function( /*Ext.dataview.NestedList*/ nestedlist, /*Ext.data.Store*/ store, /*Ext.util.Grouper[]*/ records, /*Boolean*/ successful, /*Ext.data.Operation*/ operation, /*Object*/ eOpts ) 
     {
       var me = this,
-          treelistview = me.getTreelistview();
+          treelistview = me.getTreelistview(),
+          library = store.findRecord('Type', 'ComicLibraryListItem'),
+          list;
       
       treelistview.goToNode(store.getRoot());
       treelistview.setMasked(false);    
-      
             
-      var library = store.findRecord('Type', 'ComicLibraryListItem');
       if (library)
       {
-        var list = treelistview.getActiveItem();
+        list = treelistview.getActiveItem();
         list.select(library);
         Comic.RemoteApi.library_id = library.data.Id;
         me.onTreeListLeafItemTap(null, null, 0, null, library);
       }
-    },
-      
+    }
     
 });

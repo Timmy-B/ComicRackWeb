@@ -28,7 +28,7 @@ Ext.define('Comic.controller.Series', {
           refreshbutton: 'seriesview #refreshbutton',
           pullrefresh: 'seriesview #pullrefresh',
           titlebar: 'seriesview titlebar',
-          searchfield: 'seriesview searchfield',
+          searchfield: 'seriesview searchfield'
         },
         
         control: {
@@ -37,21 +37,28 @@ Ext.define('Comic.controller.Series', {
             show: 'onSeriesViewShow',
             activate: 'onSeriesViewActivate', // fired when the view is activated (by the tab panel)
             initialize: 'onSeriesViewInitialize',
-            itemtap: 'onSeriesViewItemTap',
+            itemtap: 'onSeriesViewItemTap'
           },
           
           refreshbutton: {
             tap: 'onRefreshButton'
           },
           pullrefresh: {
-            refresh: 'onPullRefresh',
+            refresh: 'onPullRefresh'
           },
           
           searchfield: {
             clearicontap: 'onSearchClearIconTap',
             keyup: 'onSearchKeyUp'
-          },
-        },
+          }
+        }
+    },
+    
+    init: function()
+    {
+      var me = this;
+      me.storeName = 'Series-';
+      me.storeCount = 0;
     },
     
     onSeriesViewItemTap: function(/*Ext.List*/ list, /*Number*/ index, /*Ext.dom.Element*/ target, /*Ext.data.Record*/ record, /*Ext.event.Event*/ e, /*Object*/ eOpts)
@@ -85,25 +92,23 @@ Ext.define('Comic.controller.Series', {
     {
       var me = this,
           seriesview = me.getSeriesview(),
-          titlebar = me.getTitlebar();
+          titlebar = me.getTitlebar(),
+          oldstore = seriesview.getStore(),
+          store = Ext.create('Comic.store.Series', { storeId : me.storeName + me.storeCount++ });
           
-      seriesview.setMasked({
-            xtype: 'loadmask',
-            message: 'Loading...'
-        });
-        
+      seriesview.setMasked({ xtype: 'loadmask', message: 'Loading...' });
       
-      var oldstore = seriesview.getStore();
-      var store = Ext.create('Comic.store.Series', { storeId : storeName + storeCount++ });
       store.setPageSize(null);
       store.load(
         {
-          callback: function(records, operation, success) {
+          callback: function(records, operation, success) 
+          {
             titlebar.setTitle('Series [#: ' + store.getTotalCount() + ']');
           },
           scope: me
         }
       );
+      
       seriesview.setStore(store);
       oldstore.destroy();
       
@@ -147,51 +152,67 @@ Ext.define('Comic.controller.Series', {
       var me = this;
       
       if (me.filterTimer)
+      {
         clearTimeout(me.filterTimer);
+      }
         
       me.filterTimer = Ext.defer(function() {
         me.filterTimer = null;
         
         //get the store and the value of the field
         var store = this.getSeriesview().getStore(),
-            value = field.getValue();
+            value = field.getValue(),
+            searches,
+            regexps,
+            i,
+            scrollable;
             
         //first clear any current filters on the store
         store.clearFilter();
 
         //check if a value is set first, as if it isn't we dont have to do anything
-        if (value) {
-            //the user could have entered spaces, so we must split them so we can loop through them all
-            var searches = value.split(' '),
-                regexps = [],
-                i;
-
-            //loop them all
-            for (i = 0; i < searches.length; i++) {
-                //if it is nothing, continue
-                if (!searches[i]) continue;
-
-                //if found, create a new regular expression which is case insenstive
-                regexps.push(new RegExp(searches[i], 'i'));
+        if (value) 
+        {
+          //the user could have entered spaces, so we must split them so we can loop through them all
+          searches = value.split(' ');
+          regexps = [];
+             
+          //loop them all
+          for (i = 0; i < searches.length; i++) 
+          {
+            //if it is nothing, continue
+            if (!searches[i]) 
+            {
+              continue;
             }
 
-            //now filter the store by passing a method
-            //the passed method will be called for each record in the store
-            store.filter(function(record) {
+            //if found, create a new regular expression which is case insenstive
+            regexps.push(new RegExp(searches[i], 'i'));
+          }
 
-                //loop through each of the regular expressions
-                for (i = 0; i < regexps.length; i++) {
-                    var search = regexps[i];
-                    
-                    if (!Comic.model.Series.getDisplayText(record.data).match(search))
-                      return false;
-                }
+          //now filter the store by passing a method
+          //the passed method will be called for each record in the store
+          store.filter(function(record) {
 
-                return true;
-            });
-            var scrollable = me.getSeriesview().getScrollable();
-            if (scrollable)
-              scrollable.getScroller().scrollToTop();
+            //loop through each of the regular expressions
+            for (i = 0; i < regexps.length; i++) 
+            {
+              var search = regexps[i];
+              
+              if (!Comic.model.Series.getDisplayText(record.data).match(search))
+              {
+                return false;
+              }
+            }
+
+            return true;
+          });
+          
+          scrollable = me.getSeriesview().getScrollable();
+          if (scrollable)
+          {
+            scrollable.getScroller().scrollToTop();
+          }
 
         }
       }, 300, me);
@@ -214,6 +235,6 @@ Ext.define('Comic.controller.Series', {
       }
         
       store.clearFilter();
-    },
+    }
     
 });

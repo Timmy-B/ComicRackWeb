@@ -14,35 +14,36 @@ Ext.define('Ext.ux.IOS5Toggle', {
     listeners: {
         initialize: function () {
             
-            var me = this;
-            var mec = this.getComponent();
-            var mythumb = this.element.down('.x-thumb');
-            var mytoggle = this.element.down('.x-toggle');
-            var myelement = this.element;
+            var me = this,
+                mec = this.getComponent(),
+                mythumb = this.element.down('.x-thumb'),
+                mytoggle = this.element.down('.x-toggle'),
+                myelement = this.element;
             
             mythumb.on({
                 // this improves the ON/OFF effect 
                 drag: {
                     fn: function () {
-                        var value,oldvalue,onCls,offCls;
+                        var value,onCls,offCls;
                         value = me.getValue();
-                        onCls = me.getMaxValueCls(),
+                        onCls = me.getMaxValueCls();
                         offCls = me.getMinValueCls();
-                        if(value != oldvalue) {
-                            mytoggle.addCls(value ? onCls : offCls);
-                            mytoggle.removeCls(value ? offCls : onCls);
+                        if (value != me.oldvalue) 
+                        {
+                          mytoggle.addCls(value ? onCls : offCls);
+                          mytoggle.removeCls(value ? offCls : onCls);
                         }
-                        oldvalue = value;
+                        me.oldvalue = value;
                     }
                 },
                 // this improves the tap action (responds to tap on thumb)
                 tap: {
                     fn: function (e,t) {
-                        var value,oldValue,onCls,offCls,thumb;
-                        oldValue = me.getValue();
+                        var value,onCls,offCls,thumb;
+                        me.oldValue = me.getValue();
                         value = ((me.getValue()==1) ? 0 : 1);
                         mec.setIndexValue(0, value, mec.getAnimation());
-                        onCls = me.getMaxValueCls(),
+                        onCls = me.getMaxValueCls();
                         offCls = me.getMinValueCls();
                         mytoggle.addCls(value ? onCls : offCls);
                         mytoggle.removeCls(value ? offCls : onCls);
@@ -50,7 +51,7 @@ Ext.define('Ext.ux.IOS5Toggle', {
                 }
             });
             
-        }, // initialize
+        } // initialize
     } // listeners   
   }
 

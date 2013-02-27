@@ -22,7 +22,7 @@
 Ext.define('Comic.store.ComicBook', {
     extend: 'Ext.data.Store',
     requires: [
-        'Comic.model.ComicInfo',
+        'Comic.model.ComicInfo'
         ],
     
     config: {
@@ -38,10 +38,10 @@ Ext.define('Comic.store.ComicBook', {
                   console.error('Failed to load Comic store for ' + proxy.getUrl(), response.responseText);
                   //Ext.Msg.alert('Loading failed', response.statusText);
               }
-            },
+            }
             
             
         }
         
-    },    
+    }    
 });

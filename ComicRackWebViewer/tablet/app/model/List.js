@@ -20,9 +20,13 @@
 
 function isListLeaf(v, record) {
   if (record.data.Type == null)
+  {
     return false; // root item
+  }
   else 
+  {
     return record.data.Type != 'ComicListItemFolder';
+  }
 }
 
 
@@ -40,9 +44,9 @@ Ext.define('Comic.model.List', {
         { name: 'NewBookCountDate', type: 'string' },
         { name: 'Lists', type: 'object' },
         { name: 'leaf', convert: isListLeaf },
-        { name: 'items', mapping: 'Lists' },
+        { name: 'items', mapping: 'Lists' }
       ],
-      idProperty: 'Id',
+      idProperty: 'Id'
       
       
     }

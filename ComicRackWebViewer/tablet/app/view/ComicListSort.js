@@ -24,7 +24,7 @@ Ext.define('Comic.view.ComicListSort', {
     //'Ext.ux.IOS5Toggle',
     //'Ext.ux.IconSpinner',
     'Ext.field.Select',
-    'Ext.field.Search',
+    'Ext.field.Search'
   ],
   config: {
   
@@ -104,7 +104,7 @@ Ext.define('Comic.view.ComicListSort', {
               {
                 text: 'Last Opened',
                 value: 8
-              },
+              }
             ]
           },          
           {
@@ -123,8 +123,8 @@ Ext.define('Comic.view.ComicListSort', {
                 value: 1
               }
             ]
-          },
-        ],
+          }
+        ]
       },
       {
         xtype: 'fieldset',
@@ -172,7 +172,7 @@ Ext.define('Comic.view.ComicListSort', {
               {
                 text: 'Last Opened',
                 value: 8
-              },
+              }
             ]
           },          
           {
@@ -191,10 +191,10 @@ Ext.define('Comic.view.ComicListSort', {
                 value: 1
               }
             ]
-          },
+          }
           
         ]
-      },
+      }
       
     ]
   }

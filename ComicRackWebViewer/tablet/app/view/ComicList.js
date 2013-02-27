@@ -27,17 +27,23 @@ var TheComicListItemTemplate = new Ext.XTemplate(
       getProgressText: function(comic)
       {
         if (comic.PageCount == 0)
+        {
           return "no pages"; // BUG: This comic should never have been added to the database.....
+        }
         
         if ((comic.LastPageRead + 1) == comic.PageCount)
+        {
           return "finished";
+        }
         else
+        {
           return (comic.LastPageRead + 1) + "/" + comic.PageCount;
+        }
       },
       getOpenedDate: function(comic)
       {
         return comic.Opened === null ? 'Never' : comic.Opened;
-      },
+      }
     }
 ); 
 
@@ -50,7 +56,7 @@ Ext.define('Comic.view.ComicList', {
     requires: [ 
       'Ext.plugin.ListPaging',
       'Ext.dataview.List',
-      'Comic.view.ComicListSort',
+      'Comic.view.ComicListSort'
     ],
     
         
@@ -83,18 +89,18 @@ Ext.define('Comic.view.ComicList', {
               xtype: 'button', 
               itemId: 'sortbutton',
               align: 'right',
-              text: 'Sort',
+              text: 'Sort'
             },
             {
               xtype: 'button', 
               itemId: 'refreshbutton',
               align: 'right',
               iconCls: 'refresh',
-              iconMask: true,
+              iconMask: true
             }
           ] 
-        },
+        }
         
-      ],
+      ]
     }
 });

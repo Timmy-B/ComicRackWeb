@@ -23,8 +23,7 @@ Ext.define('Comic.view.Search', {
   requires: [
         'Ext.form.FieldSet',
         'Ext.field.Select',
-        'Ext.ux.IOS5Toggle',
-        'Ext.ux.IconSpinner',
+        'Ext.ux.IconSpinner'
     ],
 
   config: {
@@ -32,7 +31,6 @@ Ext.define('Comic.view.Search', {
     items: [
       {
         xtype: 'fieldset',
-        //title: 'Search',
         items: [
           {
             xtype: 'selectfield',
@@ -71,7 +69,7 @@ Ext.define('Comic.view.Search', {
               {
                 text: 'File path',
                 value: 8
-              },
+              }
             ]
           },          
           {
@@ -81,22 +79,19 @@ Ext.define('Comic.view.Search', {
           }
         ]
       },
-      
       {
         xtype: 'button',
         itemId: 'submitbutton',
         text: 'Go',
         ui: 'action',
         iconCls: 'search',
-        iconMask: true,
+        iconMask: true
       },
-      
-      
       {
         xtype: 'toolbar',
         docked: 'top',
         ui: 'light',
-        title: 'Search All',
+        title: 'Search All'
       }
     ]
   }

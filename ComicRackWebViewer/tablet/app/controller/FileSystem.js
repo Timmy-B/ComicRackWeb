@@ -16,6 +16,9 @@
   You should have received a copy of the GNU General Public License
   along with Badaap Comic Reader.  If not, see <http://www.gnu.org/licenses/>.
 */  
+
+//<debug>
+
 Ext.define('Comic.controller.FileSystem', {
     extend: 'Ext.app.Controller',
 
@@ -27,7 +30,7 @@ Ext.define('Comic.controller.FileSystem', {
           //folderlist: 'filesystemview #folderlist',
           //searchfield: 'filesystemview #folderlist searchfield',
           comicview: { selector: 'comicview', xtype: 'comicview', autoCreate: true },
-          comicinfoview: { selector: 'comicinfoview', xtype: 'comicinfoview', autoCreate: true },
+          comicinfoview: { selector: 'comicinfoview', xtype: 'comicinfoview', autoCreate: true }
         },
         
         control: {
@@ -38,7 +41,7 @@ Ext.define('Comic.controller.FileSystem', {
             show: 'onShow',
             activeitemchange: 'onActiveitemchange', // triggered when a list is about to be shown, except for first paint of the first root list.
             activate: 'onActivate', // fired when the view is activated (by the tab panel)
-            listchange: 'onListchange', // triggered after the list is rendered.
+            listchange: 'onListchange' // triggered after the list is rendered.
           },
           
           searchfield: {
@@ -50,7 +53,7 @@ Ext.define('Comic.controller.FileSystem', {
             //show: 'onSearchClearIconTap',
             //hide: 'onSearchClearIconTap',
           }
-        },
+        }
         
     },
     onListchange: function( /*Ext.dataview.NestedList*/ nestedlist, /*Object*/ listitem, /*Object*/ eOpts )
@@ -77,15 +80,18 @@ Ext.define('Comic.controller.FileSystem', {
         // If the filters of nodes must be kept between list changes, then the filter must be stored with the node,
         // because the list itself (and its searchfield) may be reused, but assigned a different store each time.
         
-        var store = value.getStore();
-        var newId = store.getNode().getId();
-        var oldId = oldValue.getStore().getNode().getId();
+        var store = value.getStore(),
+            newId = store.getNode().getId(),
+            oldId = oldValue.getStore().getNode().getId(),
+            searchfield;
         
         if (phpjs.strncmp(newId, oldId, newId.length) != 1)
+        {
           return;
+        }
         
         store.clearFilter();
-        var searchfield = value.query('searchfield');
+        searchfield = value.query('searchfield');
         searchfield[0].setValue('');
       },
     onShow: function()
@@ -127,22 +133,30 @@ Ext.define('Comic.controller.FileSystem', {
     {
         //get the store and the value of the field
         var value = field.getValue(),
-            store = field.getParent().getParent().getStore();
+            store = field.getParent().getParent().getStore(),
+            searches,
+            regexps,
+            i;
+            
 
         //first clear any current filters on the store
         store.clearFilter();
 
         //check if a value is set first, as if it isn't we dont have to do anything
-        if (value) {
+        if (value) 
+        {
             //the user could have entered spaces, so we must split them so we can loop through them all
-            var searches = value.split(' '),
-                regexps = [],
-                i;
-
+            searches = value.split(' ');
+            regexps = [];
+              
             //loop them all
-            for (i = 0; i < searches.length; i++) {
+            for (i = 0; i < searches.length; i++) 
+            {
                 //if it is nothing, continue
-                if (!searches[i]) continue;
+                if (!searches[i]) 
+                {
+                  continue;
+                }
 
                 //if found, create a new regular expression which is case insenstive
                 regexps.push(new RegExp(searches[i], 'i'));
@@ -150,22 +164,29 @@ Ext.define('Comic.controller.FileSystem', {
 
             //now filter the store by passing a method
             //the passed method will be called for each record in the store
-            store.filter(function(record) {
-                var matched = [];
+            store.filter(function(record) 
+            {
+                var matched = [],
+                    search,
+                    didMatch;
 
                 //loop through each of the regular expressions
-                for (i = 0; i < regexps.length; i++) {
-                    var search = regexps[i],
-                        didMatch = record.get('name').match(search);
+                for (i = 0; i < regexps.length; i++) 
+                {
+                    search = regexps[i];
+                    didMatch = record.get('name').match(search);
 
                     //if it matched the first or last name, push it into the matches array
                     matched.push(didMatch);
                 }
 
                 //if nothing was found, return false (dont so in the store)
-                if (regexps.length > 1 && matched.indexOf(false) != -1) {
+                if (regexps.length > 1 && matched.indexOf(false) != -1) 
+                {
                     return false;
-                } else {
+                } 
+                else 
+                {
                     //else true true (show in the store)
                     return matched[0];
                 }
@@ -181,7 +202,9 @@ Ext.define('Comic.controller.FileSystem', {
     {
       var store = field.getParent().getParent().getStore();
       store.clearFilter();
-    },
+    }
        
     
 });
+
+//</debug>

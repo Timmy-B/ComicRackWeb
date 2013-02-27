@@ -38,7 +38,7 @@ Ext.define('Comic.view.About', {
             xtype: 'textfield',
             name: 'version',
             label: 'Version',
-            value: '1.18',
+            value: '1.19',
             readOnly: true
           },
           {
@@ -46,7 +46,7 @@ Ext.define('Comic.view.About', {
             name: 'copyright',
             label: 'Copyright',
             value: 'Copyright (c) 2013 Jeroen Walter',
-            readOnly: true,
+            readOnly: true
           },
           {
             xtype: 'textfield',
@@ -55,7 +55,7 @@ Ext.define('Comic.view.About', {
             value: '',//'http://www.badaap.nl/',
             html: '<a href="http://www.badaap.nl" target=_blank>http://www.badaap.nl/</a>',
             readOnly: true
-          },
+          }
           
         ]
       },
@@ -73,7 +73,7 @@ Ext.define('Comic.view.About', {
   GNU General Public License for more details.<br/>\
 <br/>\
   You should have received a copy of the GNU General Public License<br/>\
-  along with Badaap Comic Reader.  If not, see http://www.gnu.org/licenses/.',
+  along with Badaap Comic Reader.  If not, see http://www.gnu.org/licenses/.'
       }
     ]
   }

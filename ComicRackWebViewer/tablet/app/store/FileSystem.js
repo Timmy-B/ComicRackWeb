@@ -16,11 +16,12 @@
   You should have received a copy of the GNU General Public License
   along with Badaap Comic Reader.  If not, see <http://www.gnu.org/licenses/>.
 */  
+/*
 Ext.define('Comic.store.FileSystem', {
     extend: 'Ext.data.TreeStore',
     requires: [
         'Ext.data.TreeStore',
-        'Comic.model.File',
+        'Comic.model.File'
     ],
     
     config: {
@@ -28,31 +29,10 @@ Ext.define('Comic.store.FileSystem', {
     storeId: 'FileSystem',
     defaultRootProperty: 'items',
     nodeParam: 'id',
-    defaultRootId: "",
+    defaultRootId: ""
     
-    /* sorterFn is not triggered correctly, or just doesn't sort correctly.
-       For now, let the server sort the items.
     
-    sorters: [
-        {
-            // Sort by folder, then by file
-            sorterFn: function(record1, record2) 
-            {
-              if (record1.data.leaf == record2.data.leaf)
-              {
-                var name1 = record1.data.name,
-                    name2 = record2.data.name;
-
-                return strnatcasecmp(name1, name2);
-              }
-              else
-              if (record1.data.leaf) return 1;
-              else return -1;
-            },
-            direction: 'ASC'
-        }
-    ],
-    */
-    
-   },    
+   }    
 });
+
+*/

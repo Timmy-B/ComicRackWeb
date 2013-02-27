@@ -22,7 +22,7 @@ Ext.define('Comic.view.Main', {
     xtype: 'mainview',
     
     requires: [
-        'Comic.view.SplitView',
+        'Comic.view.SplitView'
     ],
     
     config: {
@@ -30,7 +30,7 @@ Ext.define('Comic.view.Main', {
         navigationBar: false,
         items: [
             {
-              xtype: 'splitview',
+              xtype: 'splitview'
             }
         ]
     }

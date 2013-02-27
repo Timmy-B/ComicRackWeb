@@ -24,8 +24,9 @@ var disableCache = Ext.os.deviceType == 'Tablet';
 Ext.Loader.setConfig({
   disableCaching: disableCache, 
   paths   : {
-    'Comic': 'app',
-    'Ext.ux': 'lib/ux',
+    'Ext': 'touch/src',
+    'Comic': './app',
+    'Ext.ux': './lib/ux'
   } 
 });
 
@@ -40,6 +41,18 @@ function RemoteLog(severity, message)
 }
 
 RemoteLog(1, "BCR initializing....");
+
+
+if (!Ext.browser.is.WebKit) 
+{
+  alert("The current browser is unsupported.\n\nSupported browsers:\n" +
+        "Google Chrome\n" +
+        "Apple Safari\n" +
+        "Mobile Safari (iOS)\n" +
+        "Android Browser\n" +
+        "BlackBerry Browser"
+    );
+}
 
 /*
   This creates the application.
@@ -82,7 +95,7 @@ Ext.application({
       'ComicInfo',
       'ComicSettings',
       'Series',
-      'Search',
+      'Search'
     ],
         
     requires: [
@@ -95,6 +108,18 @@ Ext.application({
     
     launch: function()
     {
+    /*
+      if (!Ext.browser.is.WebKit) {
+        alert("The current browser is unsupported.\n\nSupported browsers:\n" +
+              "Google Chrome\n" +
+              "Apple Safari\n" +
+              "Mobile Safari (iOS)\n" +
+              "Android Browser\n" +
+              "BlackBerry Browser"
+          );
+      }
+    */
+      
       Ext.getBody().removeCls('splash');
             
       Ext.fly('splashtitle').destroy();

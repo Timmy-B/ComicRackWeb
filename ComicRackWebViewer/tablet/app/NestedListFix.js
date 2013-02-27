@@ -73,5 +73,5 @@ Ext.define('Comic.NestedListFix', {
             me.fireEvent('leafitemtaphold', this, list, index, target, record, e);
         }
 
-    },
+    }
 });

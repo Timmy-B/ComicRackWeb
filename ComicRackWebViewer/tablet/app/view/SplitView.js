@@ -24,7 +24,7 @@ Ext.define('Comic.view.SplitView', {
     requires: [
         'Comic.view.ComicList',
         'Comic.view.TreeList',
-        'Comic.view.TabPanel',
+        'Comic.view.TabPanel'
     ],
     
     config: {
@@ -42,9 +42,9 @@ Ext.define('Comic.view.SplitView', {
               items: [
                 {
                   flex: 1,
-                  xtype: 'maintabpanel',
+                  xtype: 'maintabpanel'
                 }
-              ],
+              ]
             },
             {
               xtype: 'container',
@@ -56,8 +56,8 @@ Ext.define('Comic.view.SplitView', {
               items: [
                 {
                   xtype: 'comiclistview',
-                  flex: 1,
-                },
+                  flex: 1
+                }
                 
               ]
             }

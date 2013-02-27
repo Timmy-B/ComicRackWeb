@@ -21,6 +21,10 @@
   
 */
 
+
+//<debug>
+
+
 // Use one template instance for all list items instead of creating one for each list item separately.....
 var TheFileSystemItemTemplate = new Ext.XTemplate(
     '<tpl if="leaf === true"><img src="covers/{comic.id}_cover.jpg" height="60"/>{[this.getTitleText(values.comic)]}<span class="progress">{[this.getProgressText(values.comic)]}</span><span class="date_last_read"><tpl if="comic.date_last_read === null"></tpl><tpl if="comic.date_last_read !== null">{comic.date_last_read}</tpl></span></tpl><tpl if="leaf === false"><img src="resources/images/folder.png" height="60"/>{name}</br><span class="progress">{file_count} | {folder_count}</span></tpl>',
@@ -32,28 +36,42 @@ var TheFileSystemItemTemplate = new Ext.XTemplate(
       {
         var s = '';
         if (comic.Series)
+        {
           s += comic.Series + ' ' + comic.Number;
-          else
+        }
+        else
+        {
           s += comic.name;
+        }
           
         if (comic.Title)
+        {
           s += ': ' + comic.Title;
+        }
         
         if (comic.Year > 0)
+        {
           s += '</br>[' + comic.Year + '/' + comic.Month + ']';
+        }
           
         return s;
       },
       getProgressText: function(comic)
       {
         if (comic.number_of_pages == 0)
+        {
           return "no pages"; // BUG: This comic should never have been added to the database.....
+        }
         
         if ((comic.last_page_read + 1) == comic.number_of_pages)
+        {
           return "finished";
+        }
         else
+        {
           return (comic.last_page_read + 1) + "/" + comic.number_of_pages;
-      },
+        }
+      }
     }
 ); 
 
@@ -63,7 +81,7 @@ Ext.define('Comic.view.FileSystem', {
     xtype: 'filesystemview',
     requires: [
         'Comic.store.FileSystem',
-        'Ext.field.Search',
+        'Ext.field.Search'
     ],
     config: {
       title: 'Files',
@@ -107,23 +125,25 @@ Ext.define('Comic.view.FileSystem', {
                     { xtype: 'spacer' },
                     {
                       xtype: 'searchfield',
-                      placeHolder: 'Filter...',
+                      placeHolder: 'Filter...'
                     },
                     { xtype: 'spacer' }
                   ]
                 }
-            ],
-      },
+            ]
+      }
     },
     
     //onItemDisclosure: function() { alert('onItemDisclosure'); },
     
     getTitleTextTpl: function() {
       return '{' + this.getDisplayField() + '}<tpl if="leaf !== true">/</tpl>';
-    },
+    }
     /*
     onSwipe: function() {
     Ext.Msg.alert('onSwipe');
     }*/
    
 });
+
+//</debug>

@@ -19,12 +19,12 @@
 Ext.define('Comic.store.List', {
     extend: 'Ext.data.Store',
     requires: [
-        'Comic.model.List',
+        'Comic.model.List'
         ],
     
     config: {
       model: 'Comic.model.List',
       storeId: 'List',
-      autoLoad: true,
-    },    
+      autoLoad: true
+    }    
 });

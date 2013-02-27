@@ -147,11 +147,11 @@ Ext.define('Ext.data.proxy.OData',{
    */
   ,encodeSorters : function(sorters)
   {
-    var  min  = []
-      ,length  = sorters.length
-      ,i    = 0;
+    var min = [],
+        length = sorters.length,
+        i;
     
-    for(; i<length; i++)
+    for (i = 0; i<length; i++)
     {
       min[i] = sorters[i].getProperty();
       
@@ -256,7 +256,8 @@ Ext.define('Ext.ux.data.Connection', {
       ,request
       ,headers
       ,xhr
-      ,expandParam;
+      ,expandParam
+      ,type;
     
     if(options.proxy && options.proxy.params && options.proxy.params.expand)
     {
@@ -344,7 +345,7 @@ Ext.define('Ext.ux.data.Connection', {
       {
         if(requestOptions.data)
         {
-          var type;
+          
           
           if(requestOptions.data.__metadata)
           {

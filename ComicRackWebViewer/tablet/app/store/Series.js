@@ -21,7 +21,7 @@ Ext.define('Comic.store.Series', {
     extend: 'Ext.data.Store',
     requires: [
         'Comic.model.Series',
-        'Comic.RestODataProxy',
+        'Comic.RestODataProxy'
         ],
     
     config: {
@@ -38,15 +38,19 @@ Ext.define('Comic.store.Series', {
               // Sort by title
               // NB: The use of toLowerCase may break sorting for unicode characters in the strings
               sorterFn: function(record1, record2) {
-                  var title1 = record1.data.Title.toLowerCase();
-                      title2 = record2.data.Title.toLowerCase();
+                  var title1 = record1.data.Title.toLowerCase(),
+                      title2 = record2.data.Title.toLowerCase(),
+                      n = title1.indexOf("the "); 
                       
-                  var n = title1.indexOf("the "); 
                   if (n == 0)
+                  {
                     title1 = title1.substr(4);
+                  }
                   n = title2.indexOf("the "); 
                   if (n == 0)
+                  {
                     title2 = title2.substr(4);
+                  }
 
                   return title1 > title2 ? 1 : (title1 == title2 ? 0 : -1);
               },
@@ -56,12 +60,16 @@ Ext.define('Comic.store.Series', {
 
       grouper: {
         groupFn: function(record) {
-          var title = record.get('Title').toUpperCase();
-          var n = title.indexOf("THE "); 
+          var title = record.get('Title').toUpperCase(),
+              n = title.indexOf("THE "); 
           if (n != 0)
+          {
             return title[0];
+          }
           else
+          {
             return title[4];
+          }
           
         }
       },
@@ -73,7 +81,7 @@ Ext.define('Comic.store.Series', {
             reader: {
               type: 'json',
               rootProperty: 'items',
-              totalProperty: 'totalCount',
+              totalProperty: 'totalCount'
             },
             listeners:{
               exception:function(proxy, response, orientation){
@@ -83,5 +91,5 @@ Ext.define('Comic.store.Series', {
             }
             
         }
-    },    
+    }    
 });

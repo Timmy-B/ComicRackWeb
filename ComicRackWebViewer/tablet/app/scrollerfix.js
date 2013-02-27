@@ -24,12 +24,6 @@
       
 */
 
-dc
-dc
-dc
-dc
-d
-c
 
 Ext.define('Comic.Scrollerfix', {
     override: 'Ext.scroll.Scroller',
@@ -90,9 +84,13 @@ Ext.define('Comic.Scrollerfix', {
     
     onAxisDrag: function(axis, delta) {
         if (axis == 'x' && this.axisDragLockY)
+        {
           return;
+        }
         if (axis == 'y' && this.axisDragLockX)
+        {
           return;
+        }
           
         if (!this.isAxisEnabled(axis)) {
             return;
@@ -136,5 +134,5 @@ Ext.define('Comic.Scrollerfix', {
         }
 
         lastDragPosition[axis] = current;
-    },
+    }
 });

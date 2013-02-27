@@ -23,7 +23,7 @@ Ext.define('Comic.controller.ComicSettings', {
       
       'Comic.view.Comic', 
       'Comic.view.ComicSettings',
-      'Comic.RemoteApi',
+      'Comic.RemoteApi'
       
     ],
 
@@ -39,7 +39,7 @@ Ext.define('Comic.controller.ComicSettings', {
           pageChangeAreaWidth: 'comicsettingsview [name=page_change_area_width]',
           openNextComic: 'comicsettingsview [name=open_next_comic]',
           openCurrentComicAtLaunch: 'comicsettingsview [name=open_current_comic_at_launch]',
-          pageFitMode: 'comicsettingsview [name=page_fit_mode]',
+          pageFitMode: 'comicsettingsview [name=page_fit_mode]'
         },
         
         control: {
@@ -49,14 +49,14 @@ Ext.define('Comic.controller.ComicSettings', {
           },
           
           usePageTurnDrag: {
-            change: 'onChangeUsePageTurnDrag',
+            change: 'onChangeUsePageTurnDrag'
           },
           usePageChangeArea: {
-            change: 'onChangeUsePageChangeArea',
-          },
+            change: 'onChangeUsePageChangeArea'
+          }
           
           
-        },
+        }
     },
 
     launch: function()
@@ -107,19 +107,27 @@ Ext.define('Comic.controller.ComicSettings', {
         use_page_turn_drag: (Comic.settings.page_turn_drag_threshold < 1000),
         page_turn_drag_threshold: (Comic.settings.page_turn_drag_threshold < 1000) ? Comic.settings.page_turn_drag_threshold : 50,
         use_page_change_area: (Comic.settings.page_change_area_width > 0),
-        page_change_area_width: (Comic.settings.page_change_area_width > 0) ? Comic.settings.page_change_area_width : 75,
+        page_change_area_width: (Comic.settings.page_change_area_width > 0) ? Comic.settings.page_change_area_width : 75
       });
       
 
       if (Comic.settings.page_change_area_width > 0)
+      {
         pageChangeAreaWidth.enable();
+      }
       else
+      {
         pageChangeAreaWidth.disable();
+      }
         
       if (Comic.settings.page_turn_drag_threshold < 1000)
+      {
         pageTurnDragThreshold.enable();
+      }
       else
+      {
         pageTurnDragThreshold.disable();
+      }
       
     },
     
@@ -173,5 +181,5 @@ Ext.define('Comic.controller.ComicSettings', {
       {
         pageChangeAreaWidth.disable();
       }
-    },    
+    }    
 });

@@ -22,7 +22,7 @@ Ext.define('Comic.RemoteApi', {
       5: [ 'Writer' ], 
       6: [ 'Writer', 'Penciller', 'Inker', 'Colorist', 'Letterer', 'CoverArtist' ], 
       7: [ 'Summary', 'Notes', 'Tags' ],
-      8: [ 'FilePath' ],
+      8: [ 'FilePath' ]
     };
   },
   
@@ -57,7 +57,7 @@ Ext.define('Comic.RemoteApi', {
       params: comic_info,
       success: function(response){
       },
-      callback: callback,
+      callback: callback
     });
   },
   
@@ -197,7 +197,7 @@ Ext.define('Comic.RemoteApi', {
       
     return s;
     */
-  },
+  }
   
 });
 

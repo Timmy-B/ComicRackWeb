@@ -82,7 +82,7 @@ Ext.define('Comic.model.ComicInfo', {
           { name: 'FileModifiedTime', type: 'string' },
           { name: 'FileCreationTime', type: 'string' },
           { name: 'CurrentPage', type: 'int' },
-          { name: 'LastPageRead', type: 'int' },
+          { name: 'LastPageRead', type: 'int' }
           
         ],
         
@@ -95,7 +95,7 @@ Ext.define('Comic.model.ComicInfo', {
                   console.error('Failed to load Comic store for ' + proxy.getUrl(), response.responseText);
                   //Ext.Msg.alert('Loading failed', response.statusText);
               }
-            },
+            }
         }
      }
  });

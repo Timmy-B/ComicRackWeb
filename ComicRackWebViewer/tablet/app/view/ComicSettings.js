@@ -23,7 +23,7 @@ Ext.define('Comic.view.ComicSettings', {
   requires: [
     //'Ext.ux.IOS5Toggle',
     'Ext.ux.IconSpinner',
-    'Ext.field.Select',
+    'Ext.field.Select'
   ],
   config: {
     centered: true,
@@ -53,14 +53,14 @@ Ext.define('Comic.view.ComicSettings', {
             xtype: 'checkboxfield',
             label: 'Open current comic at app launch',
             labelWidth: '60%',
-            name: 'open_current_comic_at_launch',
+            name: 'open_current_comic_at_launch'
           },
           {
             xtype: 'checkboxfield',
             label: 'Open next comic on comic finish',
             labelWidth: '60%',
             name: 'open_next_comic',
-            disabled: true,
+            disabled: true
           },
           {
             xtype: 'selectfield',
@@ -76,7 +76,7 @@ Ext.define('Comic.view.ComicSettings', {
               {
                 text: 'Full page',
                 value: 2
-              },
+              }
             ]
           },          
           {
@@ -125,7 +125,7 @@ Ext.define('Comic.view.ComicSettings', {
             xtype: 'checkboxfield',
             name: 'use_page_turn_drag',
             label: 'Drag page to change page',
-            labelWidth: '60%',
+            labelWidth: '60%'
           },
           {
             xtype: 'iconspinnerfield',
@@ -141,7 +141,7 @@ Ext.define('Comic.view.ComicSettings', {
             xtype: 'checkboxfield',
             name: 'use_page_change_area',
             label: 'Tap sides to change page',
-            labelWidth: '60%',
+            labelWidth: '60%'
           },
           {
             xtype: 'iconspinnerfield',
@@ -151,11 +151,11 @@ Ext.define('Comic.view.ComicSettings', {
             minValue: 20,
             maxValue: 200,
             stepValue: 10,
-            cycle: true,
-          },
+            cycle: true
+          }
           
         ]
-      },
+      }
       
     ]
   }

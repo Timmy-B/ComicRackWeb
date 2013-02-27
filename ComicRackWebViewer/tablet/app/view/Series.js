@@ -22,7 +22,7 @@ var TheSeriesItemTemplate = new Ext.XTemplate(
     '{Title} {Volume}',
     {
       // XTemplate configuration:
-      disableFormats: true,
+      disableFormats: true
       // member functions:
       
     }
@@ -37,7 +37,7 @@ var TheSeriesItemTemplate = new Ext.XTemplate(
       getTitleText: function(series)
       {
         return Comic.model.Series.getDisplayText(series);
-      },
+      }
     }
 ); 
 
@@ -49,7 +49,7 @@ Ext.define('Comic.view.Series', {
     requires: [ 
       'Comic.store.Series',
       'Ext.plugin.PullRefresh',
-      'Ext.dataview.List',
+      'Ext.dataview.List'
     ],
     
     config: {
@@ -62,7 +62,7 @@ Ext.define('Comic.view.Series', {
       
       grouped     : true,
       indexBar    : {
-                        letters: ["#", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"].sort(),
+                        letters: ["#", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"].sort()
       },
       
       itemTpl: TheSeriesItemTemplate,
@@ -80,8 +80,8 @@ Ext.define('Comic.view.Series', {
               itemId: 'refreshbutton',
               align: 'right',
               iconCls: 'refresh',
-              iconMask: true,
-            },
+              iconMask: true
+            }
             
           ]
           
@@ -89,8 +89,8 @@ Ext.define('Comic.view.Series', {
         {
           xtype: 'searchfield',
           docked: 'top',
-          placeHolder: 'Filter...',
-        },
+          placeHolder: 'Filter...'
+        }
 
       ],
       
@@ -101,9 +101,9 @@ Ext.define('Comic.view.Series', {
               pullRefreshText: 'Pull down to refresh...',
               refreshFn: function(plugin) {
                     plugin.fireEvent('refresh', plugin);
-                },
+                }
           }
-        ],
+        ]
         
     }
 });

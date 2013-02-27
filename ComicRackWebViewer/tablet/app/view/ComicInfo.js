@@ -22,7 +22,7 @@ Ext.define('Comic.view.ComicInfo', {
   xtype: 'comicinfoview',
   requires: [
     "Ext.field.Url",
-    'Ext.form.FieldSet',
+    'Ext.form.FieldSet'
   ],
   
   config: {
@@ -37,7 +37,7 @@ Ext.define('Comic.view.ComicInfo', {
             xtype: 'button',
             itemId: 'backbutton',
             text: 'Back',
-            ui: "back",
+            ui: "back"
           }
         ]
       },
@@ -132,10 +132,10 @@ Ext.define('Comic.view.ComicInfo', {
             name: 'Web',
             label: 'Web',
             readOnly: true
-          },
+          }
           
         ]
-      },
+      }
       
     ]
   }

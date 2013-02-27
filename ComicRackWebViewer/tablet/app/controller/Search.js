@@ -22,7 +22,7 @@ Ext.define('Comic.controller.Search', {
     config: {
         refs: {
           searchview: 'searchview',
-          submitbutton: 'searchview #submitbutton',
+          submitbutton: 'searchview #submitbutton'
         },
         
         control: {
@@ -30,12 +30,12 @@ Ext.define('Comic.controller.Search', {
             show: 'onSearchViewShow',
             activate: 'onSearchViewActivate', // fired when the view is activated (by the tab panel)
             initialize: 'onSearchViewInitialize',
-            beforesubmit: 'onSearchBeforeSubmit',
+            beforesubmit: 'onSearchBeforeSubmit'
           },
           submitbutton: {
-            tap: 'onSubmitButtonTap',
-          },
-        },
+            tap: 'onSubmitButtonTap'
+          }
+        }
     },
         
     onSearchViewActivate: function()
@@ -65,5 +65,5 @@ Ext.define('Comic.controller.Search', {
           values = me.getSearchview().getValues();
       
       me.getSearchview().fireEvent('search', values);
-    },
+    }
 });

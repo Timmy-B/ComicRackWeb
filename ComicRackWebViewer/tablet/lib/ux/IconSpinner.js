@@ -14,7 +14,7 @@ Ext.define('Ext.ux.IconSpinner', {
   ],
   config: {
     iconPlus: 'resources/images/spinner-plus.png',
-    iconMinus: 'resources/images/spinner-minus.png',
+    iconMinus: 'resources/images/spinner-minus.png'
   },    
 
   updateComponent: function (newComponent) {
@@ -37,5 +37,5 @@ Ext.define('Ext.ux.IconSpinner', {
             this.downRepeater = this.createRepeater(this.spinDownButton, this.onSpinDown);
             this.upRepeater = this.createRepeater(this.spinUpButton, this.onSpinUp);
         }
-    },
+    }
 });

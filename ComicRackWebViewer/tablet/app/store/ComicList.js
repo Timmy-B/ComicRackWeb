@@ -22,7 +22,7 @@
 Ext.define('Comic.store.ComicList', {
     extend: 'Ext.data.Store',
     requires: [
-        'Comic.model.ComicInfo',
+        'Comic.model.ComicInfo'
         ],
     
     config: {
@@ -37,7 +37,7 @@ Ext.define('Comic.store.ComicList', {
         reader: {
               type: 'json',
               rootProperty: 'items',
-              totalProperty: 'totalCount',
+              totalProperty: 'totalCount'
             },
             
         //extraParams: { $select: 'Id,Series,Volume,Number,Title,Year,Month,FilePath,PageCount,LastPageRead,Opened' },
@@ -46,8 +46,8 @@ Ext.define('Comic.store.ComicList', {
               // empty list ?
               console.error('Failed to load Comic store for ' + proxy.getUrl(), response.responseText);
               //Ext.Msg.alert('Loading failed', response.statusText);
-          },
-        },
+          }
+        }
       }
-    },    
+    }    
 });
