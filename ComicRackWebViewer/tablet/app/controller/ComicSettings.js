@@ -76,19 +76,7 @@ Ext.define('Comic.controller.ComicSettings', {
       // called before application.launch()
       console.log('Initialized ComicViewer! This happens before the Application launch function is called');
       
-      console.log('Retrieving settings...');
       
-      Comic.RemoteApi.GetSettings(function(success, settings) {
-        if (!success)
-        {
-          console.log('Error while retrieving settings !');
-          return;
-        }
-        
-        console.log('Settings retrieved.');
-        
-        Comic.settings = settings;
-      });
     },
       
       
@@ -137,8 +125,8 @@ Ext.define('Comic.controller.ComicSettings', {
           values = comicsettingsview.getValues(),
           comicview = me.getComicview();
         
-      Comic.settings.open_current_comic_at_launch = values.open_current_comic_at_launch;
-      Comic.settings.open_next_comic = values.open_next_comic;
+      Comic.settings.open_current_comic_at_launch = values.open_current_comic_at_launch ? true : false;
+      Comic.settings.open_next_comic = values.open_next_comic ? true : false;;
       Comic.settings.zoom_on_tap = values.zoom_on_tap;
       Comic.settings.page_fit_mode = values.page_fit_mode;
       Comic.settings.toggle_paging_bar = values.toggle_paging_bar;

@@ -1,7 +1,7 @@
 /*
   This file is part of Badaap Comic Reader.
   
-  Copyright (c) 2012 Jeroen Walter
+  Copyright (c) 2013 Jeroen Walter
   
   Badaap Comic Reader is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by

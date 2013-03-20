@@ -4,7 +4,8 @@
   "url": "http://192.168.0.101:8080/tablet/index.html",
   "js": [
     {
-      "path": "touch/sencha-touch.js"
+      "path": "touch/sencha-touch.js",
+      "update": "full"
     },
     {
       "path": "lib/add2home/add2home.js",
@@ -43,25 +44,25 @@
   "css": [
     {
       "path": "resources/css/app.css",
-      "update": "delta"
+      "update": "full"
     },
     {
       "path": "resources/css/comic.css",
-      "update": "delta"
+      "update": "full"
     },
     {
       "path": "lib/ux/IconSpinner.css",
-      "update": "delta"
+      "update": "full"
     },
     /*
     {
       "path": "lib/ux/IOS5Toggle.css",
-      "update": "delta"
+      "update": "full"
     },
     */
     {
       "path": "lib/add2home/add2home.css",
-      "update": "delta"
+      "update": "full"
     }
   ],
   "appCache": {

@@ -15,6 +15,7 @@ using System.Windows;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using FreeImageAPI;
+using System.Data.SQLite;
 
 namespace ComicRackWebViewer
 {
@@ -25,7 +26,9 @@ namespace ComicRackWebViewer
   {
     private const string INSTALLER_FILE = "BCRPlugin.zip";
     private const string VERSION_FILE = "BCRVersion.txt";
-    private const string VERSION = "1.18";
+    private const string VERSION = "1.20";
+    
+    public string installFolder = "";
     
     private static BCRInstaller instance = new BCRInstaller();
     
@@ -43,7 +46,21 @@ namespace ComicRackWebViewer
     {
       string path = typeof(BCRInstaller).Assembly.Location;
       string dir = path.Substring(0, path.Length - Path.GetFileName(path).Length);
+      installFolder = dir;
+
+      ///////////////////////////////////////////////////////////
+      //
+      if (!InstallState.IsVC90RedistSP1Installed())
+      {
+        if (MessageBoxResult.Yes != MessageBox.Show("The required component 'Microsoft Visual C++ 2008 SP1 Redistributable Package' seems to be missing.\nDownload and install the correct version (32/64bit) from the Microsoft website, then restart ComicRack.\n\nDo you want to continue anyway (expect a crash...)?", "Badaap Comic Reader Plugin", MessageBoxButton.YesNo, MessageBoxImage.Error))
+        {
+          return false;
+        }
+            
+        return true;
+      }
       
+      ///////////////////////////////////////////////////////////
       // Install the correct FreeImage.dll
       if (!FreeImage.IsAvailable())
       {
@@ -52,11 +69,35 @@ namespace ComicRackWebViewer
      
       if (!FreeImage.IsAvailable())
       {
-        MessageBox.Show("FreeImage.dll seems to be missing. Aborting.", "ComicRack Web Viewer Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
+        MessageBox.Show("FreeImage.dll seems to be missing. Aborting.", "Badaap Comic Reader Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
         return false;
       }
       
-      // check version.txt in order to decide if this is an upgrade.
+      ///////////////////////////////////////////////////////////
+      // Install the correct SQLite.Interop.dll
+      try 
+      {
+        var connection = new SQLiteConnection();
+        //connection.Open();
+      }
+      catch (System.DllNotFoundException e)
+      {
+        System.IO.File.Copy(dir + (Environment.Is64BitProcess ? "SQLite.Interop.64bit.dll" : "SQLite.Interop.32bit.dll"), dir + "SQLite.Interop.dll", true);
+      }
+      
+      try 
+      {
+        var connection = new SQLiteConnection();
+        //connection.Open();
+      }
+      catch (System.DllNotFoundException e)
+      {
+        MessageBox.Show("SQLite.Interop.dll seems to be missing. Aborting.", "Badaap Comic Reader Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
+        return false;
+      }
+      
+      ///////////////////////////////////////////////////////////
+      // Check version.txt in order to decide if this is an upgrade.
       if (File.Exists(dir + VERSION_FILE))
       {
         StreamReader streamReader = new StreamReader(dir + VERSION_FILE);
@@ -73,7 +114,7 @@ namespace ComicRackWebViewer
       System.IO.File.WriteAllText(dir + VERSION_FILE, VERSION);
       if (!Unzip(dir + INSTALLER_FILE, dir))
       {
-        MessageBox.Show("Error while installing the web viewer site. Aborting.", "ComicRack Web Viewer Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
+        MessageBox.Show("Error while installing the web viewer site. Aborting.", "Badaap Comic Reader Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
         return false;
       }
         
@@ -129,5 +170,6 @@ namespace ComicRackWebViewer
   		}
   		return true;
   	}
+    
   }
 }

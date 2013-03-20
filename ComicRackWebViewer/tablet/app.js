@@ -87,8 +87,9 @@ Ext.application({
     */
     //profiles: ['Phone', 'Tablet'],
     
-    views: ['Main'],
+    views: ['Main', 'Login'],
     controllers: [
+      'Login',
       'TreeList',
       'ComicList',
       'Comic',
@@ -99,7 +100,7 @@ Ext.application({
     ],
         
     requires: [
-      //'Comic.Scrollerfix',
+      'Comic.Scrollerfix',
       'Ext.MessageBox',
       'Comic.RemoteApi'
     ],
@@ -108,25 +109,23 @@ Ext.application({
     
     launch: function()
     {
-    /*
-      if (!Ext.browser.is.WebKit) {
-        alert("The current browser is unsupported.\n\nSupported browsers:\n" +
-              "Google Chrome\n" +
-              "Apple Safari\n" +
-              "Mobile Safari (iOS)\n" +
-              "Android Browser\n" +
-              "BlackBerry Browser"
-          );
-      }
-    */
-      
       Ext.getBody().removeCls('splash');
             
       Ext.fly('splashtitle').destroy();
       Ext.fly('appLoadingIndicator').destroy();
       
-      // Initialize the main view
-      Ext.Viewport.add(Ext.create('Comic.view.Main'));
+      // Check to see if the user was already logged in, i.e. if the browser has a token that 
+      // is still valid on the server.
+      Comic.RemoteApi.ValidateAuthentication(function(success) {
+        if (success)
+        {
+          Ext.Viewport.add(Ext.create('Comic.view.Main'));
+        }
+        else
+        {
+          Ext.Viewport.add(Ext.create('Comic.view.Login'));
+        }
+      });
     },
     
     onUpdated: function() {

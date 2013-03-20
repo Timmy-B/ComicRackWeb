@@ -12,29 +12,29 @@ from System.Windows.Forms import MessageBox, MessageBoxButtons, MessageBoxIcon
 
 from ComicRackWebViewer import Plugin
 
-#@Name	ComicRack Web
+#@Name	Badaap Comic Reader
 #@Key	ComicRackWebViewer
 #@Hook	Books, Editor
-#@Image nancy.jpg
-#@Description ComicRack Web
+#@Image badaap_icon.png
+#@Description Badaap Comic Reader
 def ComicRackWebViewer(books):
  
   if IsVersionOK():
     Plugin.Run(ComicRack.App)
   
            
-#@Name ComicRack Web (Startup)
+#@Name Badaap Comic Reader (Startup)
 #@Hook Startup
 #@Enabled false
-#@Image nancy.jpg
-#@Description ComicRack Web (Startup)
+#@Image badaap_icon.png
+#@Description Badaap Comic Reader (Startup)
 def ComicRackWebViewerStartup():
   if IsVersionOK():
     Plugin.RunAtStartup(ComicRack.App)
    
       
 def IsVersionOK():
-  requiredVersion = Version(0, 9, 162)
+  requiredVersion = Version(0, 9, 163)
   if str(ComicRack.App.ProductVersion) != str(requiredVersion):
     MessageBox.Show( ComicRack.MainWindow, "Version check failed!\n\nThe ComicRack Web Viewer Plugin requires a different version of ComicRack.\nComicRack version required: " + str(requiredVersion) + ".\nExiting...", "Incompatible ComicRack version", MessageBoxButtons.OK, MessageBoxIcon.Warning)
   

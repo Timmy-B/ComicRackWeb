@@ -124,12 +124,12 @@ Ext.define('Comic.controller.TreeList', {
     {
       var me = this,
           treelistview = me.getTreelistview(),
-          library = store.findRecord('Type', 'ComicLibraryListItem'),
-          list;
+          root = store.getRoot(),
+          library = root.findChild('Type', 'ComicLibraryListItem');
       
-      treelistview.goToNode(store.getRoot());
+      treelistview.goToNode(root);
       treelistview.setMasked(false);    
-            
+      
       if (library)
       {
         list = treelistview.getActiveItem();

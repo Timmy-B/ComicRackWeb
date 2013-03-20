@@ -25,6 +25,6 @@ Ext.define('Comic.store.List', {
     config: {
       model: 'Comic.model.List',
       storeId: 'List',
-      autoLoad: true
+      autoLoad: false
     }    
 });

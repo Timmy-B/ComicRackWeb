@@ -32,7 +32,7 @@ namespace BCR
             {
               return Enumerable.Empty<ComicExcerpt>();
             }
-            
+
             return list.GetBooks().Select(x => x.ToComicExcerpt());
         }
 
@@ -178,7 +178,7 @@ namespace BCR
           /*
           // Check if a processed (rescaled and/or progressive) image is cached.
           string processed_filename = string.Format("{0}-p{1}-processed.jpg", id, page);
-          stream = BCRSettingsStore.Instance.LoadFromCache(processed_filename, false);
+          stream = ImageCache.Instance.LoadFromCache(processed_filename, false);
           if (stream != null)
             return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
           */
@@ -187,7 +187,7 @@ namespace BCR
           {
             // Check if original image is in the cache.
             string org_filename = string.Format("{0}-p{1}.jpg", id, page);
-            stream = BCRSettingsStore.Instance.LoadFromCache(org_filename, false);
+            stream = ImageCache.Instance.LoadFromCache(org_filename, false);
             
             if (stream == null)
             {
@@ -201,7 +201,7 @@ namespace BCR
               stream = new MemoryStream(bytes);
               
               // Always save the original page to the cache
-              BCRSettingsStore.Instance.SaveToCache(org_filename, stream, false);
+              ImageCache.Instance.SaveToCache(org_filename, stream, false);
             }
           }
           
@@ -228,14 +228,9 @@ namespace BCR
             
             string filename = string.Format("{0}-p{1}-w{2}-h{3}.jpg", id, page, width, height);
             
-            //string info_filename = string.Format("{0}-p{1}.txt", id, page);
-            //int info_width = 0;
-            //int info_height = 0;
-            //bool success = BCRSettingsStore.GetImageInfoFromCache(info_filename, ref info_width, ref info_height);
-            
             if (thumbnail)
             {
-              stream = BCRSettingsStore.Instance.LoadFromCache(filename, true);
+              stream = ImageCache.Instance.LoadFromCache(filename, true);
             
               // Cached thumbnails are assumed to be in the correct format and adhere to the size/format restrictions of the ipad.
               if (stream != null)
@@ -245,7 +240,7 @@ namespace BCR
             {
               // Check if a processed (rescaled and/or progressive) image is cached.
               string processed_filename = string.Format("{0}-p{1}-processed.jpg", id, page);
-              stream = BCRSettingsStore.Instance.LoadFromCache(processed_filename, false);
+              stream = ImageCache.Instance.LoadFromCache(processed_filename, false);
               if (stream != null)
                 return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
             }
@@ -254,7 +249,7 @@ namespace BCR
             {
               // Check if original image is in the cache.
               string org_filename = string.Format("{0}-p{1}.jpg", id, page);
-              stream = BCRSettingsStore.Instance.LoadFromCache(org_filename, false);
+              stream = ImageCache.Instance.LoadFromCache(org_filename, false);
               
               if (stream == null)
               {
@@ -268,7 +263,7 @@ namespace BCR
                 stream = new MemoryStream(bytes);
                 
                 // Always save the original page to the cache
-                BCRSettingsStore.Instance.SaveToCache(org_filename, stream, false);
+                ImageCache.Instance.SaveToCache(org_filename, stream, false);
               }
             }
             
@@ -306,19 +301,19 @@ namespace BCR
               int bitmap_height = (int)fib.Height;
             #endif
             
-            if (BCRSettingsStore.Instance.use_max_dimension)
+            if (ImageCache.Instance.use_max_dimension)
             {
               int mw, mh;
               
               if (bitmap_width >= bitmap_height)
               {
-                mw = BCRSettingsStore.Instance.max_dimension_long;
-                mh = BCRSettingsStore.Instance.max_dimension_short;
+                mw = ImageCache.Instance.max_dimension_long;
+                mh = ImageCache.Instance.max_dimension_short;
               }
               else
               {
-                mw = BCRSettingsStore.Instance.max_dimension_short;
-                mh = BCRSettingsStore.Instance.max_dimension_long;
+                mw = ImageCache.Instance.max_dimension_short;
+                mh = ImageCache.Instance.max_dimension_long;
               }
               
               if (bitmap_width > mw || bitmap_height > mh)
@@ -338,9 +333,9 @@ namespace BCR
             }
             else            
             // Check if the image dimensions exceeds the maximum image dimensions
-            if ((bitmap_width * bitmap_height) > BCRSettingsStore.Instance.maximum_imagesize)
+            if ((bitmap_width * bitmap_height) > ImageCache.Instance.maximum_imagesize)
             {
-              max_width = (int)Math.Floor(Math.Sqrt((double)bitmap_width / (double)bitmap_height * (double)BCRSettingsStore.Instance.maximum_imagesize));
+              max_width = (int)Math.Floor(Math.Sqrt((double)bitmap_width / (double)bitmap_height * (double)ImageCache.Instance.maximum_imagesize));
               max_height = (int)Math.Floor((double)max_width * (double)bitmap_height / (double)bitmap_width);
             }
             else
@@ -405,14 +400,14 @@ namespace BCR
             
             
             // Check if the image must be converted to progressive jpeg
-            if (BCRSettingsStore.Instance.use_progressive_jpeg && (result_width * result_height) >= BCRSettingsStore.Instance.progressive_jpeg_size_threshold)
+            if (ImageCache.Instance.use_progressive_jpeg && (result_width * result_height) >= ImageCache.Instance.progressive_jpeg_size_threshold)
             {
               processed = true;
               
               // Convert image to progressive jpeg
               
               // FreeImage source code reveals that lower 7 bits of the FREE_IMAGE_SAVE_FLAGS enum are used for low-level quality control.
-              FREE_IMAGE_SAVE_FLAGS quality = (FREE_IMAGE_SAVE_FLAGS)BCRSettingsStore.Instance.progressive_jpeg_quality;
+              FREE_IMAGE_SAVE_FLAGS quality = (FREE_IMAGE_SAVE_FLAGS)ImageCache.Instance.progressive_jpeg_quality;
               FREE_IMAGE_SAVE_FLAGS flags = FREE_IMAGE_SAVE_FLAGS.JPEG_SUBSAMPLING_444 | FREE_IMAGE_SAVE_FLAGS.JPEG_PROGRESSIVE | quality;
 
               #if USE_DIB || USE_FIB
@@ -485,14 +480,14 @@ namespace BCR
             // Always save thumbnails to the cache
             if (thumbnail)
             {
-              BCRSettingsStore.Instance.SaveToCache(filename, stream, true);
+              ImageCache.Instance.SaveToCache(filename, stream, true);
             }
             else
             if (processed)
             {
               // Store rescaled and/or progressive jpegs in the cache for now.
               string processed_filename = string.Format("{0}-p{1}-processed.jpg", id, page);
-              BCRSettingsStore.Instance.SaveToCache(processed_filename, stream, false);
+              ImageCache.Instance.SaveToCache(processed_filename, stream, false);
             }
             
             stream.Seek(0, SeekOrigin.Begin);

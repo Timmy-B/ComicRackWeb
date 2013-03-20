@@ -5,12 +5,12 @@ using System.IO;
 using System.Reflection;
 using Nancy;
 using Nancy.Bootstrapper;
-using Nancy.ViewEngines.Razor;
 using Nancy.Conventions;
 using Nancy.Diagnostics;
-using TinyIoC;
+using Nancy.TinyIoc;
 using Nancy.ErrorHandling;
 using Nancy.Extensions;
+using Nancy.Authentication.Stateless;
 using BCR;
 
 namespace ComicRackWebViewer
@@ -38,6 +38,8 @@ namespace ComicRackWebViewer
 
     public class Bootstrapper : DefaultNancyBootstrapper
     {
+        private MyRootPathProvider myRootPathProvider;
+        
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
         {
             base.ApplicationStartup(container, pipelines);
@@ -50,25 +52,10 @@ namespace ComicRackWebViewer
             // Case sensitivity is buggy in Nancy, so disable it. Or maybe I should generate/parse GUIDs correctly......
             StaticConfiguration.CaseSensitive = false;
             
-#if DEBUG
-            StaticConfiguration.DisableCaches = true;
             
-#else
-			      StaticConfiguration.DisableCaches = false;
-#endif
-
-            container.Register<IRazorConfiguration, RazorConfiguration>().AsSingleton();
-            container.Register<RazorViewEngine>();
-            container.Register<IRootPathProvider, RootPathProvider>().AsSingleton();
+            StaticConfiguration.EnableRequestTracing = Database.Instance.globalSettings.nancy_request_tracing;
             
-            this.Conventions.ViewLocationConventions.Add((viewName, model, context) =>
-            {
-                return string.Concat("original/Views/", viewName);
-            });
-            
-            StaticConfiguration.EnableRequestTracing = BCRSettingsStore.Instance.nancy_request_tracing;
-            
-            if (BCRSettingsStore.Instance.nancy_diagnostics_password == "")
+            if (Database.Instance.globalSettings.nancy_diagnostics_password == "")
               DiagnosticsHook.Disable(pipelines);
             
             // Make sure static content isn't cached, because this really messes up the ipad browsers (Atomic Browser specifically) 
@@ -83,22 +70,11 @@ namespace ComicRackWebViewer
             };
         }
        
-
-        protected override void ConfigureApplicationContainer(TinyIoCContainer container)
+        protected override IRootPathProvider RootPathProvider
         {
-            //don't do auto register
-            //base.ConfigureApplicationContainer(container);
-            container.AutoRegister(new List<Assembly>() { typeof(Bootstrapper).Assembly, typeof(RazorViewEngine).Assembly });
+          get { return this.myRootPathProvider ?? (this.myRootPathProvider = new MyRootPathProvider()); }
         }
 
-        /*
-        private ModuleRegistration CreateRegistration<Tmodule>()
-        {
-            Type t = typeof(Tmodule);
-            return new ModuleRegistration(t, this.GetModuleKeyGenerator().GetKeyForModuleType(t));
-        }
-        */
-        
         protected override void ConfigureConventions(NancyConventions conventions)
 	      {
 	        base.ConfigureConventions(conventions);
@@ -106,22 +82,68 @@ namespace ComicRackWebViewer
 	        conventions.StaticContentsConventions.Add(
             	StaticContentConventionBuilder.AddDirectory("/tablet", "/tablet")
         	);
-	        conventions.StaticContentsConventions.Add(
-            	StaticContentConventionBuilder.AddDirectory("/original", "/original")
-        	);
 	      }
         
         protected override DiagnosticsConfiguration DiagnosticsConfiguration
         {
-          get { return new DiagnosticsConfiguration { Password = BCRSettingsStore.Instance.nancy_diagnostics_password }; }
+          get { return new DiagnosticsConfiguration { Password = Database.Instance.globalSettings.nancy_diagnostics_password }; }
         }
+        
+
+        
+        protected override void RequestStartup(TinyIoCContainer requestContainer, IPipelines pipelines, NancyContext context)
+        {
+            // At request startup we modify the request pipelines to
+            // include stateless authentication
+            //
+            // Configuring stateless authentication is simple. Just use the 
+            // NancyContext to get the apiKey. Then, use the apiKey to get 
+            // your user's identity.
+            var configuration =
+                new StatelessAuthenticationConfiguration(nancyContext =>
+                    {
+                        // For now, we will get the apiKey from a cookie.
+                        // If there's no cookie, check the query string.
+                        
+                        try
+                        {
+                          string apiKey = "";
+                          if (!nancyContext.Request.Cookies.TryGetValue("BCR_apiKey", out apiKey))
+                          {
+                            apiKey = (string) nancyContext.Request.Query.ApiKey.Value;
+                          }
+                          
+                          return BCR.UserDatabase.GetUserFromApiKey(apiKey);
+                        }
+                        catch (Exception e)
+                        {
+                          Console.WriteLine(e.ToString());
+                        }
+                                                
+                        return null;
+                    });
+
+            AllowAccessToConsumingSite(pipelines);
+
+            StatelessAuthentication.Enable(pipelines, configuration);
+        }
+
+        static void AllowAccessToConsumingSite(IPipelines pipelines)
+        {
+            pipelines.AfterRequest.AddItemToEndOfPipeline(x =>
+                {
+                    x.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                    x.Response.Headers.Add("Access-Control-Allow-Methods", "POST,GET,DELETE,PUT,OPTIONS");
+                });
+        }
+    
     }
 
-    public class RootPathProvider : IRootPathProvider
+    public class MyRootPathProvider : IRootPathProvider
     {
         private readonly string BASE_PATH;
 
-        public RootPathProvider()
+        public MyRootPathProvider()
         {
             var path = typeof(Bootstrapper).Assembly.Location;
             BASE_PATH = path.Substring(0, path.Length - Path.GetFileName(path).Length);
@@ -133,28 +155,5 @@ namespace ComicRackWebViewer
         }
     }
 
-    public class RazorConfiguration : IRazorConfiguration
-    {
-        public bool AutoIncludeModelNamespace
-        {
-            get { return false; }
-        }
-
-        public IEnumerable<string> GetAssemblyNames()
-        {
-            yield return "System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
-            yield return "ComicRackWebViewer";
-            yield return "ComicRack.Engine";
-            yield return "cYo.Common";
-        }
-
-        public IEnumerable<string> GetDefaultNamespaces()
-        {
-            yield return "ComicRackWebViewer";
-            yield return "System.Linq";
-            yield return "System.Collections.Generic";
-            yield return "cYo.Projects.ComicRack.Engine";
-            yield return "cYo.Projects.ComicRack.Engine.Database";
-        }
-    }
+    
 }

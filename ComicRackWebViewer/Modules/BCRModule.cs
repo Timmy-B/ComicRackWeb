@@ -16,10 +16,10 @@ using cYo.Projects.ComicRack.Viewer;
 using Nancy;
 using Nancy.ModelBinding;
 using Nancy.Responses;
+using Nancy.Security;
 using ComicRackWebViewer;
 using System.Text.RegularExpressions;
 using Linq2Rest.Parser;
-
 
 
 
@@ -30,11 +30,28 @@ namespace BCR
         public BCRModule()
             : base("/BCR")
         {
-            Get["/"] = x => { return Response.AsRedirect("/tablet/index.html", RedirectResponse.RedirectType.Permanent); };
+            // The user must be authenticated in order to use the BCR API.
+            this.RequiresAuthentication();
+              
+            Get["/"] = x => { return Response.AsRedirect("/", RedirectResponse.RedirectType.Permanent); };
+            
+            /*
+            Get["/User"] = x => {
+              //Context.CurrentUser was set by StatelessAuthentication earlier in the pipeline
+              var user = (BCRUser)this.Context.CurrentUser;
+              
+              return Response.AsRedirect("/", RedirectResponse.RedirectType.Permanent);
+            };
+            */
             
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Retrieve a list of all (smart)lists.
             Get["/Lists"] = x => { 
+              
+              // TODO: get home list for user.
+              //var user = (BCRUser)this.Context.CurrentUser;
+              
+
         	    try 
         	    {
                 int depth = Request.Query.depth.HasValue ? int.Parse(Request.Query.depth) : -1;
@@ -144,6 +161,7 @@ namespace BCR
         	  ///////////////////////////////////////////////////////////////////////////////////////////////
             // Retrieve the specified page as a jpg file with the specified dimensions.
             Get["/Comics/{id}/Pages/{page}"] = x => {
+              
               try
               {
                 int width = Request.Query.width.HasValue ? int.Parse(Request.Query.width) : -1;
@@ -258,13 +276,13 @@ namespace BCR
         	    }
         	  };
         	  
-        	  
+        	  /*
         	  ///////////////////////////////////////////////////////////////////////////////////////////////
         	  // Get the BCR settings.
         	  Get["/Settings"] = x => {
         	    try
         	    {
-        	      return Response.AsJson(BCRSettingsStore.Instance, HttpStatusCode.OK);
+        	      return Response.AsJson(ImageCache.Instance, HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
         	    {
@@ -281,7 +299,7 @@ namespace BCR
         	    try 
         	    {
           	    BCRSettings settings = this.Bind<BCRSettings>();
-          	    BCRSettingsStore.Instance.UpdateFrom(settings);
+          	    ImageCache.Instance.UpdateFrom(settings);
           	    return HttpStatusCode.OK;  
         	    }
         	    catch(Exception e)
@@ -289,7 +307,37 @@ namespace BCR
         	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
-           
+            */
+        	  ///////////////////////////////////////////////////////////////////////////////////////////////
+        	  // Get the BCR settings.
+        	  Get["/Settings"] = x => {
+        	    try
+        	    {
+        	      var user = (BCRUser)this.Context.CurrentUser;
+        	      return Response.AsJson(user.GetSettings(), HttpStatusCode.OK);
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
+        	  };
+        	  
+        	  
+        	  ///////////////////////////////////////////////////////////////////////////////////////////////
+        	  // Update the BCR settings.
+        	  Put["/Settings"] = x => {
+        	    try 
+        	    {
+          	    var user = (BCRUser)this.Context.CurrentUser;
+          	    user.UpdateSettings(this.Bind<UserSettings>());
+          	    
+          	    return HttpStatusCode.OK;
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
+        	  };
         	  
         	  ///////////////////////////////////////////////////////////////////////////////////////////////
         	  // Get a list of series
@@ -437,6 +485,45 @@ namespace BCR
         	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
+        	  
+        	  /*
+        	  ///////////////////////////////////////////////////////////////////////////////////////////////
+        	  // User management
+        	  Get["/Login/{id}"] = x => {
+        	    try
+        	    {
+        	      
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
+        	  };
+        	  
+        	  // Get list of all users
+        	  Get["/User"] = x => {
+        	    try
+        	    {
+        	      
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
+        	  };
+        	  
+        	  // 
+        	  Get["/User/{id}"] = x => {
+        	    try
+        	    {
+        	      
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
+        	  };
+        	  */
         }
 
     }

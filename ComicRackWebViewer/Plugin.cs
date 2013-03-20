@@ -8,7 +8,8 @@ namespace ComicRackWebViewer
     public static class Plugin
     {
         internal static IApplication Application;
-        private static WebServicePanel panel;
+        private static MainForm panel;
+        
         
         static void FreeImage_Message(FREE_IMAGE_FORMAT fif, string message)
     		{
@@ -26,6 +27,8 @@ namespace ComicRackWebViewer
               return false;
 
             FreeImageEngine.Message += new OutputMessageFunction(FreeImage_Message);
+            
+            BCR.Database.Instance.Initialize();
             
             return true;
           }
@@ -45,7 +48,7 @@ namespace ComicRackWebViewer
             {
                 if (panel == null)
                 {
-                    panel = new WebServicePanel();
+                    panel = new MainForm();
                     panel.Closed += new EventHandler(panel_Closed);
                 }
                 
@@ -66,10 +69,10 @@ namespace ComicRackWebViewer
             {
                 if (panel == null)
                 {
-                    panel = new WebServicePanel();
+                    panel = new MainForm();
                     panel.Closed += new EventHandler(panel_Closed);
                 }
-                panel.StartService();
+                //panel.StartService();
             }
             catch (Exception e)
             {
@@ -88,7 +91,7 @@ namespace ComicRackWebViewer
         {
             if (panel == null)
             {
-                panel = new WebServicePanel();
+                panel = new MainForm();
                 panel.Closed += new EventHandler(panel_Closed);
             }
             panel.ShowDialog();

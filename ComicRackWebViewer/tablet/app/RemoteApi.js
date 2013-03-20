@@ -1,7 +1,82 @@
 /*
-  
+  Copyright 2013 Jeroen Walter
 */  
 
+// Cookie entries
+
+var ApiToken = {
+    authUrl : "/auth",
+    apiKeyKey : "BCR_apiKey",
+    usernameKey : "BCR_username",
+
+    Set: function (username, apiKey, rememberMe) {
+        var me = this,
+            days = rememberMe ? 10 : 0;
+            
+        createCookie(me.apiKeyKey, apiKey, days);
+        createCookie(me.usernameKey, username, days);
+        
+        //localStorage.setItem(me.apiKeyKey, apiKey);
+        //localStorage.setItem(me.usernameKey, username);
+    },
+
+    Get: function () {
+        var me = this;
+        //localStorage.getItem(me.apiKeyKey);
+        //localStorage.getItem(me.usernameKey);
+        
+        var key = readCookie(me.apiKeyKey);
+        var username = readCookie(me.usernameKey);
+        var token = { Key: key, Username: username, IsValid: key != null };        
+        return token;
+    },
+
+    Delete: function () {
+        var me = this;
+        eraseCookie(me.apiKeyKey);
+        eraseCookie(me.usernameKey);
+        
+        //localStorage.removeItem(me.apiKeyKey);
+        //localStorage.removeItem(me.usernameKey);
+    },
+    
+    
+};
+
+function createCookie(name, value, days) 
+{
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        var expires = "; expires=" + date.toGMTString();
+    } else var expires = "";
+    document.cookie = name + "=" + value + expires + "; path=/";
+    console.log(document.cookie);
+}
+
+function readCookie(name) 
+{
+    var cookieValue = null;
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) {
+            var found = c.substring(nameEQ.length, c.length);
+            cookieValue = found;
+        }
+    }
+    return cookieValue;
+}
+
+function eraseCookie(name) 
+{
+    createCookie(name, "", -1);
+}
+
+                
+////////////////////////////////////////////////////////////////////
 
 Ext.define('Comic.RemoteApi', {
   extend: 'Ext.Base',
@@ -26,7 +101,118 @@ Ext.define('Comic.RemoteApi', {
     };
   },
   
+  
+  // ValidateAuthentication checks if the user can access the /BCR resource using the current apikey in the cookie.
+  // If it can't, the server will return a 401 Unauthorized status.
+  // If it can, the user's settings are retrieved, completing the validation as if the user just logged in.
+  // callback must be a function(bool success).
+  ValidateAuthentication: function(callback) {
+    var me = this;
+    Ext.Ajax.request({
+      url: '/BCR',
+      method: 'GET',
+      params: {},
+      success: function(response) {
+          console.log('ApiToken Validate OK');
+          console.log('Retrieving settings...');
     
+          me.GetSettings(function(success, settings) {
+            if (!success)
+            {
+              console.log('Error while retrieving settings !');
+              return;
+            }
+            
+            console.log('Settings retrieved.');
+            
+            Comic.settings = settings;
+            
+            callback(true);
+          });
+      },
+      failure: function(response) {
+          console.log('ApiToken Validate Failed');
+          callback(false);
+      }
+    });
+  },
+
+  
+  Login: function(_username, _password, _rememberMe, callback) 
+  {
+      var me = this,
+          request = {
+            username: _username,
+            password: _password,
+            rememberMe: _rememberMe
+          };
+    
+      Ext.Ajax.request({
+        url: ApiToken.authUrl,
+        method: 'POST',
+        params: request,
+        success: function(response) {
+            result = Ext.JSON.decode(response.responseText);
+            ApiToken.Set(request.username, result.ApiKey, request.rememberMe);
+            
+            console.log('Retrieving settings...');
+      
+            me.GetSettings(function(success, settings) {
+              if (!success)
+              {
+                console.log('Error while retrieving settings !');
+                return;
+              }
+              
+              console.log('Settings retrieved.');
+              
+              Comic.settings = settings;
+              
+              callback(true);
+            });
+            
+            
+        },
+        failure: function(response) {
+            console.log('Ext.Ajax.request error');
+            // process server response here
+            callback(false);
+        }
+      });
+  },
+
+  Logout: function(callback)
+  {
+      var apiToken = ApiToken.Get();
+      if (apiToken.IsValid) 
+      {
+        var request = { apiKey: apiToken.Key };
+        
+        Ext.Ajax.request({
+          url: ApiToken.authUrl,
+          method: 'DELETE',
+          params: request,
+          success: function(response) {
+              console.log('Logout: OK');
+              ApiToken.Delete();
+              callback(true);
+          },
+          failure: function(response) {
+              console.log('Logout: Ext.Ajax.request error');
+              ApiToken.Delete();
+              callback(false);
+          }
+        });
+      }
+      else
+      {
+        // not logged in 
+        console.log('Logout: not logged in....');
+        ApiToken.Delete();
+        callback(true);
+      }
+  },
+
   // This will get the C# Comic object, not the ComicBook object....
   GetComicInfo: function(comic_id, callback)
   {
@@ -141,10 +327,9 @@ Ext.define('Comic.RemoteApi', {
       url: '/BCR/Settings',
       method: 'GET',
       success: function(response){
-          var text = response.responseText;
-          // process server response here
+
+          result = Ext.JSON.decode(response.responseText);
           
-          eval('result = ' + text);
           callback(true, result);
       },
       failure: function(response){
@@ -197,7 +382,7 @@ Ext.define('Comic.RemoteApi', {
       
     return s;
     */
-  }
+  },
   
 });
 

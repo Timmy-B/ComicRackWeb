@@ -1,6 +1,5 @@
-﻿using System.Linq;
-using cYo.Projects.ComicRack.Viewer;
-using Nancy;
+﻿using Nancy;
+using Nancy.Responses;
 
 namespace ComicRackWebViewer
 {
@@ -9,7 +8,7 @@ namespace ComicRackWebViewer
         public IndexModule()
             : base("/")
         {
-            Get["/"] = x => View["Index.cshtml", Program.Database.ComicLists.Select(c => c.Name).OrderBy(c => c)];
+            Get["/"] = x => { return Response.AsRedirect("/tablet/index.html", RedirectResponse.RedirectType.Permanent); };
         }
     }
 }

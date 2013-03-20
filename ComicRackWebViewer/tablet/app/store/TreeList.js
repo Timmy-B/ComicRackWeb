@@ -26,7 +26,7 @@ Ext.define('Comic.store.TreeList', {
     config: {
       model: 'Comic.model.List',
       storeId: 'TreeList',
-      autoLoad: true,
+      autoLoad: false,
       defaultRootProperty: 'Lists',
 
       proxy: {

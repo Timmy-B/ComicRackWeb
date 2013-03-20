@@ -28,6 +28,7 @@ Ext.define('Comic.store.Comic', {
     config: {
       model: 'Comic.model.ComicInfo',
       storeId: 'Comic',
+      autoLoad: false,
       
       proxy: {
             type: 'restodata',
