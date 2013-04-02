@@ -45,6 +45,8 @@ namespace ComicRackWebViewer
       this.textBoxPort = new System.Windows.Forms.TextBox();
       this.label1 = new System.Windows.Forms.Label();
       this.tabPageUsers = new System.Windows.Forms.TabPage();
+      this.checkBoxUseProgressFromComicRack = new System.Windows.Forms.CheckBox();
+      this.checkBoxAllowLibrary = new System.Windows.Forms.CheckBox();
       this.buttonChangePassword = new System.Windows.Forms.Button();
       this.textBoxFullName = new System.Windows.Forms.TextBox();
       this.label6 = new System.Windows.Forms.Label();
@@ -145,6 +147,8 @@ namespace ComicRackWebViewer
       // 
       // tabPageUsers
       // 
+      this.tabPageUsers.Controls.Add(this.checkBoxUseProgressFromComicRack);
+      this.tabPageUsers.Controls.Add(this.checkBoxAllowLibrary);
       this.tabPageUsers.Controls.Add(this.buttonChangePassword);
       this.tabPageUsers.Controls.Add(this.textBoxFullName);
       this.tabPageUsers.Controls.Add(this.label6);
@@ -163,6 +167,26 @@ namespace ComicRackWebViewer
       this.tabPageUsers.TabIndex = 1;
       this.tabPageUsers.Text = "Users";
       this.tabPageUsers.UseVisualStyleBackColor = true;
+      // 
+      // checkBoxUseProgressFromComicRack
+      // 
+      this.checkBoxUseProgressFromComicRack.Location = new System.Drawing.Point(8, 122);
+      this.checkBoxUseProgressFromComicRack.Name = "checkBoxUseProgressFromComicRack";
+      this.checkBoxUseProgressFromComicRack.Size = new System.Drawing.Size(224, 24);
+      this.checkBoxUseProgressFromComicRack.TabIndex = 12;
+      this.checkBoxUseProgressFromComicRack.Text = "Use comic progress from ComicRack";
+      this.checkBoxUseProgressFromComicRack.UseVisualStyleBackColor = true;
+      this.checkBoxUseProgressFromComicRack.CheckedChanged += new System.EventHandler(this.CheckBoxUseProgressFromComicRackCheckedChanged);
+      // 
+      // checkBoxAllowLibrary
+      // 
+      this.checkBoxAllowLibrary.Location = new System.Drawing.Point(8, 180);
+      this.checkBoxAllowLibrary.Name = "checkBoxAllowLibrary";
+      this.checkBoxAllowLibrary.Size = new System.Drawing.Size(221, 24);
+      this.checkBoxAllowLibrary.TabIndex = 11;
+      this.checkBoxAllowLibrary.Text = "Allow access to complete Library";
+      this.checkBoxAllowLibrary.UseVisualStyleBackColor = true;
+      this.checkBoxAllowLibrary.Visible = false;
       // 
       // buttonChangePassword
       // 
@@ -192,7 +216,7 @@ namespace ComicRackWebViewer
       // 
       // label5
       // 
-      this.label5.Location = new System.Drawing.Point(8, 127);
+      this.label5.Location = new System.Drawing.Point(8, 154);
       this.label5.Name = "label5";
       this.label5.Size = new System.Drawing.Size(87, 23);
       this.label5.TabIndex = 7;
@@ -203,7 +227,7 @@ namespace ComicRackWebViewer
       // 
       this.comboTreeHomeList.DroppedDown = false;
       this.comboTreeHomeList.Enabled = false;
-      this.comboTreeHomeList.Location = new System.Drawing.Point(101, 125);
+      this.comboTreeHomeList.Location = new System.Drawing.Point(101, 152);
       this.comboTreeHomeList.Name = "comboTreeHomeList";
       this.comboTreeHomeList.SelectedNode = null;
       this.comboTreeHomeList.Size = new System.Drawing.Size(241, 23);
@@ -354,6 +378,8 @@ namespace ComicRackWebViewer
       this.tabPageAbout.ResumeLayout(false);
       this.ResumeLayout(false);
     }
+    private System.Windows.Forms.CheckBox checkBoxUseProgressFromComicRack;
+    private System.Windows.Forms.CheckBox checkBoxAllowLibrary;
     private System.Windows.Forms.Button buttonClearThumbnailsCache;
     private System.Windows.Forms.Label labelCacheSize;
     private System.Windows.Forms.WebBrowser webBrowserAbout;

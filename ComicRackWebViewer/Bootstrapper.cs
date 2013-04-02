@@ -117,6 +117,7 @@ namespace ComicRackWebViewer
                         }
                         catch (Exception e)
                         {
+                          System.Windows.Forms.MessageBox.Show("Error while initializing the user data:\n" + e.ToString(), "BCR Error");
                           Console.WriteLine(e.ToString());
                         }
                                                 

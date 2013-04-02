@@ -191,26 +191,26 @@ Ext.define('Comic.controller.ComicList', {
     onShowList: function(id, name)
     {
       var me = this,
-          store = Comic.RemoteApi.CreateComicStoreFromList(id);
+          params = Comic.RemoteApi.CreateStoreParams_ListComics(id);
           
-      me.SetStore(store, name);
+      me.SetStore(params, name);
     },
     
     
     onShowSeries: function(id, name)
     {
       var me = this,
-          store = Comic.RemoteApi.CreateComicStoreFromSeries(id);
+          params = Comic.RemoteApi.CreateStoreParams_SerieComics(id);
           
-      me.SetStore(store, name);
+      me.SetStore(params, name);
     },
     
     onSearch: function(values)
     {
       var me = this,
-          store = Comic.RemoteApi.CreateComicStoreFromSearch(values);
+          params = Comic.RemoteApi.CreateStoreParams_SearchComics(values);
           
-      me.SetStore(store, 'Search results');
+      me.SetStore(params, 'Search results');
     },
     
     SetStore: function(params, title)

@@ -9,21 +9,30 @@ namespace BCR
     
     public class UserDatabase
     {        
+        private static Dictionary<string, BCRUser> users = new Dictionary<string, BCRUser>();
+        
         static UserDatabase()
         {
         }
 
+        // TODO: add timeout for apikey.
         public static IUserIdentity GetUserFromApiKey(string apiKey)
         {
-          NameValueCollection result = Database.Instance.QuerySingle("SELECT * FROM user_apikeys WHERE apikey = '" + apiKey + "' LIMIT 1;");
+          if (apiKey == null)
+            return null;
+          
+          BCRUser user;
+          if (users.TryGetValue(apiKey, out user))
+            return user;
+          
+          NameValueCollection result = Database.Instance.QuerySingle("SELECT user.id as id, username, apikey, fullname FROM user JOIN user_apikeys ON user.id=user_apikeys.user_id WHERE apikey = '" + apiKey + "' LIMIT 1;");
           if (result == null)
             return null;
                     
-          result = Database.Instance.QuerySingle("SELECT * FROM user WHERE id = " + result["user_id"] + " LIMIT 1;");
-          if (result == null)
-            return null;
-          
-          return new BCRUser {UserName = result["username"], UserId = Convert.ToInt32(result["id"])};
+          user = new BCRUser { UserName = result["username"], UserId = Convert.ToInt32(result["id"]), FullName = result["fullname"] };
+          user.Initialize();
+          users.Add(apiKey, user);
+          return user;
         }
 
         public static string LoginUser(string username, string password)
@@ -51,6 +60,7 @@ namespace BCR
         public static void RemoveApiKey(string apiKey)
         {
           Database.Instance.ExecuteNonQuery("DELETE FROM user_apikeys WHERE apikey = '" + apiKey + "';");
+          users.Remove(apiKey);
         }
         
         public static int GetUserId(string username)
@@ -72,8 +82,23 @@ namespace BCR
           sh.GetHashAndSaltString(password, out hash, out salt);
           
           int result = Database.Instance.ExecuteNonQuery("INSERT INTO user (username, password, salt) VALUES ('" + username + "','" + hash + "','" + salt + "');");
+                    
+          if (result > 0)
+          {
+            /*
+      ComicListItemFolder userFolder = new ComicListItemFolder(name);
+      ComicIdListItem readingList = new ComicIdListItem("Reading");
+      userFolder.Items.Add(readingList);
+      ComicIdListItem favoritesList = new ComicIdListItem("Favorites");
+      userFolder.Items.Add(favoritesList);
+            
+      ((ComicLibrary)Program.Database).ComicLists.Add(userFolder);
+      */
+     
+            return true;
+          }
           
-          return result > 0;
+          return false;
         }
         
         public static bool RemoveUser(int userid)

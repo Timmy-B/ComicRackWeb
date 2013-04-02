@@ -217,17 +217,11 @@ Ext.define('Comic.controller.Comic', {
           {
             // process response
             me.current_comic = record.getData();
-            me.comic_title = Comic.RemoteApi.GetComicTitle(me.current_comic);
 
             Comic.viewstate.current_comic_opened_from_type = 'folder';
             Comic.viewstate.current_comic_opened_from_id = Comic.context.id;
 
-            /*
-            Comic.RemoteApi.SetViewState({ current_comic_id: Comic.viewstate.current_comic_id, 
-                                        current_comic_opened_from_type: Comic.viewstate.current_comic_opened_from_type,
-                                        current_comic_opened_from_id: Comic.viewstate.current_comic_opened_from_id });
-            */
-                        
+                       
             me.current_page_nr = me.current_comic.LastPageRead | 0;
             // use defer so control initialization can finish first
             Ext.defer(function() { me.ShowPage(me.current_page_nr); } , 10);
@@ -355,9 +349,6 @@ Ext.define('Comic.controller.Comic', {
       Comic.viewstate.current_comic_id = null;
       Comic.viewstate.current_comic_opened_from_type = null;
       Comic.viewstate.current_comic_opened_from_id = null;
-      Comic.RemoteApi.SetViewState({ current_comic_id: Comic.viewstate.current_comic_id, 
-                                    current_comic_opened_from_type: Comic.viewstate.current_comic_opened_from_type,
-                                    current_comic_opened_from_id: Comic.viewstate.current_comic_opened_from_id });
       
       var me = this,
           d=new Date(),
@@ -528,18 +519,19 @@ Ext.define('Comic.controller.Comic', {
         }
       }
       me.cache.forEach(addcache);
-      titlebar.setTitle(me.comic_title + " " + (pagenr + 1)+ "/" + me.current_comic.PageCount + cachedpages);
+      titlebar.setTitle(me.current_comic.Caption + " " + (pagenr + 1)+ "/" + me.current_comic.PageCount + cachedpages);
       */
       
         
-      titlebar.setTitle(me.comic_title + " " + (pagenr + 1)+ "/" + me.current_comic.PageCount);
+      titlebar.setTitle(me.current_comic.Caption + " " + (pagenr + 1)+ "/" + me.current_comic.PageCount);
       // todo: show loading indicator in toolbar and remove it when image is loaded.
       
       progressbutton.setText("" + (pagenr + 1)+ "/" + me.current_comic.PageCount);
       
       var now = (new Date()).toJSON(); 
 
-      Comic.RemoteApi.SetComicInfo(Comic.viewstate.current_comic_id, { OpenedTime: now, OpenedCount: 1, CurrentPage: me.current_page_nr, LastPageRead: me.current_page_nr },
+      Comic.RemoteApi.UpdateProgress(Comic.viewstate.current_comic_id, me.current_page_nr,
+      //Comic.RemoteApi.SetComicInfo(Comic.viewstate.current_comic_id, { OpenedTime: now, OpenedCount: 1, CurrentPage: me.current_page_nr, LastPageRead: me.current_page_nr },
       function() {
       
         

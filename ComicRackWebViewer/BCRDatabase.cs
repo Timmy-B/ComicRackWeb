@@ -6,15 +6,22 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-using System;
-using System.IO;
-using System.Collections.Specialized;
-using System.Data.SQLite;
-using System.Windows;
-
 
 namespace BCR
 {
+  
+  using System;
+  using System.IO;
+  using System.Collections.Specialized;
+  using System.Data.SQLite;
+  using System.Windows;
+  using System.Linq;
+  
+  using cYo.Projects.ComicRack.Viewer;
+  using ComicRackWebViewer;
+  using cYo.Projects.ComicRack.Engine;
+  using cYo.Projects.ComicRack.Engine.Database;
+  
   /// <summary>
   /// Description of Database.
   /// </summary>
@@ -29,6 +36,9 @@ namespace BCR
     private static Database instance = new Database();
     private int mVersion = 0;
     private GlobalSettings _globalSettings = new GlobalSettings();
+    
+    private Guid libraryGuid = Guid.Empty;
+    private Guid bcrGuid = Guid.Empty;
     
     public GlobalSettings globalSettings { get { return _globalSettings; } }
     
@@ -47,6 +57,30 @@ namespace BCR
       {
     	  Directory.CreateDirectory(mFolder);
       }
+      
+      string s = "cYo.Projects.ComicRack.Engine.Database.ComicLibraryListItem";
+      ComicListItem item = Program.Database.ComicLists.GetItems<ComicListItem>(false).FirstOrDefault((ComicListItem cli) => cli.GetType().ToString() == s);
+      if (item != null)
+      {
+        libraryGuid = item.Id;
+      }
+      
+      s = "[BCR Users]";
+      item = Program.Database.ComicLists.GetItems<ComicListItem>(false).FirstOrDefault((ComicListItem cli) => cli.Name == s);
+      if (item == null)
+      {
+        // Add it
+        ComicListItemFolder bcrFolder = new ComicListItemFolder(s);
+        ((ComicLibrary)Program.Database).ComicLists.Add(bcrFolder);
+        item = Program.Database.ComicLists.GetItems<ComicListItem>(false).FirstOrDefault((ComicListItem cli) => cli.Name == s);
+      }
+      
+      if (item != null)
+      {
+        bcrGuid = item.Id;
+      }
+      
+      
     }
     
     ~Database()
@@ -132,6 +166,7 @@ namespace BCR
             page_turn_drag_threshold INTEGER DEFAULT 75,
             use_page_change_area INTEGER DEFAULT 1,
             page_change_area_width INTEGER DEFAULT 50,
+            use_comicrack_progress INTEGER DEFAULT 0,
             home_list_id TEXT DEFAULT ''
             );");
           
@@ -152,13 +187,45 @@ namespace BCR
             );");
           
          
+          // TODO: set hook on the deletion of a comic book from the library
           ExecuteNonQuery(@"CREATE TABLE comic_progress(
             id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
             comic_id TEXT NOT NULL, 
             user_id INTEGER NOT NULL REFERENCES user(id) ON DELETE CASCADE,
-            date_last_read INTEGER, 
+            date_last_read TEXT NOT NULL DEFAULT (CURRENT_TIMESTAMP),
+            current_page INTEGER DEFAULT 0,
             last_page_read INTEGER DEFAULT 0
             );");
+         
+          
+         
+          /*
+          
+          ExecuteNonQuery(@"CREATE TABLE comic_favorites(
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+            user_id INTEGER NOT NULL REFERENCES user(id) ON DELETE CASCADE,
+            comic_id TEXT NOT NULL
+            );");
+            
+          ExecuteNonQuery(@"CREATE TABLE series_favorites(
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+            user_id INTEGER NOT NULL REFERENCES user(id) ON DELETE CASCADE,
+            series TEXT NOT NULL
+            );");
+            
+            
+          // type, favorite:
+          // 0, comic guid
+          // 1, series name
+          // 2, writer/colorer etc name
+          // 3, character name
+          ExecuteNonQuery(@"CREATE TABLE favorites(
+            id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+            user_id INTEGER NOT NULL REFERENCES user(id) ON DELETE CASCADE,
+            favorite TEXT NOT NULL,
+            type INTEGER
+            );");  
+          */
           
           
           // Automatically create a user_settings record when a user is added.
@@ -198,6 +265,12 @@ namespace BCR
       // Check if the lists referenced by users still exist.
       // Check if the comics referenced by users still exist.
       // TODO: provide user feedback in startup screen of BCR ?
+    }
+    
+    
+    public long GetLastInsertRowId()
+    {
+      return mConnection.LastInsertRowId;
     }
     
     /// <summary>
@@ -265,7 +338,7 @@ namespace BCR
       return null;
     }
     
-    
+
 /*
 public static List<dynamic> AsDynaList(ADODB.Recordset recordset)
 {

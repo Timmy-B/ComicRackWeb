@@ -12,7 +12,7 @@ Ext.define('Comic.view.Login', {
             xtype: "toolbar",
             title: 'Badaap Comic Reader Login',
             ui: 'light',
-            docked: "top",
+            docked: "top"
         },
         {
           xtype: 'fieldset',
@@ -40,7 +40,7 @@ Ext.define('Comic.view.Login', {
                 xtype: "button",
                 text: 'Ok',
                 ui: 'action',
-                itemId: 'submitbutton',
+                itemId: 'submitbutton'
                 //handler: this.onLoginButtonTap,
                 //scope: this
             }

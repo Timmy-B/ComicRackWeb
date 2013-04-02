@@ -4,6 +4,52 @@
 
 // Cookie entries
 
+function createCookie(name, value, days) 
+{
+    var expires = "",
+        date;
+        
+    if (days) 
+    {
+        date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+    } 
+    
+    document.cookie = name + "=" + value + expires + "; path=/";
+    console.log(document.cookie);
+}
+
+function readCookie(name) 
+{
+    var cookieValue = null,
+        nameEQ = name + "=",
+        ca = document.cookie.split(';'),
+        i, c, found;
+        
+    for (i = 0; i < ca.length; i++) 
+    {
+        c = ca[i];
+        while (c.charAt(0) == ' ') 
+        {
+          c = c.substring(1, c.length);
+        }
+        
+        if (c.indexOf(nameEQ) == 0) 
+        {
+            found = c.substring(nameEQ.length, c.length);
+            cookieValue = found;
+        }
+    }
+    return cookieValue;
+}
+
+function eraseCookie(name) 
+{
+    createCookie(name, "", -1);
+}
+
+           
 var ApiToken = {
     authUrl : "/auth",
     apiKeyKey : "BCR_apiKey",
@@ -38,44 +84,11 @@ var ApiToken = {
         
         //localStorage.removeItem(me.apiKeyKey);
         //localStorage.removeItem(me.usernameKey);
-    },
+    }
     
     
 };
-
-function createCookie(name, value, days) 
-{
-    if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        var expires = "; expires=" + date.toGMTString();
-    } else var expires = "";
-    document.cookie = name + "=" + value + expires + "; path=/";
-    console.log(document.cookie);
-}
-
-function readCookie(name) 
-{
-    var cookieValue = null;
-    var nameEQ = name + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) {
-            var found = c.substring(nameEQ.length, c.length);
-            cookieValue = found;
-        }
-    }
-    return cookieValue;
-}
-
-function eraseCookie(name) 
-{
-    createCookie(name, "", -1);
-}
-
-                
+     
 ////////////////////////////////////////////////////////////////////
 
 Ext.define('Comic.RemoteApi', {
@@ -90,7 +103,7 @@ Ext.define('Comic.RemoteApi', {
     this.initConfig(config);
         
     this.searchfields = { 
-      1: [ 'Caption', /*'ShadowSeries'*/, 'Summary', /*'ShadowTitle'*/, 'Writer', 'Penciller', 'Inker', 'Colorist', 'Letterer', 'CoverArtist', 'FilePath' ], 
+      1: [ 'Caption', /*'ShadowSeries',*/ 'Summary', /*'ShadowTitle',*/ 'Writer', 'Penciller', 'Inker', 'Colorist', 'Letterer', 'CoverArtist', 'FilePath' ], 
       2: [ 'Caption' ],
       3: [ 'ShadowSeries' ], 
       4: [ 'ShadowTitle' ], 
@@ -152,7 +165,7 @@ Ext.define('Comic.RemoteApi', {
         method: 'POST',
         params: request,
         success: function(response) {
-            result = Ext.JSON.decode(response.responseText);
+            var result = Ext.JSON.decode(response.responseText);
             ApiToken.Set(request.username, result.ApiKey, request.rememberMe);
             
             console.log('Retrieving settings...');
@@ -216,7 +229,6 @@ Ext.define('Comic.RemoteApi', {
   // This will get the C# Comic object, not the ComicBook object....
   GetComicInfo: function(comic_id, callback)
   {
-    //Comic.OData.requestGet({ entity: 'Comics', id: comic_id }, callback);
     Comic.model.ComicInfo.load(comic_id, {
       scope: this,
       failure: function(record, operation) {
@@ -235,6 +247,7 @@ Ext.define('Comic.RemoteApi', {
   },
   
   // This will set the C# ComicBook object directly, not the Comic object.... 
+  /*
   SetComicInfo: function(comic_id, comic_info, callback)
   {
     Ext.Ajax.request({
@@ -246,6 +259,22 @@ Ext.define('Comic.RemoteApi', {
       callback: callback
     });
   },
+  */
+  
+  
+  // Update the progress state of the comic for the current user.
+  UpdateProgress: function(comic_id, current_page, callback)
+  {
+    Ext.Ajax.request({
+      url: '/BCR/Comics/' + comic_id + '/Progress',
+      method: 'PUT',
+      params: { CurrentPage : current_page },
+      success: function(response){
+      },
+      callback: callback
+    });
+  },
+  
   
   GetImageUrl: function(comic_id, page_nr, width, height)
   {
@@ -268,15 +297,12 @@ Ext.define('Comic.RemoteApi', {
   },
   
    
-  CreateComicStoreFromList: function(list_id)
+  CreateStoreParams_ListComics: function(list_id)
   {
-    var store = Ext.create('Comic.store.Comic');
-    var proxy = store.getProxy();
-    proxy.setUrl();
     return { url: '/BCR/Lists/' + list_id + '/Comics' };
   },
   
-  CreateComicStoreFromSearch: function(values)
+  CreateStoreParams_SearchComics: function(values)
   {
     var fields = Comic.RemoteApi.searchfields[values.type];
     var filter = "";
@@ -311,15 +337,11 @@ Ext.define('Comic.RemoteApi', {
     return { url: '/BCR/Comics', filter: combined_filter };
   },
   
-  CreateComicStoreFromSeries: function(series_id)
+  CreateStoreParams_SerieComics: function(series_id)
   {
     return { url: '/BCR/Series/' + series_id };
   },
   
-  SetViewState: function(params, callback)
-  {
-    
-  },
   
   GetSettings: function(callback)
   {
@@ -356,33 +378,7 @@ Ext.define('Comic.RemoteApi', {
           callback(false);
       }
     });
-  },
-
-  GetComicTitle: function(comic)
-  {
-    return comic.Caption;
-    /*
-    var s = '';
-    if (comic.ShadowSeries)
-      s += comic.ShadowSeries + ' ' + comic.ShadowNumber;
-    else
-      s += comic.name;
-      
-    if (comic.ShadowTitle)
-      s += ': ' + comic.ShadowTitle;
-    
-    if (comic.ShadowYear > 0)
-    {
-      s += ' [' + comic.ShadowYear;
-      if (comic.Month)
-        s += '/' + comic.Month + ']';
-      else
-        s += ']';
-    }
-      
-    return s;
-    */
-  },
+  }
   
 });
 

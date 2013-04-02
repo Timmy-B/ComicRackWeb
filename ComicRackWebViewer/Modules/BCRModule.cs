@@ -11,8 +11,10 @@ using System.Diagnostics;
 //using cYo.Common;
 //using cYo.Common.IO;
 using cYo.Projects.ComicRack.Engine;
+using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Viewer;
+
 using Nancy;
 using Nancy.ModelBinding;
 using Nancy.Responses;
@@ -35,25 +37,17 @@ namespace BCR
               
             Get["/"] = x => { return Response.AsRedirect("/", RedirectResponse.RedirectType.Permanent); };
             
-            /*
-            Get["/User"] = x => {
-              //Context.CurrentUser was set by StatelessAuthentication earlier in the pipeline
-              var user = (BCRUser)this.Context.CurrentUser;
-              
-              return Response.AsRedirect("/", RedirectResponse.RedirectType.Permanent);
-            };
-            */
-            
+                        
             ///////////////////////////////////////////////////////////////////////////////////////////////
             // Retrieve a list of all (smart)lists.
             Get["/Lists"] = x => { 
               
-              // TODO: get home list for user.
-              //var user = (BCRUser)this.Context.CurrentUser;
-              
-
         	    try 
         	    {
+        	      //var user = (BCRUser)this.Context.CurrentUser;
+                //Gui guid = user.GetHomeList();
+                //ComicListItem item = Program.Database.ComicLists.GetItems<ComicListItem>(false).FirstOrDefault((ComicListItem cli) => cli.Id == s);
+                
                 int depth = Request.Query.depth.HasValue ? int.Parse(Request.Query.depth) : -1;
          	      return Response.AsOData(Program.Database.ComicLists.Select(c => c.ToComicList(depth)));
         	    }
@@ -90,8 +84,9 @@ namespace BCR
         	  Get["/Lists/{id}/Comics/count"] = x => {
               try 
               {
+                BCRUser user = (BCRUser)this.Context.CurrentUser;
                 int totalCount = 0;
-        	      return Response.AsText(Context.ApplyODataUriFilter(BCR.GetIssuesOfListFromId(new Guid(x.id), Context), ref totalCount).Count().ToString());
+        	      return Response.AsText(Context.ApplyODataUriFilter(BCR.GetIssuesOfListFromId(user, new Guid(x.id)), ref totalCount).Count().ToString());
               }
               catch(Exception e)
         	    {
@@ -105,14 +100,24 @@ namespace BCR
             Get["/Lists/{id}/Comics"] = x => { 
         	    try
         	    {
-        	      var rawcomics = BCR.GetIssuesOfListFromId(new Guid(x.id), Context);
+        	      BCRUser user = (BCRUser)this.Context.CurrentUser;
+        	      
+        	      /* possible performance enhancement: postpone conversion to excerpt to last moment, but this will break sorting on 
+        	       * per user DateRead field.
+        	       * TODO: use this if user uses ComicRack's comic progress.
+        	      var list = Program.Database.ComicLists.FindItem(new Guid(x.id));
+                int totalCount = 0;
+                var comics = Context.ApplyODataUriFilter(list.GetBooks(), ref totalCount).Cast<ComicBook>().Select((ComicBook cb) => cb.ToComicExcerpt(user));
+        	      var result = new { totalCount = totalCount, items = comics };
+        	      return Response.AsJson(result, HttpStatusCode.OK);
+        	      */
+        	      
+                
+        	      var rawcomics = BCR.GetIssuesOfListFromId(user, new Guid(x.id));
         	      int totalCount = 0;
         	      var comics = Context.ApplyODataUriFilter(rawcomics, ref totalCount);
         	      var result = new { totalCount = totalCount, items = comics };
         	      return Response.AsJson(result, HttpStatusCode.OK);
-        	      
-        	      //IEnumerable<Comic> comics = BCR.GetIssuesOfListFromId(new Guid(x.id), Context).Comics;
-        	      //return Response.AsOData(comics); 
         	    }
         	    catch(Exception e)
         	    {
@@ -126,8 +131,9 @@ namespace BCR
         	  Get["/Comics"] = x => { 
         	    try
         	    {
+        	      BCRUser user = (BCRUser)this.Context.CurrentUser;
         	      int totalCount = 0;
-        	      var comics = Context.ApplyODataUriFilter(BCR.GetComics().Select(c => c.ToComicExcerpt()), ref totalCount).Cast<ComicExcerpt>();
+        	      var comics = Context.ApplyODataUriFilter(BCR.GetComics().Select(c => c.ToComicExcerpt(user)), ref totalCount).Cast<ComicExcerpt>();
         	      var result = new { totalCount = totalCount, items = comics };
         	      return Response.AsJson(result, HttpStatusCode.OK);
         	    }
@@ -143,7 +149,8 @@ namespace BCR
             Get["/Comics/{id}"] = x => { 
         	    try
         	    {
-                Comic comic = BCR.GetComic(new Guid(x.id));
+        	      BCRUser user = (BCRUser)this.Context.CurrentUser;
+                Comic comic = BCR.GetComic(user, new Guid(x.id));
                 if (comic == null)
                 {
                   return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
@@ -180,7 +187,7 @@ namespace BCR
             
             
             ///////////////////////////////////////////////////////////////////////////////////////////////
-            //
+            // Retrieve the original size (in pixels) of the requested page.
             Get["/Comics/{id}/Pages/{page}/size"] = x => {
               try
               {
@@ -198,6 +205,7 @@ namespace BCR
             
             ///////////////////////////////////////////////////////////////////////////////////////////////
         	  // Get one property.
+        	  /*
         	  Get["/Comics/{id}/{property}"] = x => { 
         	    try
         	    {
@@ -217,10 +225,12 @@ namespace BCR
         	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
             };
+            */
         	  
         	  
         	  ///////////////////////////////////////////////////////////////////////////////////////////////
         	  // Update properties of the specified comicbook.
+        	  /*
         	  Put["/Comics/{id}"] = x => {
         	    try
         	    {
@@ -246,10 +256,35 @@ namespace BCR
         	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
+        	  */
         	  
-
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+        	  // Update properties of the specified comicbook for the current user
+        	  Put["/Comics/{id}/Progress"] = x => {
+        	    try
+        	    {
+          	    // Check if the comic exists.
+          	    Guid comicId = new Guid(x.id);
+          	    ComicBook book = BCR.GetComicBook(comicId);
+          	    if (book == null)
+          	    {
+          	      return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
+          	    }
+          	              	    
+          	    BCRUser user = (BCRUser)this.Context.CurrentUser;
+          	    user.UpdateComicProgress(comicId, int.Parse(this.Request.Form.CurrentPage));
+          	              	    
+          	    return HttpStatusCode.OK;  
+        	    }
+        	    catch(Exception e)
+        	    {
+        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+        	    }
+        	  };
+        	  
         	  ///////////////////////////////////////////////////////////////////////////////////////////////
         	  // Update one property
+        	  /*
         	  Put["/Comics/{id}/{property}"] = x => {
         	    try
         	    {
@@ -275,7 +310,8 @@ namespace BCR
         	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
-        	  
+        	  */
+        	 
         	  /*
         	  ///////////////////////////////////////////////////////////////////////////////////////////////
         	  // Get the BCR settings.
@@ -361,8 +397,9 @@ namespace BCR
         	  Get["/Series/{id}"] = x => {
         	    try 
         	    {
+        	      var user = (BCRUser)this.Context.CurrentUser;
         	      int totalCount = 0;
-        	      var series = Context.ApplyODataUriFilter(BCR.GetComicsFromSeries(new Guid(x.id)), ref totalCount);
+        	      var series = Context.ApplyODataUriFilter(BCR.GetComicsFromSeries(user, new Guid(x.id)), ref totalCount);
         	      var result = new { totalCount = totalCount, items = series };
         	      return Response.AsJson(result, HttpStatusCode.OK);
         	    }
@@ -378,8 +415,9 @@ namespace BCR
         	  Get["/Series/{id}/count"] = x => {
         	    try 
         	    {
+        	      var user = (BCRUser)this.Context.CurrentUser;
         	      int totalCount = 0;
-        	      return Response.AsText(Context.ApplyODataUriFilter(BCR.GetComicsFromSeries(new Guid(x.id)), ref totalCount).Count().ToString());
+        	      return Response.AsText(Context.ApplyODataUriFilter(BCR.GetComicsFromSeries(user, new Guid(x.id)), ref totalCount).Count().ToString());
         	    }
         	    catch(Exception e)
         	    {
@@ -407,8 +445,9 @@ namespace BCR
         	  Get["/Series/{id}/Volumes/{volume}"] = x => {
         	    try 
         	    {
+        	      BCRUser user = (BCRUser)this.Context.CurrentUser;
         	      int volume = int.Parse(x.volume);
-        	      var comics = BCR.GetComicsFromSeriesVolume(new Guid(x.id), volume);
+        	      var comics = BCR.GetComicsFromSeriesVolume(user, new Guid(x.id), volume);
         	      return Response.AsOData(comics, HttpStatusCode.OK);
         	    }
         	    catch(Exception e)

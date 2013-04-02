@@ -150,6 +150,7 @@ namespace BCR
         public string ScanInfo { get; set; }
         public string Opened { get; set; }
         public int LastPageRead { get; set; }
+        public int CurrentPage { get; set; }
         
         public string ShadowSeries { get; set; }
         public string ShadowTitle { get; set; }
@@ -158,8 +159,9 @@ namespace BCR
         public int ShadowCount { get; set; }
         public int ShadowYear { get; set; }
         public string ShadowFormat { get; set; }
-        
     }
+    
+    
     
     // For displaying in the ComicList
     // Ideally I want to use the OData $select for this via Linq2Rest, but everytime I try to do
@@ -173,6 +175,7 @@ namespace BCR
 
         public string Opened { get; set; }
         public int LastPageRead { get; set; }
+        public int CurrentPage { get; set; }
         
         public string Caption { get; set; }
         
@@ -183,9 +186,18 @@ namespace BCR
         public int ShadowCount { get; set; }
         public int ShadowYear { get; set; }
         public string ShadowFormat { get; set; }
-        
     }
 
+    public class ComicProgress
+    {
+        public Guid Id { get; set; }
+
+        public string DateLastRead { get; set; }
+        public int LastPageRead { get; set; }
+        public int CurrentPage { get; set; }
+        
+        public int DatabaseId { get; set; }
+    }
 
     public static class EntityExtensions
     {
@@ -218,82 +230,89 @@ namespace BCR
           return list;
         }
          
-        public static Comic ToComic(this ComicBook x)
+        public static Comic ToComic(this ComicBook x, BCRUser user)
         {
+            
+            ComicProgress progress = user.GetComicProgress(x.Id);
+
             return new Comic
-                    {
-                        Id = x.Id,
-                        FilePath = x.FilePath,
-                        Caption = x.Caption,
-                        
-                        ShadowTitle = x.ShadowTitle,
-                        ShadowVolume = x.ShadowVolume,
-                        ShadowNumber = x.ShadowNumber,
-                        ShadowYear = x.ShadowYear,
-                        ShadowSeries = x.ShadowSeries,
-                        ShadowFormat = x.ShadowFormat,
-                        ShadowCount = x.ShadowCount,
-                                                
-                        Title = x.Title,
-                        Volume = x.Volume,
-                        Number = x.Number,
-                        Year = x.Year,
-                        Series = x.Series,
-                        Format = x.Format,
-                        Count = x.Count,
-                                                
-                        Month = x.Month,
-                        
-                        Date = new ComicDate(x.Year, x.Month),
-                        PageCount = x.PageCount,
-                        AlternateCount = x.AlternateCount,
-                        AlternateSeries = x.AlternateSeries,
-                        Summary = x.Summary,
-                        Publisher = x.Publisher,
-                        Imprint = x.Imprint,
-                        
-                        Rating = x.Rating,
-                        Writer = x.Writer,
-                        Penciller = x.Penciller,
-                        Inker = x.Inker,
-                        Colorist = x.Colorist,
-                        Letterer = x.Letterer,
-                        CoverArtist = x.CoverArtist,
-                        Editor = x.Editor,
-                        Genre = x.Genre,
-                        Tags = x.Tags,
-                        Characters = x.Characters,
-                        Teams = x.Teams,
-                        Locations = x.Locations,
-                        Web = x.Web,
-                        Notes = x.Notes,
-                        ScanInfo = x.ScanInformation,
-                        Opened = x.OpenedTimeAsText,
-                        LastPageRead = x.LastPageRead
-                    };
+                {
+                    Id = x.Id,
+                    FilePath = x.FilePath,
+                    Caption = x.Caption,
+                    
+                    ShadowTitle = x.ShadowTitle,
+                    ShadowVolume = x.ShadowVolume,
+                    ShadowNumber = x.ShadowNumber,
+                    ShadowYear = x.ShadowYear,
+                    ShadowSeries = x.ShadowSeries,
+                    ShadowFormat = x.ShadowFormat,
+                    ShadowCount = x.ShadowCount,
+                                            
+                    Title = x.Title,
+                    Volume = x.Volume,
+                    Number = x.Number,
+                    Year = x.Year,
+                    Series = x.Series,
+                    Format = x.Format,
+                    Count = x.Count,
+                                            
+                    Month = x.Month,
+                    
+                    Date = new ComicDate(x.Year, x.Month),
+                    PageCount = x.PageCount,
+                    AlternateCount = x.AlternateCount,
+                    AlternateSeries = x.AlternateSeries,
+                    Summary = x.Summary,
+                    Publisher = x.Publisher,
+                    Imprint = x.Imprint,
+                    
+                    Rating = x.Rating,
+                    Writer = x.Writer,
+                    Penciller = x.Penciller,
+                    Inker = x.Inker,
+                    Colorist = x.Colorist,
+                    Letterer = x.Letterer,
+                    CoverArtist = x.CoverArtist,
+                    Editor = x.Editor,
+                    Genre = x.Genre,
+                    Tags = x.Tags,
+                    Characters = x.Characters,
+                    Teams = x.Teams,
+                    Locations = x.Locations,
+                    Web = x.Web,
+                    Notes = x.Notes,
+                    ScanInfo = x.ScanInformation,
+                    Opened = user.settings.use_comicrack_progress ? x.OpenedTimeAsText : (progress == null ? "" : progress.DateLastRead),
+                    CurrentPage = user.settings.use_comicrack_progress ? x.CurrentPage : (progress == null ? 0 : progress.CurrentPage),
+                    LastPageRead = user.settings.use_comicrack_progress ? x.LastPageRead : (progress == null ? 0 : progress.LastPageRead)
+                };
         }
         
-        public static ComicExcerpt ToComicExcerpt(this ComicBook x)
+        public static ComicExcerpt ToComicExcerpt(this ComicBook x, BCRUser user)
         {
+            ComicProgress progress = user.GetComicProgress(x.Id);
+            
             return new ComicExcerpt
-                    {
-                        Id = x.Id,
-                        FilePath = x.FilePath,
-                        Caption = x.Caption,
-                        
-                        ShadowTitle = x.ShadowTitle,
-                        ShadowVolume = x.ShadowVolume,
-                        ShadowNumber = x.ShadowNumber,
-                        ShadowYear = x.ShadowYear,
-                        ShadowSeries = x.ShadowSeries,
-                        ShadowFormat = x.ShadowFormat,
-                        ShadowCount = x.ShadowCount,
-                                               
-                        Month = x.Month,
-                        PageCount = x.PageCount,
-                        Opened = x.OpenedTimeAsText,
-                        LastPageRead = x.LastPageRead
-                    };
+                {
+                    Id = x.Id,
+                    FilePath = x.FilePath,
+                    Caption = x.Caption,
+                    
+                    ShadowTitle = x.ShadowTitle,
+                    ShadowVolume = x.ShadowVolume,
+                    ShadowNumber = x.ShadowNumber,
+                    ShadowYear = x.ShadowYear,
+                    ShadowSeries = x.ShadowSeries,
+                    ShadowFormat = x.ShadowFormat,
+                    ShadowCount = x.ShadowCount,
+                                           
+                    Month = x.Month,
+                    PageCount = x.PageCount,
+                    Opened = user.settings.use_comicrack_progress ? x.OpenedTimeAsText : (progress == null ? "" : progress.DateLastRead),
+                    CurrentPage = user.settings.use_comicrack_progress ? x.CurrentPage : (progress == null ? 0 : progress.CurrentPage),
+                    LastPageRead = user.settings.use_comicrack_progress ? x.LastPageRead : (progress == null ? 0 : progress.LastPageRead)
+                };
         }
         
         public static ComicExcerpt ToComicExcerpt(this Comic x)

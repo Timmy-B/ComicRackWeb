@@ -12,17 +12,23 @@ Ext.define('Comic.view.Logout', {
             xtype: "toolbar",
             title: 'Badaap Comic Reader Logout',
             ui: 'light',
-            docked: "top",
+            docked: "top"
         },
+        {
+                xtype: "label",
+                html: '',
+                itemId: 'fullnametext'
+            },
         {
           xtype: 'fieldset',
           title: '',
           items: [
+            
             {
                 xtype: "button",
                 text: 'Logout',
                 ui: 'action',
-                itemId: 'submitbutton',
+                itemId: 'submitbutton'
             }
           ]
         }

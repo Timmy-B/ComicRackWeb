@@ -209,6 +209,8 @@
     <None Include="tablet\app\view\ImageViewer.js" />
     <None Include="tablet\app\view\ImageViewer.js.org" />
     <None Include="tablet\app\view\ImageViewer_github.js" />
+    <None Include="tablet\app\view\Login.js" />
+    <None Include="tablet\app\view\Logout.js" />
     <None Include="tablet\app\view\Main.js" />
     <None Include="tablet\app\view\Search.js" />
     <None Include="tablet\app\view\Series.js" />

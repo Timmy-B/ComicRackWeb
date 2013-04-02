@@ -4,14 +4,16 @@ Ext.define('Comic.controller.Login', {
       'Comic.view.Main',
       'Comic.view.Login',
       'Comic.view.Logout',
-      'Comic.RemoteApi',
+      'Comic.RemoteApi'
     ],
     config: {
         refs: {
           mainview: 'mainview',
           loginview: 'loginview', 
+          logoutview: 'logoutview', 
           loginbutton: 'loginview #submitbutton',
           logoutbutton: 'logoutview #submitbutton',
+          logoutfullname: 'logoutview #fullnametext'
         },
         control: {
             loginbutton: {
@@ -19,6 +21,9 @@ Ext.define('Comic.controller.Login', {
             },
             logoutbutton: {
               tap: 'onLogout'
+            },
+            logoutview: {
+              show: 'onShowLogoutView'
             }
         }
     },
@@ -29,8 +34,8 @@ Ext.define('Comic.controller.Login', {
     },
     
     onLogin: function () {
-        var loginForm=this.getLoginview();
-        var loginFormValues=loginForm.getValues();
+        var loginForm=this.getLoginview(),
+            loginFormValues=loginForm.getValues();
         
         Comic.RemoteApi.Login(loginFormValues.username, loginFormValues.password, true, function(success)
         {
@@ -56,5 +61,10 @@ Ext.define('Comic.controller.Login', {
         Ext.Viewport.remove(mainview);
         Ext.Viewport.add(Ext.create('Comic.view.Login'));
       });
+    },
+    
+    onShowLogoutView: function() {
+      var logoutfullname = this.getLogoutfullname();
+      logoutfullname.setHtml(Comic.settings.full_name);
     }
 });

@@ -11,11 +11,13 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using cYo.Projects.ComicRack.Engine;
+using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Viewer;
 using Nancy;
 using Nancy.OData;
 using FreeImageAPI;
+
 
 
 
@@ -25,7 +27,7 @@ namespace BCR
     {
         private static System.Object lockThis = new System.Object();
         
-        public static IEnumerable<ComicExcerpt> GetIssuesOfListFromId(Guid id, NancyContext context)
+        public static IEnumerable<ComicExcerpt> GetIssuesOfListFromId(BCRUser user, Guid id)
         {
             var list = Program.Database.ComicLists.FindItem(id);
             if (list == null)
@@ -33,7 +35,7 @@ namespace BCR
               return Enumerable.Empty<ComicExcerpt>();
             }
 
-            return list.GetBooks().Select(x => x.ToComicExcerpt());
+            return list.GetBooks().Select(x => x.ToComicExcerpt(user));
         }
 
         public static IEnumerable<Series> GetSeriesAndVolumes()
@@ -49,26 +51,26 @@ namespace BCR
         /*
          * 
          */ 
-        public static IEnumerable<Comic> GetSeries(Guid id, NancyContext context)
+        public static IEnumerable<Comic> GetSeries(BCRUser user, Guid id, NancyContext context)
         {
             var books = ComicRackWebViewer.Plugin.Application.GetLibraryBooks();
             var book = books.Where(x => x.Id == id).First();
             var series = books.Where(x => x.ShadowSeries == book.ShadowSeries)
                 .Where(x => x.ShadowVolume == book.ShadowVolume)
-                .Select(x => x.ToComic())
+                .Select(x => x.ToComic(user))
                 .OrderBy(x => x.ShadowNumber).ToList();
 
             return context.ApplyODataUriFilter(series).Cast<Comic>();
         }
         
         // Get all comics from a specific series
-        public static IEnumerable<ComicExcerpt> GetComicsFromSeries(Guid id)
+        public static IEnumerable<ComicExcerpt> GetComicsFromSeries(BCRUser user, Guid id)
         {
             var books = ComicRackWebViewer.Plugin.Application.GetLibraryBooks();
             var book = books.Where(x => x.Id == id).First();
             var series = books.Where(x => x.ShadowSeries == book.ShadowSeries)
                 .Where(x => x.ShadowVolume == book.ShadowVolume)
-                .Select(x => x.ToComicExcerpt())
+                .Select(x => x.ToComicExcerpt(user))
                 .OrderBy(x => x.ShadowVolume)
                 .ThenBy(x => x.ShadowNumber).ToList();
             
@@ -86,13 +88,13 @@ namespace BCR
         }
         
         // Get all comics from a specific series and volume
-        public static IEnumerable<ComicExcerpt> GetComicsFromSeriesVolume(Guid id, int volume)
+        public static IEnumerable<ComicExcerpt> GetComicsFromSeriesVolume(BCRUser user, Guid id, int volume)
         {
             var books = ComicRackWebViewer.Plugin.Application.GetLibraryBooks();
             var book = books.Where(x => x.Id == id).First();
             var series = books.Where(x => x.ShadowSeries == book.ShadowSeries)
                 .Where(x => x.ShadowVolume == volume)
-                .Select(x => x.ToComicExcerpt())
+                .Select(x => x.ToComicExcerpt(user))
                 .OrderBy(x => x.ShadowNumber).ToList();
             
             return series;
@@ -509,12 +511,12 @@ namespace BCR
             return provider;
         }
 
-        public static Comic GetComic(Guid id)
+        public static Comic GetComic(BCRUser user, Guid id)
         {
           try
           {
             var comic = GetComics().First(x => x.Id == id);
-            return comic.ToComic();
+            return comic.ToComic(user);
           }
           catch//(Exception e)
           {
@@ -523,6 +525,7 @@ namespace BCR
           }
         }
         
+       
         public static ComicBook GetComicBook(Guid id)
         {
           try
@@ -537,6 +540,7 @@ namespace BCR
           }
         }
 
+       
         public static IQueryable<ComicBook> GetComics()
         {
             return ComicRackWebViewer.Plugin.Application.GetLibraryBooks().AsQueryable();

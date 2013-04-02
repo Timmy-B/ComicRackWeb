@@ -6,28 +6,28 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
-using System;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Security.Principal;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-
-using BCR;
-using System.Data.SQLite;
-using cYo.Projects.ComicRack.Viewer;
-using cYo.Projects.ComicRack.Engine;
-using cYo.Projects.ComicRack.Engine.Database;
-
 
 namespace ComicRackWebViewer
 {
+  
+  using System;
+  using System.Drawing;
+  using System.Windows.Forms;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Net;
+  using System.Net.Sockets;
+  using System.Security.Principal;
+  using System.Threading;
+  using System.Threading.Tasks;
+  using System.Windows;
+  using System.Windows.Controls;
+  
+  using BCR;
+  using System.Data.SQLite;
+  using cYo.Projects.ComicRack.Viewer;
+  using cYo.Projects.ComicRack.Engine;
+  using cYo.Projects.ComicRack.Engine.Database;
   
   
   
@@ -38,7 +38,7 @@ namespace ComicRackWebViewer
   {
     
     private static ManualResetEvent mre = new ManualResetEvent(false);
-    private static BCR.WebHost host;
+    private static WebHost host;
     private int? actualPort;
     private bool allowExternal;
     private Guid libraryGuid;
@@ -308,15 +308,6 @@ namespace ComicRackWebViewer
         ButtonChangePasswordClick(null, null);
       }
       
-      /*
-      ComicListItemFolder userFolder = new ComicListItemFolder(name);
-      ComicIdListItem readingList = new ComicIdListItem("Reading");
-      userFolder.Items.Add(readingList);
-      ComicIdListItem favoritesList = new ComicIdListItem("Favorites");
-      userFolder.Items.Add(favoritesList);
-            
-      ((ComicLibrary)Program.Database).ComicLists.Add(userFolder);
-      */
     }
     
     
@@ -388,7 +379,7 @@ namespace ComicRackWebViewer
         return;
       }
       
-      using (SQLiteDataReader reader = Database.Instance.ExecuteReader("SELECT id, username, fullname, home_list_id FROM user JOIN user_settings ON user.id=user_settings.user_id WHERE user.id = " + item.UserId + " LIMIT 1;"))
+      using (SQLiteDataReader reader = Database.Instance.ExecuteReader("SELECT id, username, fullname, home_list_id, use_comicrack_progress FROM user JOIN user_settings ON user.id=user_settings.user_id WHERE user.id = " + item.UserId + " LIMIT 1;"))
       {
         if (reader.Read())
         {
@@ -424,6 +415,8 @@ namespace ComicRackWebViewer
           {
             listId = libraryGuid;
           }
+          
+          checkBoxUseProgressFromComicRack.Checked = reader.GetBoolean(4);
           
           comboTreeHomeList.SelectedNode = comboTreeHomeList.Nodes.FirstOrDefault((ComboTreeNode ctn) => ctn.Tag.Equals(listId));
         }
@@ -487,6 +480,17 @@ namespace ComicRackWebViewer
        
         this.Cursor = cursor;
       }
+    }
+    
+    void CheckBoxUseProgressFromComicRackCheckedChanged(object sender, EventArgs e)
+    {
+      ComboUserItem item = (ComboUserItem)comboBoxUsers.SelectedItem;
+      if (item == null)
+      {
+        return;
+      }
+            
+      Database.Instance.ExecuteNonQuery("UPDATE user_settings SET use_comicrack_progress = " + (checkBoxUseProgressFromComicRack.Checked ? "1" : "0") + " WHERE user_id=" + item.UserId + ";");
     }
   }
   
