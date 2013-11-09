@@ -138,9 +138,9 @@ namespace ComicRackWebViewer
 
         host.Stop();
       }
-      catch (Exception)
+      catch (Exception e)
       {
-        System.Windows.Forms.MessageBox.Show("Error in url binding");
+        System.Windows.Forms.MessageBox.Show("Error in url binding:\n" + e.ToString());
         StopService();
         throw;
       }
