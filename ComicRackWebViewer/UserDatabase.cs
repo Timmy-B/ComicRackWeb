@@ -1,12 +1,10 @@
+using Nancy.Security;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+
 namespace BCR
 {
-    using Nancy.Security;
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Specialized;
-    using SaltedHash;
-   
-    
     public class UserDatabase
     {        
         private static Dictionary<string, BCRUser> users = new Dictionary<string, BCRUser>();
@@ -41,7 +39,7 @@ namespace BCR
           if (result == null)
             return null;
           
-          SaltedHash sh = new SaltedHash();
+          SaltedHash.SaltedHash sh = new SaltedHash.SaltedHash();
           if (!sh.VerifyHashString(password, result["password"], result["salt"]))
           {
             // invalid password
@@ -74,7 +72,7 @@ namespace BCR
         
         public static bool AddUser(string username, string password)
         {
-          SaltedHash sh = new SaltedHash();
+          SaltedHash.SaltedHash sh = new SaltedHash.SaltedHash();
 
           string hash;
           string salt;
@@ -111,8 +109,8 @@ namespace BCR
         {
           // TODO: validate password strength
           // TODO: remove active api keys
-          
-          SaltedHash sh = new SaltedHash();
+
+          SaltedHash.SaltedHash sh = new SaltedHash.SaltedHash();
 
           string hash;
           string salt;

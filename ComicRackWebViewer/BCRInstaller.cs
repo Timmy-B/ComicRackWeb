@@ -7,15 +7,13 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Text;
-using System.Collections;
 using System.IO;
 using System.Windows;
 
 using ICSharpCode.SharpZipLib.Zip;
-using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using FreeImageAPI;
 using System.Data.SQLite;
+using System.Diagnostics;
 
 namespace ComicRackWebViewer
 {
@@ -26,7 +24,7 @@ namespace ComicRackWebViewer
   {
     private const string INSTALLER_FILE = "BCRPlugin.zip";
     private const string VERSION_FILE = "BCRVersion.txt";
-    private const string VERSION = "1.24";
+    private const string VERSION = "1.25";
     
     public string installFolder = "";
     
@@ -82,6 +80,7 @@ namespace ComicRackWebViewer
       }
       catch (System.DllNotFoundException e)
       {
+        Trace.WriteLine(String.Format("Exception: {0}", e));
         System.IO.File.Copy(dir + (Environment.Is64BitProcess ? "SQLite.Interop.64bit.dll" : "SQLite.Interop.32bit.dll"), dir + "SQLite.Interop.dll", true);
       }
       
@@ -92,6 +91,7 @@ namespace ComicRackWebViewer
       }
       catch (System.DllNotFoundException e)
       {
+        Trace.WriteLine(String.Format("Exception: {0}", e));
         MessageBox.Show("SQLite.Interop.dll seems to be missing. Aborting.", "Badaap Comic Reader Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
         return false;
       }

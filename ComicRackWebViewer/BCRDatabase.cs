@@ -7,20 +7,20 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 
+using System;
+using System.IO;
+using System.Collections.Specialized;
+using System.Data.SQLite;
+using System.Windows;
+using System.Linq;
+
+using cYo.Projects.ComicRack.Viewer;
+using cYo.Projects.ComicRack.Engine.Database;
+using System.Diagnostics;
+
 namespace BCR
 {
-  
-  using System;
-  using System.IO;
-  using System.Collections.Specialized;
-  using System.Data.SQLite;
-  using System.Windows;
-  using System.Linq;
-  
-  using cYo.Projects.ComicRack.Viewer;
-  using ComicRackWebViewer;
-  using cYo.Projects.ComicRack.Engine;
-  using cYo.Projects.ComicRack.Engine.Database;
+
   
   /// <summary>
   /// Description of Database.
@@ -108,11 +108,13 @@ namespace BCR
       }
       catch (System.DllNotFoundException e)
       {
+        Trace.WriteLine(String.Format("Exception: {0}", e));
         MessageBox.Show("SQLite.Interop.dll seems to be missing. Aborting.", "Badaap Comic Reader Plugin", MessageBoxButton.OK, MessageBoxImage.Error);
         return;
       }
       catch (SQLiteException e)
       {
+        Trace.WriteLine(String.Format("Exception: {0}", e));
         // error while opening/creating database
         mConnection = null;
         

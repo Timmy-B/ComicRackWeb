@@ -1,10 +1,10 @@
+using System;
+using System.Collections.Generic;
+using Nancy.Security;
+using System.Data.SQLite;
+
 namespace BCR
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.Specialized;
-    using Nancy.Security;
-    using System.Data.SQLite;
 
     public class BCRUser : IUserIdentity
     {

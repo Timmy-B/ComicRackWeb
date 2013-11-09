@@ -7,7 +7,16 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 
+using Nancy.Bootstrapper;
+using Nancy.Extensions;
+using Nancy.Helpers;
 using Nancy.Hosting.Self;
+using Nancy.IO;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Net;
 	
 /*
  * This class is a slighty modified copy of the Nancy.Hosting.Self.NancyHost.
@@ -17,15 +26,7 @@ using Nancy.Hosting.Self;
  */	
 namespace BCR
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.Net;
-    using System.Linq;
-    using Nancy.IO;
-    using Nancy.Bootstrapper;
-    using Nancy.Extensions;
-    using Nancy.Helpers;
+
 
     /// <summary>
     /// Allows to host Nancy server inside any application - console or windows service.

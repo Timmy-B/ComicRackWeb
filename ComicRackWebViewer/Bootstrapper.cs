@@ -1,17 +1,12 @@
-﻿using System;
-using System.Windows;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
+﻿using BCR;
 using Nancy;
+using Nancy.Authentication.Stateless;
 using Nancy.Bootstrapper;
 using Nancy.Conventions;
 using Nancy.Diagnostics;
 using Nancy.TinyIoc;
-using Nancy.ErrorHandling;
-using Nancy.Extensions;
-using Nancy.Authentication.Stateless;
-using BCR;
+using System;
+using System.IO;
 
 namespace ComicRackWebViewer
 {
@@ -60,14 +55,10 @@ namespace ComicRackWebViewer
             
             // Make sure static content isn't cached, because this really messes up the ipad browsers (Atomic Browser specifically) 
             // when the app is frequently updated.
-            pipelines.AfterRequest += ctx => {
-              var c = ctx as NancyContext; // just for autocompletion in SharpDevelop....
-              //string value;
-              //if (c.Response.Headers.TryGetValue("Cache-Control", value))
-              {
-                c.Response.Headers.Add("Cache-Control", "no-cache");
-              }
-            };
+          pipelines.AfterRequest.AddItemToEndOfPipeline(
+            ctx => {
+              ctx.Response.Headers["Cache-Control"] = "no-cache";
+            });
         }
        
         protected override IRootPathProvider RootPathProvider

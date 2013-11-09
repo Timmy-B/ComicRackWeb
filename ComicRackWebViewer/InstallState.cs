@@ -8,7 +8,6 @@
  */
 using System;
 using System.Runtime.InteropServices;
-using Microsoft.Win32;
 
 namespace ComicRackWebViewer
 {

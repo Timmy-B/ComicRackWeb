@@ -3,7 +3,6 @@
 //#define USE_DIB
 
 using System;
-using System.Windows;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -11,7 +10,6 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using cYo.Projects.ComicRack.Engine;
-using cYo.Projects.ComicRack.Engine.Database;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Viewer;
 using Nancy;

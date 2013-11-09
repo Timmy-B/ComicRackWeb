@@ -11,7 +11,6 @@ namespace ComicRackWebViewer
 {
   
   using System;
-  using System.Drawing;
   using System.Windows.Forms;
   using System.Collections.Generic;
   using System.Linq;
@@ -20,13 +19,10 @@ namespace ComicRackWebViewer
   using System.Security.Principal;
   using System.Threading;
   using System.Threading.Tasks;
-  using System.Windows;
-  using System.Windows.Controls;
-  
+
   using BCR;
   using System.Data.SQLite;
   using cYo.Projects.ComicRack.Viewer;
-  using cYo.Projects.ComicRack.Engine;
   using cYo.Projects.ComicRack.Engine.Database;
   
   
