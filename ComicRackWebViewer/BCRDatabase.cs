@@ -1,22 +1,12 @@
-﻿/*
- * Created by SharpDevelop.
- * User: jeroen
- * Date: 1/30/2013
- * Time: 9:39 PM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-
+﻿using cYo.Projects.ComicRack.Engine.Database;
+using cYo.Projects.ComicRack.Viewer;
 using System;
-using System.IO;
 using System.Collections.Specialized;
 using System.Data.SQLite;
-using System.Windows;
-using System.Linq;
-
-using cYo.Projects.ComicRack.Viewer;
-using cYo.Projects.ComicRack.Engine.Database;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows;
 
 namespace BCR
 {
@@ -79,25 +69,8 @@ namespace BCR
       {
         bcrGuid = item.Id;
       }
-      
-      
     }
     
-    ~Database()
-    {
-      // Why is mConnection already disposed here ????
-      //mConnection.Close();
-      //mConnection.Dispose();
-    }
-    
-    /// <summary>
-    /// Check if the database connection is valid.
-    /// </summary>
-    /// <returns>true if the database is connected.</returns>
-    public bool IsValid()
-    {
-      return mConnection != null;
-    }
     
     public void Initialize()
     {
@@ -117,9 +90,9 @@ namespace BCR
         Trace.WriteLine(String.Format("Exception: {0}", e));
         // error while opening/creating database
         mConnection = null;
-        
-        Console.WriteLine("Failed to create/open the BCR database:");
-        Console.WriteLine(e.ToString());
+
+        Trace.WriteLine("Failed to create/open the BCR database:");
+        Trace.WriteLine(e.ToString());
         return;
       }
       
@@ -247,9 +220,6 @@ namespace BCR
       if (mVersion < COMIC_DB_VERSION)
       {
         ExecuteNonQuery("UPDATE settings SET value='" + COMIC_DB_VERSION + "' WHERE key='version';");
-               
-        
-        //$this->Log(SL_INFO, "UpdateDatabase", "Database updated to version ". COMIC_DB_VERSION);
       }
       
       globalSettings.Initialize();

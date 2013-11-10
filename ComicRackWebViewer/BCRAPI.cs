@@ -2,19 +2,19 @@
 //#define USE_FIB
 //#define USE_DIB
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
-using System.IO;
-using System.Linq;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Viewer;
+using FreeImageAPI;
 using Nancy;
 using Nancy.OData;
-using FreeImageAPI;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
 
 
 
@@ -25,7 +25,7 @@ namespace BCR
     {
         private static System.Object lockThis = new System.Object();
         
-        public static IEnumerable<ComicExcerpt> GetIssuesOfListFromId(BCRUser user, Guid id)
+        public static IEnumerable<ComicExcerpt> GetComicExcerptsForList(BCRUser user, Guid id)
         {
             var list = Program.Database.ComicLists.FindItem(id);
             if (list == null)
@@ -143,6 +143,7 @@ namespace BCR
               {
                   return null;
               }
+              
               return provider.GetByteImage(index); // ComicRack returns the page converted to a jpeg image.....
             }
             catch //(Exception e)

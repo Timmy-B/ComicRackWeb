@@ -10,7 +10,6 @@ namespace BCR
     public bool nancy_request_tracing { get; set; }
     public string nancy_diagnostics_password { get; set; }
     public int webserver_port { get; set; }
-    public bool webserver_allow_external { get; set; }
             
     private Dictionary<string, string> mSettings = new Dictionary<string, string>();
     // TODO: maximum image size should be per requesting target device instead of using one global setting.
@@ -20,9 +19,7 @@ namespace BCR
     {
       nancy_request_tracing = true;
       nancy_diagnostics_password = "diagnostics";
-      
       webserver_port = 8080;
-      webserver_allow_external = true;
     }
     
     /// <summary>
@@ -36,14 +33,13 @@ namespace BCR
       {
         while (reader.Read())
         {
-          mSettings.Add(reader["key"].ToString(), reader["value"].ToString());
+          mSettings[reader["key"].ToString()] = reader["value"].ToString();
         }
       }
       
       webserver_port = GetInt32("webserver_port", 8080);
       nancy_request_tracing = GetBoolean("nancy_request_tracing", true);
       nancy_diagnostics_password = GetString("nancy_diagnostics_password", "diagnostics");
-      webserver_allow_external = GetBoolean("webserver_allow_external", true);
     }
     
     public void Save()
@@ -52,7 +48,6 @@ namespace BCR
       Set("webserver_port", webserver_port.ToString());
       Set("nancy_request_tracing", nancy_request_tracing.ToString());
       Set("nancy_diagnostics_password", nancy_diagnostics_password.ToString());
-      Set("webserver_allow_external", webserver_allow_external.ToString());
     }
     
     

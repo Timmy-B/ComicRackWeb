@@ -1,18 +1,10 @@
-﻿/*
- * Created by SharpDevelop.
- * User: jeroen
- * Date: 1/30/2013
- * Time: 9:45 PM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
+﻿using Linq2Rest.Parser;
+using Nancy;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Linq2Rest.Parser;
-using Nancy;
 
 namespace BCR
 {
@@ -184,7 +176,6 @@ namespace BCR
             totalCount = objects.Count();
             
             // Now sort
-            // Right now, only a single sort term is supported.
             if (null != sortNV.Get("$orderby"))
             {
               char[] delimiterChars = {','};

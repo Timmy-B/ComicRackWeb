@@ -9,6 +9,7 @@
 
 using System;
 using System.Data.SQLite;
+using System.Diagnostics;
 
 namespace BCR
 {
@@ -16,18 +17,19 @@ namespace BCR
 
     public class UserSettings
     {
-        public bool open_current_comic_at_launch;
-        public bool open_next_comic;
-        public int page_fit_mode; // 1: Fit width, 2: Full page
-        public int zoom_on_tap; // 0: off, 1: singletap, 2: doubletap
-        public int toggle_paging_bar; // 0: off, 1: singletap, 2: doubletap
-        public bool use_page_turn_drag;
-        public int page_turn_drag_threshold;
-        public bool use_page_change_area;
-        public int page_change_area_width;
-        public bool use_comicrack_progress; // if true, use reading progress from CR comicbook info. if false, use per user progress from userdatabase.
-        public Guid home_list_id;
-        public string full_name;
+        // These must be properties, otherwise NancyFX model binding won't work.
+        public bool open_current_comic_at_launch { get; set; }
+        public bool open_next_comic { get; set; }
+        public int page_fit_mode  { get; set; } // 1: Fit width, 2: Full page
+        public int zoom_on_tap  { get; set; } // 0: off, 1: singletap, 2: doubletap
+        public int toggle_paging_bar  { get; set; } // 0: off, 1: singletap, 2: doubletap
+        public bool use_page_turn_drag  { get; set; }
+        public int page_turn_drag_threshold { get; set; }
+        public bool use_page_change_area { get; set; }
+        public int page_change_area_width { get; set; }
+        public bool use_comicrack_progress { get; set; } // if true, use reading progress from CR comicbook info. if false, use per user progress from userdatabase.
+        public Guid home_list_id { get; set; }
+        public string full_name { get; set; }
 
 
         public UserSettings()
@@ -68,17 +70,24 @@ namespace BCR
           {
             if (reader.Read())
             {
-              open_current_comic_at_launch = reader.GetBoolean(0);
-              open_next_comic = reader.GetBoolean(1);
-              page_fit_mode = reader.GetInt32(2);
-              zoom_on_tap = reader.GetInt32(3);
-              toggle_paging_bar = reader.GetInt32(4);
-              use_page_turn_drag = reader.GetBoolean(5);
-              page_turn_drag_threshold = reader.GetInt32(6);
-              use_page_change_area = reader.GetBoolean(7);
-              page_change_area_width = reader.GetInt32(8);
-              use_comicrack_progress = reader.GetBoolean(9);
-              full_name = user.FullName;
+              try
+              {
+                open_current_comic_at_launch = reader.GetBoolean(0);
+                open_next_comic = reader.GetBoolean(1);
+                page_fit_mode = reader.GetInt32(2);
+                zoom_on_tap = reader.GetInt32(3);
+                toggle_paging_bar = reader.GetInt32(4);
+                use_page_turn_drag = reader.GetBoolean(5);
+                page_turn_drag_threshold = reader.GetInt32(6);
+                use_page_change_area = reader.GetBoolean(7);
+                page_change_area_width = reader.GetInt32(8);
+                use_comicrack_progress = reader.GetBoolean(9);
+                full_name = user.FullName;
+              }
+              catch (Exception ex)
+              {
+                Trace.WriteLine(ex);
+              }
             }
           }
         }

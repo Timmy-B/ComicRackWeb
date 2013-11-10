@@ -1,7 +1,7 @@
-﻿using System;
-using System.Windows;
-using cYo.Projects.ComicRack.Plugins.Automation;
+﻿using cYo.Projects.ComicRack.Plugins.Automation;
 using FreeImageAPI;
+using System;
+using System.Windows;
 
 namespace ComicRackWebViewer
 {

@@ -36,7 +36,6 @@ namespace ComicRackWebViewer
     private static ManualResetEvent mre = new ManualResetEvent(false);
     private static WebHost host;
     private int? actualPort;
-    private bool allowExternal;
     private Guid libraryGuid;
     private bool cacheSizesInitialized = false;
     
@@ -54,7 +53,6 @@ namespace ComicRackWebViewer
       
       textBoxPort.Text = Database.Instance.globalSettings.webserver_port.ToString();
       actualPort = Database.Instance.globalSettings.webserver_port;
-      allowExternal = true; //ImageCache.Instance.webserver_allow_external;
 
       string s = "cYo.Projects.ComicRack.Engine.Database.ComicLibraryListItem";
       ComicListItem item = Program.Database.ComicLists.GetItems<ComicListItem>(false).FirstOrDefault((ComicListItem cli) => cli.GetType().ToString() == s);
@@ -82,25 +80,11 @@ namespace ComicRackWebViewer
       {
         buttonStart.Text = "Start";
         labelStatus.Text = "The web server is not running.";
-        
       }
       else
       {
         buttonStart.Text = "Stop";
         labelStatus.Text = "The web server is running.";
-        /*
-        int port = actualPort.Value;
-        List<Uri> uris = GetUriParams(port).ToList();
-        foreach (var uri in uris)
-        {
-          Status.Text += uri.ToString() + " ";
-        }
-        
-        if (allowExternal)
-        {
-          Status.Text += string.Format("http://+:{0}/", port);
-        }
-        */
       }
       System.Windows.Input.Mouse.SetCursor(null);
     }
@@ -121,9 +105,8 @@ namespace ComicRackWebViewer
       }
 
       int port = actualPort.Value;
-      
-      
-      host = new WebHost(new Bootstrapper(), allowExternal, port, GetUriParams(port));
+            
+      host = new WebHost(new Bootstrapper(), true, port, new Uri[] {});
 
       try
       {
@@ -153,39 +136,6 @@ namespace ComicRackWebViewer
       return Dns.GetHostAddresses(Dns.GetHostName()).Where(x => x.AddressFamily == AddressFamily.InterNetwork).Select(x => x.ToString());
     }
 
-    private Uri[] GetUriParams(int port)
-    {
-        var uriParams = new List<Uri>();
-        
-        // No need to enumerate addresses, as the httplistener will respond to all requests regardless of host name.
-        if (allowExternal)
-          return uriParams.ToArray();
-        
-        // Enumerate all local addresses.
-        string hostName = Dns.GetHostName();
-
-        // Host name URI
-        string hostNameUri = string.Format("http://{0}:{1}", Dns.GetHostName(), port);
-        uriParams.Add(new Uri(hostNameUri));
-
-        // Host address URI(s)
-        var hostEntry = Dns.GetHostEntry(hostName);
-        foreach (var ipAddress in hostEntry.AddressList)
-        {
-            if (ipAddress.AddressFamily == AddressFamily.InterNetwork)  // IPv4 addresses only
-            {
-                var addrBytes = ipAddress.GetAddressBytes();
-                string hostAddressUri = string.Format("http://{0}.{1}.{2}.{3}:{4}", addrBytes[0], addrBytes[1], addrBytes[2], addrBytes[3], port);
-                uriParams.Add(new Uri(hostAddressUri));
-            }
-        }
-
-        // Localhost URI
-        uriParams.Add(new Uri(string.Format("http://localhost:{0}", port)));
-        
-        return uriParams.ToArray();
-    }
-    
     public void StopService()
     {
       mre.Set();
@@ -411,8 +361,8 @@ namespace ComicRackWebViewer
           {
             listId = libraryGuid;
           }
-          
-          checkBoxUseProgressFromComicRack.Checked = reader.GetBoolean(4);
+                    
+          checkBoxUseProgressFromComicRack.Checked = (reader.GetInt32(4) != 0);
           
           comboTreeHomeList.SelectedNode = comboTreeHomeList.Nodes.FirstOrDefault((ComboTreeNode ctn) => ctn.Tag.Equals(listId));
         }

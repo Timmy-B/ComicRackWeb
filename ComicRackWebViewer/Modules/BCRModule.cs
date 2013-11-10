@@ -1,27 +1,12 @@
-﻿using System;
-using System.Windows;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Diagnostics;
-//using cYo.Common;
-//using cYo.Common.IO;
-using cYo.Projects.ComicRack.Engine;
-using cYo.Projects.ComicRack.Engine.Database;
-using cYo.Projects.ComicRack.Engine.IO.Provider;
+﻿using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Viewer;
-
 using Nancy;
 using Nancy.ModelBinding;
 using Nancy.Responses;
 using Nancy.Security;
-using ComicRackWebViewer;
-using System.Text.RegularExpressions;
-using Linq2Rest.Parser;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 
 
@@ -86,7 +71,7 @@ namespace BCR
               {
                 BCRUser user = (BCRUser)this.Context.CurrentUser;
                 int totalCount = 0;
-        	      return Response.AsText(Context.ApplyODataUriFilter(BCR.GetIssuesOfListFromId(user, new Guid(x.id)), ref totalCount).Count().ToString());
+        	      return Response.AsText(Context.ApplyODataUriFilter(BCR.GetComicExcerptsForList(user, new Guid(x.id)), ref totalCount).Count().ToString());
               }
               catch(Exception e)
         	    {
@@ -113,7 +98,7 @@ namespace BCR
         	      */
         	      
                 
-        	      var rawcomics = BCR.GetIssuesOfListFromId(user, new Guid(x.id));
+        	      var rawcomics = BCR.GetComicExcerptsForList(user, new Guid(x.id));
         	      int totalCount = 0;
         	      var comics = Context.ApplyODataUriFilter(rawcomics, ref totalCount);
         	      var result = new { totalCount = totalCount, items = comics };

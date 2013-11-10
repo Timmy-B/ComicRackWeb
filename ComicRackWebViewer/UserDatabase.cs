@@ -8,7 +8,8 @@ namespace BCR
     public class UserDatabase
     {        
         private static Dictionary<string, BCRUser> users = new Dictionary<string, BCRUser>();
-        
+        private static object lockObject = new object();
+
         static UserDatabase()
         {
         }
@@ -29,7 +30,12 @@ namespace BCR
                     
           user = new BCRUser { UserName = result["username"], UserId = Convert.ToInt32(result["id"]), FullName = result["fullname"] };
           user.Initialize();
-          users.Add(apiKey, user);
+
+          lock (lockObject)
+          {
+            users[apiKey] = user;
+          }
+
           return user;
         }
 

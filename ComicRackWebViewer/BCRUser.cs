@@ -1,6 +1,6 @@
+using Nancy.Security;
 using System;
 using System.Collections.Generic;
-using Nancy.Security;
 using System.Data.SQLite;
 
 namespace BCR
@@ -53,6 +53,7 @@ namespace BCR
 
         public void UpdateSettings(UserSettings settings)
         {
+          this.settings = settings;
           settings.Save(this);
         }
         

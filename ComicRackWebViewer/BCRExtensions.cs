@@ -1,20 +1,12 @@
-﻿/*
- * Created by SharpDevelop.
- * User: jeroen
- * Date: 1/30/2013
- * Time: 9:47 PM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using cYo.Common.IO;
+﻿using cYo.Common.IO;
 using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Viewer;
 using Nancy;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace BCR
 {

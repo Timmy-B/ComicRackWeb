@@ -1,19 +1,10 @@
-﻿/*
- * Created by SharpDevelop.
- * User: jeroen
- * Date: 8/19/2012
- * Time: 11:27 PM
- * 
- * To change this template use Tools | Options | Coding | Edit Standard Headers.
- */
-using System;
-using System.IO;
-using System.Windows;
-
+﻿using FreeImageAPI;
 using ICSharpCode.SharpZipLib.Zip;
-using FreeImageAPI;
+using System;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.IO;
+using System.Windows;
 
 namespace ComicRackWebViewer
 {

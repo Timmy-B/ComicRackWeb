@@ -201,7 +201,6 @@
     <None Include="tablet\app\store\Series.js" />
     <None Include="tablet\app\store\TreeList.js" />
     <None Include="tablet\app\view\About.js" />
-    <None Include="tablet\app\view\Comic - component.js" />
     <None Include="tablet\app\view\Comic.js" />
     <None Include="tablet\app\view\ComicGrid.js" />
     <None Include="tablet\app\view\ComicInfo.js" />

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using cYo.Projects.ComicRack.Engine;
+using cYo.Projects.ComicRack.Engine.Database;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using cYo.Projects.ComicRack.Engine;
-using cYo.Projects.ComicRack.Engine.Database;
 
 
 namespace BCR
@@ -197,6 +197,14 @@ namespace BCR
         public int CurrentPage { get; set; }
         
         public int DatabaseId { get; set; }
+    }
+
+    public class SortSettings
+    {
+      public string OrderBy1 { get; set; }
+      public bool Direction1 { get; set; }
+      public string OrderBy2 { get; set; }
+      public bool Direction2 { get; set; }
     }
 
     public static class EntityExtensions
