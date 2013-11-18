@@ -63,7 +63,7 @@ Ext.define('Ext.draw.engine.Canvas', {
              * Strokes the subpaths of the current default path or the given path with the current stroke style.
              * @ignore
              */
-            stroke: function (transformFillStroke) {
+            stroke: function () {
                 var strokeStyle = this.strokeStyle,
                     strokeGradient = this.strokeGradient,
                     strokeOpacity = this.strokeOpacity,
@@ -174,7 +174,6 @@ Ext.define('Ext.draw.engine.Canvas', {
                         case "Z":
                             me.closePath();
                             break;
-                        default:
                     }
                 }
             }
@@ -211,15 +210,18 @@ Ext.define('Ext.draw.engine.Canvas', {
         var canvas = Ext.Element.create({
                 tag: 'canvas',
                 cls: 'x-surface'
-            }), name, overrides = Ext.draw.engine.Canvas.contextOverrides,
+            }),
+            overrides = Ext.draw.engine.Canvas.contextOverrides,
             ctx = canvas.dom.getContext('2d'),
             backingStoreRatio = ctx.webkitBackingStorePixelRatio ||
                 ctx.mozBackingStorePixelRatio ||
                 ctx.msBackingStorePixelRatio ||
                 ctx.oBackingStorePixelRatio ||
-                ctx.backingStorePixelRatio || 1;
+                ctx.backingStorePixelRatio || 1,
+            name;
 
-        this.devicePixelRatio /= backingStoreRatio;
+        // Windows Phone does not currently support backingStoreRatio
+        this.devicePixelRatio /= (Ext.os.is.WindowsPhone) ? window.innerWidth / window.screen.width : backingStoreRatio;
 
         if (ctx.ellipse) {
             delete overrides.ellipse;
@@ -399,7 +401,7 @@ Ext.define('Ext.draw.engine.Canvas', {
              * connected to the previous point by a straight line.  If two radii are provided, the
              * first controls the width of the arc's ellipse, and the second controls the height. If
              * only one is provided, or if they are the same, the arc is from a circle.
-             * 
+             *
              * In the case of an ellipse, the rotation argument controls the clockwise inclination
              * of the ellipse relative to the x-axis.
              * @ignore
@@ -786,23 +788,12 @@ Ext.define('Ext.draw.engine.Canvas', {
     clear: function () {
         var me = this,
             activeCanvases = this.activeCanvases,
-            i, canvas, ctx, width, height;
+            i, canvas, ctx;
         for (i = 0; i < activeCanvases; i++) {
             canvas = me.canvases[i].dom;
             ctx = me.contexts[i];
-            width = canvas.width;
-            height = canvas.height;
-            if (Ext.os.is.Android && !Ext.os.is.Android4) {
-                // TODO: Verify this is the proper check (Chrome)
-                // On chrome this is faster:
-                //noinspection SillyAssignmentJS
-                canvas.width = canvas.width;
-                // Fill the gap between surface defaults and canvas defaults
-                me.applyDefaults(ctx);
-            } else {
-                ctx.setTransform(1, 0, 0, 1, 0, 0);
-                ctx.clearRect(0, 0, width, height);
-            }
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
         me.setDirty(true);
     },

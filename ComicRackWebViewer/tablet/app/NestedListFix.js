@@ -23,6 +23,8 @@
   If you don't need access to the node argument, you could also achieve the same by setting the itemTpl member of the list config directly to an XTemplate.
   
 */
+alert('Comic.NestedListFix loaded');
+
 Ext.define('Comic.NestedListFix', {
     override: 'Ext.dataview.NestedList',
     /**

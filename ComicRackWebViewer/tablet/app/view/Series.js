@@ -98,7 +98,7 @@ Ext.define('Comic.view.Series', {
           {
               xclass: 'Ext.plugin.PullRefresh',
               itemId: 'pullrefresh',
-              pullRefreshText: 'Pull down to refresh...',
+              pullText: 'Pull down to refresh...',
               refreshFn: function(plugin) {
                     plugin.fireEvent('refresh', plugin);
                 }

@@ -83,7 +83,7 @@ Ext.define('Ext.picker.Picker', {
     extend: 'Ext.Sheet',
     alias : 'widget.picker',
     alternateClassName: 'Ext.Picker',
-    requires: ['Ext.picker.Slot', 'Ext.TitleBar', 'Ext.data.Model'],
+    requires: ['Ext.picker.Slot', 'Ext.TitleBar', 'Ext.data.Model', 'Ext.util.InputBlocker'],
 
     isPicker: true,
 
@@ -114,7 +114,7 @@ Ext.define('Ext.picker.Picker', {
          * @cfg
          * @inheritdoc
          */
-        cls: Ext.baseCSSPrefix + 'picker',
+        baseCls: Ext.baseCSSPrefix + 'picker',
 
         /**
          * @cfg {String/Mixed} doneButton
@@ -207,6 +207,8 @@ Ext.define('Ext.picker.Picker', {
         // @private
         defaultType: 'pickerslot',
 
+        toolbarPosition: 'top',
+
         /**
          * @cfg {Ext.TitleBar/Ext.Toolbar/Object} toolbar
          * The toolbar which contains the {@link #doneButton} and {@link #cancelButton} buttons.
@@ -248,8 +250,46 @@ Ext.define('Ext.picker.Picker', {
          *
          * @accessor
          */
-        toolbar: true
+        toolbar: {
+            xtype: 'titlebar'
+        }
     },
+
+    platformConfig: [{
+        theme: ['Windows'],
+        height: '100%',
+        toolbarPosition: 'bottom',
+        toolbar: {
+            xtype: 'toolbar',
+            layout: {
+                type: 'hbox',
+                pack: 'center'
+            }
+        },
+        doneButton: {
+            iconCls: 'check2',
+            ui: 'round',
+            text: ''
+        },
+        cancelButton: {
+            iconCls: 'delete',
+            ui: 'round',
+            text: ''
+        }
+    }, {
+        theme: ['CupertinoClassic'],
+        toolbar: {
+            ui: 'black'
+        }
+    }, {
+        theme: ['MountainView'],
+        toolbarPosition: 'bottom',
+        toolbar: {
+            defaults: {
+                flex: 1
+            }
+        }
+    }],
 
     initialize: function() {
         var me = this,
@@ -281,7 +321,7 @@ Ext.define('Ext.picker.Picker', {
         }
 
         Ext.applyIf(config, {
-            docked: 'top'
+            docked: this.getToolbarPosition()
         });
 
         return Ext.factory(config, 'Ext.TitleBar', this.getToolbar());
@@ -451,6 +491,7 @@ Ext.define('Ext.picker.Picker', {
         }
 
         this.hide();
+        Ext.util.InputBlocker.unblockInputs();
     },
 
     /**
@@ -460,6 +501,7 @@ Ext.define('Ext.picker.Picker', {
     onCancelButtonTap: function() {
         this.fireEvent('cancel', this);
         this.hide();
+        Ext.util.InputBlocker.unblockInputs();
     },
 
     /**
@@ -474,12 +516,13 @@ Ext.define('Ext.picker.Picker', {
         if (this.getParent() === undefined) {
             Ext.Viewport.add(this);
         }
-        
+
         this.callParent(arguments);
 
         if (!this.isHidden()) {
             this.setValue(this._value);
         }
+        Ext.util.InputBlocker.blockInputs();
     },
 
     /**

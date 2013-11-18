@@ -1,19 +1,9 @@
 <!DOCTYPE HTML>
 <html manifest="" lang="en-US">
 <head>
-<!--
-<script type="text/javascript" src="https://getfirebug.com/firebug-lite.js">
-{
-    overrideConsole: true,
-    startInNewWindow: false,
-    startOpened: true,
-    enableTrace: true
-}
-</script>
--->
+    <meta charset="UTF-8">
     <title>Badaap Comic Reader</title>
     
-    <meta charset="utf-8">
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="-1">    
@@ -53,7 +43,7 @@
             -webkit-animation-name: appLoadingIndicator;
             -webkit-animation-duration: 0.5s;
             -webkit-animation-iteration-count: infinite;
-            -webkit-animation-direction: normal;
+            -webkit-animation-direction: linear;
         }
 
         #appLoadingIndicator > * {
@@ -65,7 +55,7 @@
             width: 30px;
             opacity: 0.8;
         }
-        
+
         @-webkit-keyframes appLoadingIndicator{
             0% {
                 opacity: 0.8
@@ -87,18 +77,14 @@
         }
     </style>
     <!-- The line below must be kept intact for Sencha Command to build your application -->
-    <script id="microloader" type="text/javascript" src="touch/microloader/development.js"></script>        
-
-    
-
-    
+    <script id="microloader" type="text/javascript" src=".sencha/app/microloader/development.js"></script>
 </head>
 <body class="splash">
-  <div id="splashtitle">Badaap Comic Reader 1.26<br/>Copyright (c) 2013 Jeroen Walter<br/>http://www.badaap.nl</div>
-  <div id="appLoadingIndicator">
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
+    <div id="splashtitle">Badaap Comic Reader 1.26<br/>Copyright (c) 2013 Jeroen Walter<br/>http://www.badaap.nl</div>
+    <div id="appLoadingIndicator">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
 </body>
 </html>

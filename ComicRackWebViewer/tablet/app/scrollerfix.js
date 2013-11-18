@@ -24,6 +24,7 @@
       
 */
 
+alert('Comic.Scrollerfix loaded');
 
 Ext.define('Comic.Scrollerfix', {
     override: 'Ext.scroll.Scroller',

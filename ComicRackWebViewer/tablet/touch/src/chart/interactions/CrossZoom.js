@@ -175,7 +175,6 @@ Ext.define('Ext.chart.interactions.CrossZoom', {
                 cls: [],
                 iconCls: 'refresh',
                 text: 'Undo Zoom',
-                iconMask: true,
                 disabled: true,
                 handler: function () {
                     me.undoZoom();
@@ -197,7 +196,7 @@ Ext.define('Ext.chart.interactions.CrossZoom', {
     },
 
     getSurface: function () {
-        return this.getChart() && this.getChart().getSurface("main");
+        return this.getChart() && this.getChart().getSurface('main');
     },
     
     setSeriesOpacity: function (opacity) {

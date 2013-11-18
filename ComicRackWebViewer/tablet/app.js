@@ -19,16 +19,21 @@
 
 // For desktop: enable caching mechanism disabled so we can debug js files....
 // For tablet: disable caching so the tablet always gets refreshed files.
+
 var disableCache = Ext.os.deviceType == 'Tablet';
 
 Ext.Loader.setConfig({
-  disableCaching: disableCache, 
+  disableCaching: disableCache
+  /*
+  , 
   paths   : {
-    'Ext': 'touch/src',
+//    'Ext': 'touch/src',
     'Comic': './app',
     'Ext.ux': './lib/ux'
   } 
+  */
 });
+
 
 // Simple remote logging without AJAX.
 function RemoteLog(severity, message) 
@@ -39,7 +44,7 @@ function RemoteLog(severity, message)
   img.src = "/BCR/Log?sev=" + encodeURIComponent(severity) + "&msg=" + encodeURIComponent(message)+"&_dc="+encodeURIComponent(Date.now());
   */
 }
-
+/*
 RemoteLog(1, "BCR initializing....");
 
 
@@ -53,6 +58,7 @@ if (!Ext.browser.is.WebKit)
         "BlackBerry Browser"
     );
 }
+*/
 
 /*
   This creates the application.
@@ -100,7 +106,6 @@ Ext.application({
     ],
         
     requires: [
-      'Comic.Scrollerfix',
       'Ext.MessageBox',
       'Comic.RemoteApi'
     ],
@@ -126,6 +131,7 @@ Ext.application({
           Ext.Viewport.add(Ext.create('Comic.view.Login'));
         }
       });
+      
     },
     
     onUpdated: function() {

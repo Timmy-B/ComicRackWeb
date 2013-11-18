@@ -23,7 +23,7 @@ In some cases the code is modified to fit the application requirements.
 --------------------------------------------------
 Source code 
 
-Sencha Touch 2.1.1 GPL version
+Sencha Touch 2.3.1 GPL version
 
 
 User management functions by Dan Storm (modified for SQLite):
