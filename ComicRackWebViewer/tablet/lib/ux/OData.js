@@ -48,7 +48,7 @@ Ext.define('Ext.data.proxy.OData',{
             idProperty= model.getIdProperty(),
             format    = me.getFormat(),
             url       = me.getUrl(request),
-            params    = request.getParams() || {},
+            params    = request.getParams() || request.getExtraParams() || {},
             id        = (record && !record.phantom) ? record.getId() : params[idProperty];
 
         if (me.getAppendId() && id) {

@@ -19,7 +19,7 @@
   
 // Use one template instance for all list items instead of creating one for each list item separately.....
 var TheComicListItemTemplate = new Ext.XTemplate(
-    '<div class="comiclist-item-inner"><img height="64px" class="cl-img" src="/BCR/Comics/{Id}/Pages/0?height=64"/>{Caption}</br><span class="progress">{[this.getProgressText(values)]}</span><span class="date_last_read">{[this.getOpenedDate(values)]}</span></div>',
+    '<div class="comiclist-item-inner"><img height="64px" class="cl-img" src="/BCR/Comics/{Id}/Pages/0?height=64"/>{Caption}</br>{[this.getPublishedDate(values)]}<span class="progress">{[this.getProgressText(values)]}</span><span class="date_last_read">{[this.getOpenedDate(values)]}</span></div>',
     {
       // XTemplate configuration:
       disableFormats: true,
@@ -31,18 +31,22 @@ var TheComicListItemTemplate = new Ext.XTemplate(
           return "no pages"; // BUG: This comic should never have been added to the database.....
         }
         
-        if ((comic.LastPageRead + 1) == comic.PageCount)
+        if ((comic.UserLastPageRead + 1) == comic.PageCount)
         {
           return "finished";
         }
         else
         {
-          return (comic.LastPageRead + 1) + "/" + comic.PageCount;
+          return (comic.UserLastPageRead + 1) + "/" + comic.PageCount;
         }
       },
       getOpenedDate: function(comic)
       {
-        return comic.Opened === null ? 'Never' : comic.Opened;
+        return comic.UserOpenedTimeAsText === null ? 'Never' : Ext.Date.format(comic.UserOpenedTimeAsText, "Y/m/d");
+      }
+      , getPublishedDate: function (comic)
+      {
+        return (comic.PublishedAsText === null || comic.PublishedAsText.getFullYear() == 1) ? '---' : Ext.Date.format(comic.PublishedAsText, "Y/m");
       }
     }
 ); 

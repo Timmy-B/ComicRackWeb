@@ -4,7 +4,7 @@ Ext.define('Comic.view.Logout', {
     extend : 'Ext.form.Panel',
     xtype : 'logoutview',
     
-    requires : ['Ext.form.FieldSet', 'Ext.field.Password'],
+    requires : ['Ext.form.FieldSet', 'Ext.field.Password', "Ext.Label"],
         
     config: {
       items: [

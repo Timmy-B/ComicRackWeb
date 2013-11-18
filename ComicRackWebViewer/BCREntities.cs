@@ -1,361 +1,346 @@
 ﻿using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Reflection;
 
 namespace BCR
 {
-    // (Smart/Folder/Item) list
-    public class ComicList
+  public static class EntityExtensions
+  {
+    public static IEnumerable<Series> AsSeries(this IEnumerable<ComicBook> comics)
     {
-        public string Name { get; set; }
-        public Guid   Id { get; set; }
-        public int    ListsCount { get; set; }
-        public IEnumerable<ComicList> Lists { get; set; }
-        public string Type { get; set; }
-    }
-  
-
-    public class Publisher
-    {
-        public string Name { get; set; }
-        public string Imprint { get; set; }
+      return comics.Select(x => x.ToSeries()).Distinct();
     }
 
-    public class Series : IEquatable<Series>
+    public static Comic ToComic(this ComicBook x, BCRUser user)
     {
-        public string Title { get; set; }
-        public int Volume { get; set; }
-        public Guid Id { get; set; }
-        public int Count { get; set; }
-
-        public bool Equals(Series other)
-        {
-            return Title.Equals(other.Title) && (Volume.Equals(other.Volume));
-        }
-
-        public override bool Equals(object obj)
-        {
-            var series = obj as Series;
-            if (series == null)
-            {
-                return false;
-            }
-            return Equals(series);
-        }
-
-        public override int GetHashCode()
-        {
-            return Title.GetHashCode() ^ Volume.GetHashCode() * 29;
-        }
-    }
-    
-    public class SeriesVolume : IEquatable<SeriesVolume>
-    {
-        public string Title { get; set; }
-        public int Volume { get; set; }
-        public Guid Id { get; set; }
-        public int Count { get; set; }
-
-        public bool Equals(SeriesVolume other)
-        {
-            return Title.Equals(other.Title) && (Volume.Equals(other.Volume));
-        }
-
-        public override bool Equals(object obj)
-        {
-            var series = obj as SeriesVolume;
-            if (series == null)
-            {
-                return false;
-            }
-            return Equals(series);
-        }
-
-        public override int GetHashCode()
-        {
-            return Title.GetHashCode() ^ Volume.GetHashCode() * 29;
-        }
+      return new Comic(x, user);
     }
 
-    public class ComicDate : IComparable<ComicDate>, IComparable
+    public static ComicList ToComicList(this ComicListItem x, int depth = -1)
     {
-        public ComicDate(int year, int month)
+      ComicList list = new ComicList
+      {
+        Name = x.Name,
+        Id = x.Id,
+        ListsCount = 0,
+        Type = x.GetType().ToString().Split('.').LastOrDefault()
+      };
+
+      ComicListItemFolder folderList = x as ComicListItemFolder;
+      if (folderList != null)
+      {
+        list.ListsCount = folderList.Items.Count;
+        // recurse ?
+        if (depth != 0)
         {
-            Year = year;
-            Month = month;
+          list.Lists = folderList.Items.Select(c => c.ToComicList(depth - 1));
         }
+      }
 
-        public int Year { get; set; }
-        public int Month { get; set; }
+      return list;
+    }
+    public static Series ToSeries(this ComicBook x)
+    {
+      return new Series
+              {
+                Title = x.ShadowSeries,
+                Volume = x.ShadowVolume,
+                Id = x.Id,
+              };
+    }
+  }
 
+  /// <summary>
+  /// Wraps ComicBook so only desired properties are visible for querying and user specific info is
+  /// available.
+  ///
+  /// </summary>
+  public class Comic
+  {
+    #region Fields
 
-        public int CompareTo(ComicDate other)
-        {
-            if (Year == other.Year)
-            {
-                return Month.CompareTo(other.Month);
-            }
-            return Year.CompareTo(other.Year);
-        }
+    // using Lazy<> is almost twice as slow as using a string directly when sorting all comics on
+    // the Caption field.
+    private string _caption = null;
 
-        public int CompareTo(object obj)
-        {
-            var date = obj as ComicDate;
-            if (date == null)
-            {
-                return -1;
-            }
-            return CompareTo(date);
-        }
+    private ComicBook book;
+    private ComicProgress progress;
+    private bool useComicrackProgress = false;
+
+    // Cache expensive properties
+    // Drawback: any updates to the original ComicBook will not be propagated.
+    // However, this Comic class is not meant to be used for a long time. It is used for providing a
+    // json serializable class for returning search results.
+
+    //private readonly Lazy<string> _caption = null;
+    //public string Caption { get { return _caption.Value; } }
+    #endregion Fields
+
+    #region Constructors
+
+    public Comic(ComicBook source, BCRUser user)
+    {
+      book = source;
+      useComicrackProgress = user.settings.use_comicrack_progress;
+      progress = useComicrackProgress ? null : user.GetComicProgress(source.Id);
+
+      //_caption = new Lazy<string>(() => { return book.Caption; });
     }
 
-    public class Comic
-    {
-        public string FilePath { get; set; }
-        public string Caption { get; set; }
-        public string Title { get; set; }
-        public int Volume { get; set; }
-        public string Number { get; set; }
-        public int Count { get; set; }
-        public Guid Id { get; set; }
-        public int Month { get; set; }
-        public int Year { get; set; }
-        public ComicDate Date { get; set; }
-        public int PageCount { get; set; }
-        public string AlternateSeries { get; set; }
-        public int AlternateCount { get; set; }
-        public string Summary { get; set; }
-        public string Publisher { get; set; }
-        public string Imprint { get; set; }
-        public string Series { get; set; }
-        public string Format { get; set; }
-        public float Rating { get; set; }
-        public string Writer { get; set; }
-        public string Penciller { get; set; }
-        public string Inker { get; set; }
-        public string Colorist { get; set; }
-        public string Letterer { get; set; }
-        public string CoverArtist { get; set; }
-        public string Editor { get; set; }
-        public string Genre { get; set; }
-        public string Tags { get; set; }
-        public string Characters { get; set; }
-        public string Teams { get; set; }
-        public string Locations { get; set; }
-        public string Web { get; set; }
-        public string Notes { get; set; }
-        public string ScanInfo { get; set; }
-        public string Opened { get; set; }
-        public int LastPageRead { get; set; }
-        public int CurrentPage { get; set; }
-        
-        public string ShadowSeries { get; set; }
-        public string ShadowTitle { get; set; }
-        public int ShadowVolume { get; set; }
-        public string ShadowNumber { get; set; }
-        public int ShadowCount { get; set; }
-        public int ShadowYear { get; set; }
-        public string ShadowFormat { get; set; }
-    }
-    
-    
-    
-    // For displaying in the ComicList
-    // Ideally I want to use the OData $select for this via Linq2Rest, but everytime I try to do
-    // some $select operations ComicRack hangs in the Linq2Rest library. I have no idea why :(
-    public class ComicExcerpt
-    {
-        public string FilePath { get; set; }
-        public Guid Id { get; set; }
-        public int Month { get; set; }
-        public int PageCount { get; set; }
+    #endregion Constructors
 
-        public string Opened { get; set; }
-        public int LastPageRead { get; set; }
-        public int CurrentPage { get; set; }
-        
-        public string Caption { get; set; }
-        
-        public string ShadowSeries { get; set; }
-        public string ShadowTitle { get; set; }
-        public int ShadowVolume { get; set; }
-        public string ShadowNumber { get; set; }
-        public int ShadowCount { get; set; }
-        public int ShadowYear { get; set; }
-        public string ShadowFormat { get; set; }
+    #region Wrapped ComicBook properties
+
+    public int AlternateCount { get { return book.AlternateCount; } }
+
+    public string AlternateSeries { get { return book.AlternateSeries; } }
+
+    public string Caption
+    {
+      get
+      {
+        if (_caption == null)
+          _caption = book.Caption;
+
+        return _caption;
+      }
     }
 
-    public class ComicProgress
-    {
-        public Guid Id { get; set; }
+    public string Characters { get { return book.Characters; } }
 
-        public string DateLastRead { get; set; }
-        public int LastPageRead { get; set; }
-        public int CurrentPage { get; set; }
-        
-        public int DatabaseId { get; set; }
+    public string Colorist { get { return book.Colorist; } }
+
+    public int Count { get { return book.Count; } }
+
+    public string CoverArtist { get { return book.CoverArtist; } }
+
+    public int CurrentPage { get { return book.CurrentPage; } }
+
+    public string Editor { get { return book.Editor; } }
+
+    public string FilePath { get { return book.FilePath; } }
+    public string Format { get { return book.Format; } }
+
+    public string Genre { get { return book.Genre; } }
+
+    public Guid Id { get { return book.Id; } }
+
+    public string Imprint { get { return book.Imprint; } }
+
+    public string Inker { get { return book.Inker; } }
+
+    public int LastPageRead { get { return book.LastPageRead; } }
+
+    public string Letterer { get { return book.Letterer; } }
+
+    public string Locations { get { return book.Locations; } }
+
+    public int Month { get { return book.Month; } }
+
+    public string Notes { get { return book.Notes; } }
+
+    public string Number { get { return book.Number; } }
+
+    public DateTime OpenedTime { get { return book.OpenedTime; } }
+
+    public string OpenedTimeAsText { get { return book.OpenedTimeAsText; } }
+
+    public int PageCount { get { return book.PageCount; } }
+
+    public string Penciller { get { return book.Penciller; } }
+
+    public DateTime Published { get { return book.Published; } }
+
+    public string PublishedAsText { get { return book.Published.ToString("s"); } }
+
+    public string Publisher { get { return book.Publisher; } }
+
+    public float Rating { get { return book.Rating; } }
+
+    public string ScanInformation { get { return book.ScanInformation; } }
+
+    public string Series { get { return book.Series; } }
+
+    public int ShadowCount { get { return book.ShadowCount; } }
+
+    public string ShadowFormat { get { return book.ShadowFormat; } }
+
+    public string ShadowNumber { get { return book.ShadowNumber; } }
+
+    // Shadow properties: These are values taken from the filename of the eComic (these are
+    // displayed in light gray in ComicRack)
+    public string ShadowSeries { get { return book.ShadowSeries; } }
+
+    public string ShadowTitle { get { return book.ShadowTitle; } }
+
+    public int ShadowVolume { get { return book.ShadowVolume; } }
+
+    public int ShadowYear { get { return book.ShadowYear; } }
+
+    public string Summary { get { return book.Summary; } }
+
+    public string Tags { get { return book.Tags; } }
+
+    public string Teams { get { return book.Teams; } }
+
+    public string Title { get { return book.Title; } }
+
+    public int Volume { get { return book.Volume; } }
+    public string Web { get { return book.Web; } }
+
+    public string Writer { get { return book.Writer; } }
+
+    public int Year { get { return book.Year; } }
+    #endregion Wrapped ComicBook properties
+
+    #region User specific properties
+
+    public int UserCurrentPage { get { return useComicrackProgress ? book.CurrentPage : (progress == null ? 0 : progress.CurrentPage); } }
+
+    public int UserLastPageRead { get { return useComicrackProgress ? book.LastPageRead : (progress == null ? 0 : progress.LastPageRead); } }
+
+    public string UserOpenedTimeAsText { get { return useComicrackProgress ? book.OpenedTimeAsText : (progress == null ? "" : progress.DateLastRead); } }
+    #endregion User specific properties
+  }
+
+  /// <summary>
+  /// Allows natural sorting on all string members of Comic.
+  /// </summary>
+  public class ComicComparer : IComparer<Comic>
+  {
+    private readonly bool ascending;
+    private readonly IComparer comparer;
+    private readonly string field;
+    private readonly PropertyInfo fieldPropertyInfo;
+    private readonly Type fieldType;
+    public ComicComparer(string field, bool ascending)
+    {
+      this.field = field;
+      this.ascending = ascending;
+
+      fieldPropertyInfo = typeof(Comic).GetProperty(field);
+      fieldType = fieldPropertyInfo.PropertyType;
+
+      if (fieldType == typeof(String))
+      {
+        //comparer = new LogicalStringComparer(true);
+        comparer = new NaturalSortComparer(true);
+      }
+      else
+      {
+        comparer = Comparer<object>.Default;
+      }
     }
 
-    public class SortSettings
+    public int Compare(Comic x, Comic y)
     {
-      public string OrderBy1 { get; set; }
-      public bool Direction1 { get; set; }
-      public string OrderBy2 { get; set; }
-      public bool Direction2 { get; set; }
+      int result = comparer.Compare(fieldPropertyInfo.GetValue(x, null), fieldPropertyInfo.GetValue(y, null));
+      return ascending ? result : -result;
+    }
+  }
+
+  // (Smart/Folder/Item) list
+  public class ComicList
+  {
+    public Guid Id { get; set; }
+
+    public IEnumerable<ComicList> Lists { get; set; }
+
+    public int ListsCount { get; set; }
+
+    public string Name { get; set; }
+    public string Type { get; set; }
+  }
+
+  public class ComicProgress
+  {
+    public int CurrentPage { get; set; }
+
+    public int DatabaseId { get; set; }
+
+    public string DateLastRead { get; set; }
+
+    public Guid Id { get; set; }
+    public int LastPageRead { get; set; }
+  }
+
+  public class Publisher
+  {
+    public string Imprint { get; set; }
+
+    public string Name { get; set; }
+  }
+
+  public class Series : IEquatable<Series>
+  {
+    public int Count { get; set; }
+
+    public Guid Id { get; set; }
+
+    public string Title { get; set; }
+
+    public int Volume { get; set; }
+    public bool Equals(Series other)
+    {
+      return Title.Equals(other.Title) && (Volume.Equals(other.Volume));
     }
 
-    public static class EntityExtensions
+    public override bool Equals(object obj)
     {
-        public static IEnumerable<Series> AsSeries(this IEnumerable<ComicBook> comics)
-        {
-            return comics.Select(x => x.ToSeries()).Distinct();
-        }
-
-               
-        public static ComicList ToComicList(this ComicListItem x, int depth = -1)
-        {
-          ComicList list = new ComicList{
-            Name = x.Name,
-            Id = x.Id,
-            ListsCount = 0,
-            Type = x.GetType().ToString().Split('.').LastOrDefault()
-          };
-          
-          ComicListItemFolder folderList = x as ComicListItemFolder;
-          if (folderList != null)
-          {
-            list.ListsCount = folderList.Items.Count;
-            // recurse ?
-            if (depth != 0)
-            {
-              list.Lists = folderList.Items.Select(c => c.ToComicList(depth-1));
-            }
-          }
-          
-          return list;
-        }
-         
-        public static Comic ToComic(this ComicBook x, BCRUser user)
-        {
-            
-            ComicProgress progress = user.GetComicProgress(x.Id);
-
-            return new Comic
-                {
-                    Id = x.Id,
-                    FilePath = x.FilePath,
-                    Caption = x.Caption,
-                    
-                    ShadowTitle = x.ShadowTitle,
-                    ShadowVolume = x.ShadowVolume,
-                    ShadowNumber = x.ShadowNumber,
-                    ShadowYear = x.ShadowYear,
-                    ShadowSeries = x.ShadowSeries,
-                    ShadowFormat = x.ShadowFormat,
-                    ShadowCount = x.ShadowCount,
-                                            
-                    Title = x.Title,
-                    Volume = x.Volume,
-                    Number = x.Number,
-                    Year = x.Year,
-                    Series = x.Series,
-                    Format = x.Format,
-                    Count = x.Count,
-                                            
-                    Month = x.Month,
-                    
-                    Date = new ComicDate(x.Year, x.Month),
-                    PageCount = x.PageCount,
-                    AlternateCount = x.AlternateCount,
-                    AlternateSeries = x.AlternateSeries,
-                    Summary = x.Summary,
-                    Publisher = x.Publisher,
-                    Imprint = x.Imprint,
-                    
-                    Rating = x.Rating,
-                    Writer = x.Writer,
-                    Penciller = x.Penciller,
-                    Inker = x.Inker,
-                    Colorist = x.Colorist,
-                    Letterer = x.Letterer,
-                    CoverArtist = x.CoverArtist,
-                    Editor = x.Editor,
-                    Genre = x.Genre,
-                    Tags = x.Tags,
-                    Characters = x.Characters,
-                    Teams = x.Teams,
-                    Locations = x.Locations,
-                    Web = x.Web,
-                    Notes = x.Notes,
-                    ScanInfo = x.ScanInformation,
-                    Opened = user.settings.use_comicrack_progress ? x.OpenedTimeAsText : (progress == null ? "" : progress.DateLastRead),
-                    CurrentPage = user.settings.use_comicrack_progress ? x.CurrentPage : (progress == null ? 0 : progress.CurrentPage),
-                    LastPageRead = user.settings.use_comicrack_progress ? x.LastPageRead : (progress == null ? 0 : progress.LastPageRead)
-                };
-        }
-        
-        public static ComicExcerpt ToComicExcerpt(this ComicBook x, BCRUser user)
-        {
-            ComicProgress progress = user.GetComicProgress(x.Id);
-            
-            return new ComicExcerpt
-                {
-                    Id = x.Id,
-                    FilePath = x.FilePath,
-                    Caption = x.Caption,
-                    
-                    ShadowTitle = x.ShadowTitle,
-                    ShadowVolume = x.ShadowVolume,
-                    ShadowNumber = x.ShadowNumber,
-                    ShadowYear = x.ShadowYear,
-                    ShadowSeries = x.ShadowSeries,
-                    ShadowFormat = x.ShadowFormat,
-                    ShadowCount = x.ShadowCount,
-                                           
-                    Month = x.Month,
-                    PageCount = x.PageCount,
-                    Opened = user.settings.use_comicrack_progress ? x.OpenedTimeAsText : (progress == null ? "" : progress.DateLastRead),
-                    CurrentPage = user.settings.use_comicrack_progress ? x.CurrentPage : (progress == null ? 0 : progress.CurrentPage),
-                    LastPageRead = user.settings.use_comicrack_progress ? x.LastPageRead : (progress == null ? 0 : progress.LastPageRead)
-                };
-        }
-        
-        public static ComicExcerpt ToComicExcerpt(this Comic x)
-        {
-            return new ComicExcerpt
-                    {
-                        Id = x.Id,
-                        FilePath = x.FilePath,
-                        Caption = x.Caption,
-                        
-                        ShadowTitle = x.ShadowTitle,
-                        ShadowVolume = x.ShadowVolume,
-                        ShadowNumber = x.ShadowNumber,
-                        ShadowYear = x.ShadowYear,
-                        ShadowSeries = x.ShadowSeries,
-                        ShadowFormat = x.ShadowFormat,
-                        ShadowCount = x.ShadowCount,
-                                               
-                        Month = x.Month,
-                        PageCount = x.PageCount,
-                        Opened = x.Opened,
-                        LastPageRead = x.LastPageRead
-                    };
-        }
-
-        public static Series ToSeries(this ComicBook x)
-        {
-            return new Series
-                    {
-                        Title = x.ShadowSeries,
-                        Volume = x.ShadowVolume,
-                        Id = x.Id,
-                    };
-        }
-        
+      var series = obj as Series;
+      if (series == null)
+      {
+        return false;
+      }
+      return Equals(series);
     }
 
+    public override int GetHashCode()
+    {
+      return Title.GetHashCode() ^ Volume.GetHashCode() * 29;
+    }
+  }
+
+  public class SeriesVolume : IEquatable<SeriesVolume>
+  {
+    public int Count { get; set; }
+
+    public Guid Id { get; set; }
+
+    public string Title { get; set; }
+
+    public int Volume { get; set; }
+    public bool Equals(SeriesVolume other)
+    {
+      return Title.Equals(other.Title) && (Volume.Equals(other.Volume));
+    }
+
+    public override bool Equals(object obj)
+    {
+      var series = obj as SeriesVolume;
+      if (series == null)
+      {
+        return false;
+      }
+      return Equals(series);
+    }
+
+    public override int GetHashCode()
+    {
+      return Title.GetHashCode() ^ Volume.GetHashCode() * 29;
+    }
+  }
+  public class SortSettings
+  {
+    public bool Direction1 { get; set; }
+
+    public bool Direction2 { get; set; }
+
+    public string OrderBy1 { get; set; }
+    public string OrderBy2 { get; set; }
+  }
 }

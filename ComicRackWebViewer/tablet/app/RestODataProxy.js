@@ -144,7 +144,7 @@ Ext.define('Comic.RestODataProxy', {
     }
     if ('$select' in params)
     {
-      url = Ext.String.urlAppend(url, '$select='+me.encodeSelect(params.$select));
+      url = Ext.String.urlAppend(url, '$select=' + encodeURIComponent(params.$select));
       delete params.$select;
     }
     

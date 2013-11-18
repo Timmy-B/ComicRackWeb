@@ -42,7 +42,7 @@ namespace ComicRackWebViewer
             // Increase size of JSON responses as 100K is way too small for a large comic collection. Make it 10M.
             // Also, for some reason I don't get InvalidOperationException ("Nancy.Json.JsonSettings.MaxJsonLength exceeded")
             // Instead Nancy generates a response with status OK and content length 0.
-            Nancy.Json.JsonSettings.MaxJsonLength = 10000000; 
+            Nancy.Json.JsonSettings.MaxJsonLength = Int32.MaxValue;
             
             // Case sensitivity is buggy in Nancy, so disable it. Or maybe I should generate/parse GUIDs correctly......
             StaticConfiguration.CaseSensitive = false;

@@ -114,11 +114,11 @@ namespace BCR
           try 
           {
             CheckCache();
-            
-            FileStream file = new FileStream((thumbnail ? thumbnail_folder : cache_folder) + filename, FileMode.Create, FileAccess.Write);
-            image.WriteTo(file);
-            file.Close();
-            file.Dispose();
+
+            using (FileStream file = new FileStream((thumbnail ? thumbnail_folder : cache_folder) + filename, FileMode.Create, FileAccess.Write))
+            {
+              image.WriteTo(file);
+            }
           }
           catch//(Exception e)
           {

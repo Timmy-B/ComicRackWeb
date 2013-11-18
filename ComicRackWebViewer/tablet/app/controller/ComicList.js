@@ -106,7 +106,8 @@ Ext.define('Comic.controller.ComicList', {
         5: 'ShadowNumber',
         6: 'ShadowYear', 
         7: 'FilePath',
-        8: 'Opened'
+        8: 'UserOpenedTimeAsText',
+        9: 'PublishedAsText'
       };
     },
      

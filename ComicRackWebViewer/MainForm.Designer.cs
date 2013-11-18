@@ -367,7 +367,7 @@ namespace ComicRackWebViewer
       this.MinimumSize = new System.Drawing.Size(410, 310);
       this.Name = "MainForm";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-      this.Text = "Badaap Comic Reader 1.25";
+      this.Text = "Badaap Comic Reader 1.26";
       this.tabControl.ResumeLayout(false);
       this.tabPageWebServer.ResumeLayout(false);
       this.tabPageWebServer.PerformLayout();

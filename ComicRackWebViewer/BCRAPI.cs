@@ -7,7 +7,6 @@ using cYo.Projects.ComicRack.Engine.IO.Provider;
 using cYo.Projects.ComicRack.Viewer;
 using FreeImageAPI;
 using Nancy;
-using Nancy.OData;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -24,16 +23,17 @@ namespace BCR
     public static class BCR
     {
         private static System.Object lockThis = new System.Object();
-        
-        public static IEnumerable<ComicExcerpt> GetComicExcerptsForList(BCRUser user, Guid id)
-        {
-            var list = Program.Database.ComicLists.FindItem(id);
-            if (list == null)
-            {
-              return Enumerable.Empty<ComicExcerpt>();
-            }
+       
 
-            return list.GetBooks().Select(x => x.ToComicExcerpt(user));
+        public static IEnumerable<Comic> GetComicsForList(BCRUser user, Guid id)
+        {
+          var list = Program.Database.ComicLists.FindItem(id);
+          if (list == null)
+          {
+            return Enumerable.Empty<Comic>();
+          }
+
+          return list.GetBooks().Select(x => x.ToComic(user));
         }
 
         public static IEnumerable<Series> GetSeriesAndVolumes()
@@ -44,7 +44,6 @@ namespace BCR
         public static IEnumerable<Series> GetSeries()
         {
           return ComicRackWebViewer.Plugin.Application.GetLibraryBooks().AsSeries();
-          //return ComicRackWebViewer.Plugin.Application.GetLibraryBooks().Select(x => x.ToSeries()).Distinct();
         }
         /*
          * 
@@ -58,17 +57,18 @@ namespace BCR
                 .Select(x => x.ToComic(user))
                 .OrderBy(x => x.ShadowNumber).ToList();
 
-            return context.ApplyODataUriFilter(series).Cast<Comic>();
+            int totalCount = 0;
+            return context.ApplyODataUriFilter(series, ref totalCount).Cast<Comic>();
         }
         
         // Get all comics from a specific series
-        public static IEnumerable<ComicExcerpt> GetComicsFromSeries(BCRUser user, Guid id)
+        public static IEnumerable<Comic> GetComicsFromSeries(BCRUser user, Guid id)
         {
             var books = ComicRackWebViewer.Plugin.Application.GetLibraryBooks();
             var book = books.Where(x => x.Id == id).First();
             var series = books.Where(x => x.ShadowSeries == book.ShadowSeries)
                 .Where(x => x.ShadowVolume == book.ShadowVolume)
-                .Select(x => x.ToComicExcerpt(user))
+                .Select(x => x.ToComic(user))
                 .OrderBy(x => x.ShadowVolume)
                 .ThenBy(x => x.ShadowNumber).ToList();
             
@@ -86,13 +86,13 @@ namespace BCR
         }
         
         // Get all comics from a specific series and volume
-        public static IEnumerable<ComicExcerpt> GetComicsFromSeriesVolume(BCRUser user, Guid id, int volume)
+        public static IEnumerable<Comic> GetComicsFromSeriesVolume(BCRUser user, Guid id, int volume)
         {
             var books = ComicRackWebViewer.Plugin.Application.GetLibraryBooks();
             var book = books.Where(x => x.Id == id).First();
             var series = books.Where(x => x.ShadowSeries == book.ShadowSeries)
                 .Where(x => x.ShadowVolume == volume)
-                .Select(x => x.ToComicExcerpt(user))
+                .Select(x => x.ToComic(user))
                 .OrderBy(x => x.ShadowNumber).ToList();
             
             return series;
@@ -171,47 +171,40 @@ namespace BCR
             //return the image
             return bmp;
         }
-        
-        
+
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public static bool GetPageImageSize(Guid id, int page, ref int width, ref int height)
         {
-          MemoryStream stream = null;
-          /*
-          // Check if a processed (rescaled and/or progressive) image is cached.
-          string processed_filename = string.Format("{0}-p{1}-processed.jpg", id, page);
-          stream = ImageCache.Instance.LoadFromCache(processed_filename, false);
-          if (stream != null)
-            return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
-          */
-        
+          // Check if original image is in the cache.
+          string filename = string.Format("{0}-p{1}.jpg", id, page);
+          MemoryStream stream = ImageCache.Instance.LoadFromCache(filename, false);
+            
           if (stream == null)
           {
-            // Check if original image is in the cache.
-            string org_filename = string.Format("{0}-p{1}.jpg", id, page);
-            stream = ImageCache.Instance.LoadFromCache(org_filename, false);
-            
-            if (stream == null)
+            // Image is not in the cache, get it via ComicRack.
+            var bytes = GetPageImageBytes(id, page);
+            if (bytes == null)
             {
-              // Image is not in the cache, get it via ComicRack.
-              var bytes = GetPageImageBytes(id, page);
-              if (bytes == null)
-              {
-                return false;
-              }
-              
-              stream = new MemoryStream(bytes);
-              
-              // Always save the original page to the cache
-              ImageCache.Instance.SaveToCache(org_filename, stream, false);
+              return false;
             }
+              
+            stream = new MemoryStream(bytes);
+              
+            // Always save the original page to the cache
+            ImageCache.Instance.SaveToCache(filename, stream, false);
           }
-          
+                    
           stream.Seek(0, SeekOrigin.Begin);
 
-          Bitmap bitmap = new Bitmap(stream, false);
-          width = (int)bitmap.Width;
-          height = (int)bitmap.Height;
-          bitmap.Dispose();
+          using (Bitmap bitmap = new Bitmap(stream, false))
+          {
+            width = (int)bitmap.Width;
+            height = (int)bitmap.Height;
+          }
+
+          stream.Dispose();
+          
           return true;    
         }
         
@@ -225,49 +218,45 @@ namespace BCR
             bool thumbnail = !(width == -1 && height == -1);
             bool processed = false;
             
-            MemoryStream stream = null;
-            
             string filename = string.Format("{0}-p{1}-w{2}-h{3}.jpg", id, page, width, height);
             
             if (thumbnail)
             {
-              stream = ImageCache.Instance.LoadFromCache(filename, true);
-            
+              MemoryStream cachestream = ImageCache.Instance.LoadFromCache(filename, true);
               // Cached thumbnails are assumed to be in the correct format and adhere to the size/format restrictions of the ipad.
-              if (stream != null)
-                return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
+              if (cachestream != null)
+                return response.FromStream(cachestream, MimeTypes.GetMimeType(".jpg"));
             }
             else
             {
               // Check if a processed (rescaled and/or progressive) image is cached.
               string processed_filename = string.Format("{0}-p{1}-processed.jpg", id, page);
-              stream = ImageCache.Instance.LoadFromCache(processed_filename, false);
-              if (stream != null)
-                return response.FromStream(stream, MimeTypes.GetMimeType(".jpg"));
+              MemoryStream cachestream = ImageCache.Instance.LoadFromCache(processed_filename, false);
+              if (cachestream != null)
+                return response.FromStream(cachestream, MimeTypes.GetMimeType(".jpg"));
             }
-          
+
+            MemoryStream stream = null;
+            
+            // Check if original image is in the cache.
+            string org_filename = string.Format("{0}-p{1}.jpg", id, page);
+            stream = ImageCache.Instance.LoadFromCache(org_filename, false);
+              
             if (stream == null)
             {
-              // Check if original image is in the cache.
-              string org_filename = string.Format("{0}-p{1}.jpg", id, page);
-              stream = ImageCache.Instance.LoadFromCache(org_filename, false);
-              
-              if (stream == null)
+              // Image is not in the cache, get it via ComicRack.
+              var bytes = GetPageImageBytes(id, page);
+              if (bytes == null)
               {
-                // Image is not in the cache, get it via ComicRack.
-                var bytes = GetPageImageBytes(id, page);
-                if (bytes == null)
-                {
-                  return HttpStatusCode.NotFound;
-                }
-                
-                stream = new MemoryStream(bytes);
-                
-                // Always save the original page to the cache
-                ImageCache.Instance.SaveToCache(org_filename, stream, false);
+                return HttpStatusCode.NotFound;
               }
+                
+              stream = new MemoryStream(bytes);
+                
+              // Always save the original page to the cache
+              ImageCache.Instance.SaveToCache(org_filename, stream, false);
             }
-            
+                        
             stream.Seek(0, SeekOrigin.Begin);
 
             #if USE_GDI
@@ -395,7 +384,10 @@ namespace BCR
                   }
                 #endif
               #elif USE_GDI
-                bitmap = Resize(bitmap, result_width, result_height);
+                Bitmap resizedBitmap = Resize(bitmap, result_width, result_height);
+                bitmap.Dispose();
+                bitmap = resizedBitmap;
+                resizedBitmap = null;
               #endif
             }
             
@@ -432,6 +424,7 @@ namespace BCR
               #else
                 FIBITMAP dib = FreeImage.CreateFromBitmap(bitmap);
                 bitmap.Dispose();
+                bitmap = null;
                 stream.Dispose();
                 stream = new MemoryStream();
                 
@@ -475,7 +468,13 @@ namespace BCR
             #elif USE_FIB
               fib.Dispose();
             #elif USE_GDI
-              bitmap.Dispose();            
+
+            if (bitmap != null)
+            {
+              bitmap.Dispose();
+              bitmap = null;
+            }
+
             #endif
             
             // Always save thumbnails to the cache

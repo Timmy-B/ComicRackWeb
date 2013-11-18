@@ -222,7 +222,7 @@ Ext.define('Comic.controller.Comic', {
             Comic.viewstate.current_comic_opened_from_id = Comic.context.id;
 
                        
-            me.current_page_nr = me.current_comic.LastPageRead | 0;
+            me.current_page_nr = me.current_comic.UserCurrentPage | 0;
             // use defer so control initialization can finish first
             Ext.defer(function() { me.ShowPage(me.current_page_nr); } , 10);
           }
@@ -355,10 +355,9 @@ Ext.define('Comic.controller.Comic', {
           n=d.toJSON(); 
           
       Comic.context.record.beginEdit();
-      Comic.context.record.set("Opened", n);
-      Comic.context.record.set("OpenCount", 1);
-      Comic.context.record.set("CurrentPage", me.current_page_nr);
-      Comic.context.record.set("LastPageRead", me.current_page_nr);
+      Comic.context.record.set("UserOpenedTimeAsText", n);
+      Comic.context.record.set("UserCurrentPage", me.current_page_nr);
+      Comic.context.record.set("UserLastPageRead", me.current_page_nr);
       Comic.context.record.endEdit();
       Comic.context.record.commit();
       this.getMainview().pop(1);
@@ -531,35 +530,33 @@ Ext.define('Comic.controller.Comic', {
       var now = (new Date()).toJSON(); 
 
       Comic.RemoteApi.UpdateProgress(Comic.viewstate.current_comic_id, me.current_page_nr,
-      //Comic.RemoteApi.SetComicInfo(Comic.viewstate.current_comic_id, { OpenedTime: now, OpenedCount: 1, CurrentPage: me.current_page_nr, LastPageRead: me.current_page_nr },
-      function() {
-      
-        
-        scroller.scrollTo(0,0);
 
-        me.getSlider().setValue((pagenr / (me.current_comic.PageCount-1)) * SLIDER_RANGE);
+        function() {
+          scroller.scrollTo(0,0);
+
+          me.getSlider().setValue((pagenr / (me.current_comic.PageCount-1)) * SLIDER_RANGE);
         
-        if ((me.preload_count > 0) && me.cache[pagenr] && me.cache[pagenr].img)
-        { 
-          console.log("showpage from cache");
+          if ((me.preload_count > 0) && me.cache[pagenr] && me.cache[pagenr].img)
+          { 
+            console.log("showpage from cache");
           
-          imageviewer.loadImage(me.cache[pagenr].src);
-          /*
-          imageviewer.setImage(me.cache[pagenr].img);
-          me.cache[pagenr].img = null;
-          delete me.cache[pagenr].img;
-          */
-        }
-        else
-        {
-          console.log("showpage loadimage");
+            imageviewer.loadImage(me.cache[pagenr].src);
+            /*
+            imageviewer.setImage(me.cache[pagenr].img);
+            me.cache[pagenr].img = null;
+            delete me.cache[pagenr].img;
+            */
+          }
+          else
+          {
+            console.log("showpage loadimage");
          
-          me.waiting_for_page = pagenr;
-          me.getLoadingIndicator().show();
+            me.waiting_for_page = pagenr;
+            me.getLoadingIndicator().show();
           
-          imageviewer.loadImage(Comic.RemoteApi.GetImageUrl(me.current_comic.Id, pagenr));
-        }
-      });
+            imageviewer.loadImage(Comic.RemoteApi.GetImageUrl(me.current_comic.Id, pagenr));
+          }
+        });
     }, 
     
    

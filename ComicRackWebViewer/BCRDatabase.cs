@@ -15,7 +15,7 @@ namespace BCR
   /// <summary>
   /// Description of Database.
   /// </summary>
-  public class Database
+  public sealed class Database : IDisposable
   {
     private const int COMIC_DB_VERSION = 1;
     
@@ -384,6 +384,19 @@ public static DataSet GetDataSet(string sql)
 }
 
 */
- 
+
+
+    public void Dispose()
+    {
+      mConnection.Dispose();
+      mConnection = null;
+    }
+
+    ~Database()
+    {
+      if (mConnection != null)
+        Dispose();
+    }
+
   }
 }

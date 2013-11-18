@@ -70,6 +70,9 @@ Ext.define('Comic.view.ComicListSort', {
             xtype: 'selectfield',
             label: 'Sort by',
             labelWidth: '60%',
+            defaultTabletPickerConfig: {
+              height: '90%'
+            },
             name: 'orderby_1',
             value: 1,
             options: [
@@ -104,7 +107,12 @@ Ext.define('Comic.view.ComicListSort', {
               {
                 text: 'Last Opened',
                 value: 8
+              },
+              {
+                text: 'Publish date',
+                value: 9
               }
+
             ]
           },          
           {
@@ -134,6 +142,9 @@ Ext.define('Comic.view.ComicListSort', {
             xtype: 'selectfield',
             label: 'Sort by',
             labelWidth: '60%',
+            defaultTabletPickerConfig: {
+              height: '90%'
+            },
             name: 'orderby_2',
             value: 1,
             options: [
@@ -172,6 +183,10 @@ Ext.define('Comic.view.ComicListSort', {
               {
                 text: 'Last Opened',
                 value: 8
+              },
+              {
+                text: 'Publish date',
+                value: 9
               }
             ]
           },          

@@ -35,7 +35,7 @@ namespace ComicRackWebViewer
       INSTALLSTATE_DEFAULT = 5,  // use default, local orsource
     }
      
-    [DllImport("msi.dll")]
+    [DllImport("msi.dll", CharSet = CharSet.Unicode)]
     private static extern INSTALLSTATE MsiQueryProductState(string product);
      
     

@@ -246,21 +246,7 @@ Ext.define('Comic.RemoteApi', {
     
   },
   
-  // This will set the C# ComicBook object directly, not the Comic object.... 
-  /*
-  SetComicInfo: function(comic_id, comic_info, callback)
-  {
-    Ext.Ajax.request({
-      url: '/BCR/Comics/' + comic_id,
-      method: 'PUT',
-      params: comic_info,
-      success: function(response){
-      },
-      callback: callback
-    });
-  },
-  */
-  
+   
   
   // Update the progress state of the comic for the current user.
   UpdateProgress: function(comic_id, current_page, callback)

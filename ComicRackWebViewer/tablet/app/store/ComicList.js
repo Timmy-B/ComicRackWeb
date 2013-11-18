@@ -37,8 +37,9 @@ Ext.define('Comic.store.ComicList', {
               rootProperty: 'items',
               totalProperty: 'totalCount'
             },
-            
-        //extraParams: { $select: 'Id,Series,Volume,Number,Title,Year,Month,FilePath,PageCount,LastPageRead,Opened' },
+        
+        // Only request those fields from ComicInfo that we want to show in a list of comics:
+        extraParams: { $select: 'Id,Caption,Series,Volume,Number,Title,Year,Month,FilePath,PageCount,UserCurrentPage,UserLastPageRead,UserOpenedTimeAsText,PublishedAsText' },
         listeners:{
           exception:function(proxy, response, orientation){
               // empty list ?

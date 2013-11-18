@@ -36,7 +36,7 @@ namespace BCR
     /// to run. <see cref="Start"/> will launch a thread that will listen for requests and then process them. All processing is done
     /// within a single thread - self hosting is not intended for production use, but rather as a development server.
     /// </remarks>
-    public class WebHost  
+    public sealed class WebHost : IDisposable
     {
         private readonly IList<Uri> baseUriList;
         private readonly HttpListener listener;
@@ -229,6 +229,11 @@ namespace BCR
                 //TODO -  this swallows the exception so that it doesn't kill the host
                 // pass it to the host process for handling by the caller ?
             }
+        }
+
+        public void Dispose()
+        {
+          listener.Close();
         }
     }
 }
