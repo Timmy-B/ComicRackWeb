@@ -1,5 +1,6 @@
 ﻿using cYo.Projects.ComicRack.Engine;
 using cYo.Projects.ComicRack.Engine.Database;
+using LinqToDB.Mapping;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -68,7 +69,7 @@ namespace BCR
     private string _caption = null;
 
     private ComicBook book;
-    private ComicProgress progress;
+    private comic_progress progress;
     private bool useComicrackProgress = false;
 
     // Cache expensive properties
@@ -85,7 +86,7 @@ namespace BCR
     public Comic(ComicBook source, BCRUser user)
     {
       book = source;
-      useComicrackProgress = user.settings.use_comicrack_progress;
+      useComicrackProgress = user.settings2.use_comicrack_progress != 0;
       progress = useComicrackProgress ? null : user.GetComicProgress(source.Id);
 
       //_caption = new Lazy<string>(() => { return book.Caption; });
@@ -199,11 +200,11 @@ namespace BCR
 
     #region User specific properties
 
-    public int UserCurrentPage { get { return useComicrackProgress ? book.CurrentPage : (progress == null ? 0 : progress.CurrentPage); } }
+    public int UserCurrentPage { get { return useComicrackProgress ? book.CurrentPage : (progress == null ? 0 : (int)progress.current_page.GetValueOrDefault()); } }
 
-    public int UserLastPageRead { get { return useComicrackProgress ? book.LastPageRead : (progress == null ? 0 : progress.LastPageRead); } }
+    public int UserLastPageRead { get { return useComicrackProgress ? book.LastPageRead : (progress == null ? 0 : (int)progress.last_page_read.GetValueOrDefault()); } }
 
-    public string UserOpenedTimeAsText { get { return useComicrackProgress ? book.OpenedTimeAsText : (progress == null ? "" : progress.DateLastRead); } }
+    public string UserOpenedTimeAsText { get { return useComicrackProgress ? book.OpenedTimeAsText : (progress == null ? "" : progress.date_last_read); } }
     #endregion User specific properties
   }
 
@@ -256,18 +257,7 @@ namespace BCR
     public string Type { get; set; }
   }
 
-  public class ComicProgress
-  {
-    public int CurrentPage { get; set; }
-
-    public int DatabaseId { get; set; }
-
-    public string DateLastRead { get; set; }
-
-    public Guid Id { get; set; }
-    public int LastPageRead { get; set; }
-  }
-
+  
   public class Publisher
   {
     public string Imprint { get; set; }

@@ -87,15 +87,15 @@ Ext.define('Comic.controller.ComicSettings', {
           pageChangeAreaWidth = me.getPageChangeAreaWidth();
              
       comicsettingsview.setValues({
-        open_current_comic_at_launch: Comic.settings.open_current_comic_at_launch,
-        open_next_comic: Comic.settings.open_next_comic,
+        open_current_comic_at_launch: (Comic.settings.open_current_comic_at_launch > 0),
+        open_next_comic: (Comic.settings.open_next_comic > 0),
         zoom_on_tap: Comic.settings.zoom_on_tap,
         page_fit_mode: Comic.settings.page_fit_mode,
         toggle_paging_bar: Comic.settings.toggle_paging_bar,
-        use_page_turn_drag: (Comic.settings.page_turn_drag_threshold < 1000),
-        page_turn_drag_threshold: (Comic.settings.page_turn_drag_threshold < 1000) ? Comic.settings.page_turn_drag_threshold : 50,
-        use_page_change_area: (Comic.settings.page_change_area_width > 0),
-        page_change_area_width: (Comic.settings.page_change_area_width > 0) ? Comic.settings.page_change_area_width : 75
+        use_page_turn_drag: (Comic.settings.use_page_turn_drag > 0),
+        page_turn_drag_threshold: Comic.settings.page_turn_drag_threshold,
+        use_page_change_area: (Comic.use_page_change_area > 0),
+        page_change_area_width: Comic.settings.page_change_area_width
       });
       
 
@@ -125,13 +125,16 @@ Ext.define('Comic.controller.ComicSettings', {
           values = comicsettingsview.getValues(),
           comicview = me.getComicview();
         
-      Comic.settings.open_current_comic_at_launch = values.open_current_comic_at_launch ? true : false;
-      Comic.settings.open_next_comic = values.open_next_comic ? true : false;;
+      Comic.settings.open_current_comic_at_launch = values.open_current_comic_at_launch ? 1 : 0;
+      Comic.settings.open_next_comic = values.open_next_comic ? 1 : 0;
       Comic.settings.zoom_on_tap = values.zoom_on_tap;
       Comic.settings.page_fit_mode = values.page_fit_mode;
       Comic.settings.toggle_paging_bar = values.toggle_paging_bar;
-      Comic.settings.page_turn_drag_threshold = values.use_page_turn_drag ? values.page_turn_drag_threshold : 1000;
-      Comic.settings.page_change_area_width = values.use_page_change_area ? values.page_change_area_width : 0;
+      Comic.settings.page_turn_drag_threshold = values.page_turn_drag_threshold;
+      Comic.settings.page_change_area_width = values.page_change_area_width;
+      Comic.settings.use_page_change_area = values.use_page_change_area ? 1 : 0;
+      Comic.settings.use_page_turn_drag = values.use_page_turn_drag ? 1 : 0;
+
       
       Comic.RemoteApi.SetSettings(Comic.settings, function(provider, response) 
         {

@@ -19,6 +19,7 @@ namespace BCR
   {
     private const int COMIC_DB_VERSION = 1;
     
+    private BcrDB bcrDB; 
     private SQLiteConnection mConnection;
     private string mFolder;
     private const string DIRECTORY = "ComicRack BCR";
@@ -31,15 +32,17 @@ namespace BCR
     private Guid bcrGuid = Guid.Empty;
     
     public GlobalSettings globalSettings { get { return _globalSettings; } }
-    
-    
+
+    public string Filename { get { return mFolder + "\\bcr.s3db"; } }
+
     public static Database Instance 
     {
       get { return instance; }
     }
     
     public static string ConfigurationFolder { get { return DIRECTORY; } }
-    
+    public BcrDB DB { get { return bcrDB; } }
+
     public Database()
     {
       mFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DIRECTORY);
@@ -47,7 +50,10 @@ namespace BCR
       {
     	  Directory.CreateDirectory(mFolder);
       }
-      
+
+      LinqToDB.Data.DataConnection.AddConfiguration("bcr", "Data Source=" + Filename, LinqToDB.DataProvider.SQLite.SQLiteTools.GetDataProvider());
+      bcrDB = new BcrDB("bcr");
+
       string s = "cYo.Projects.ComicRack.Engine.Database.ComicLibraryListItem";
       ComicListItem item = Program.Database.ComicLists.GetItems<ComicListItem>(false).FirstOrDefault((ComicListItem cli) => cli.GetType().ToString() == s);
       if (item != null)

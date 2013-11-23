@@ -2,6 +2,9 @@ using Nancy.Security;
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
+using ComicRackWebViewer;
+using LinqToDB;
 
 namespace BCR
 {
@@ -9,11 +12,11 @@ namespace BCR
   {
     // Cache the entire list of comic progress, so we only need to perform one SQL lookup instead of
     // one per comic. This speeds up the displaying of a list of comics.
-    public Dictionary<Guid, ComicProgress> comicProgress = new Dictionary<Guid, ComicProgress>();
+    public Dictionary<Guid, comic_progress> comicProgress2 = new Dictionary<Guid, comic_progress>();
 
     public Guid homeListId;
 
-    public UserSettings settings = new UserSettings();
+    public user_settings settings2 = new user_settings();
 
     public IEnumerable<string> Claims { get; set; }
 
@@ -23,10 +26,10 @@ namespace BCR
 
     public string UserName { get; set; }
 
-    public ComicProgress GetComicProgress(Guid comicId)
+    public comic_progress GetComicProgress(Guid comicId)
     {
-      ComicProgress progress;
-      if (comicProgress.TryGetValue(comicId, out progress))
+      comic_progress progress;
+      if (comicProgress2.TryGetValue(comicId, out progress))
       {
         return progress;
       }
@@ -34,35 +37,34 @@ namespace BCR
       return null;
     }
 
-    public UserSettings GetSettings()
+    public user_settings GetSettings()
     {
-      return settings;
+      return settings2;
     }
 
     public void Initialize()
     {
-      settings.Load(this);
+      settings2 = (from s in Database.Instance.DB.user_settings 
+                  where s.user_id == UserId 
+                  select s).Single();
 
-      comicProgress.Clear();
-      using (SQLiteDataReader reader = Database.Instance.ExecuteReader("SELECT id, comic_id, current_page, last_page_read, date_last_read FROM comic_progress WHERE user_id = " + UserId + ";"))
-      {
-        while (reader.Read())
-        {
-          ComicProgress progress = new ComicProgress();
-          progress.DatabaseId = reader.GetInt32(0);
-          progress.Id = new Guid(reader.GetString(1));
-          progress.CurrentPage = reader.GetInt32(2);
-          progress.LastPageRead = reader.GetInt32(3);
-          progress.DateLastRead = reader.GetString(4);
-          comicProgress.Add(progress.Id, progress);
-        }
-      }
+      comicProgress2.Clear();
+
+      var result = from comic in Database.Instance.DB.comic_progress
+                    where comic.user_id == UserId
+                    select comic;
+
+      comicProgress2 = result.ToDictionary<comic_progress, Guid>((p) => { return Guid.Parse(p.comic_id); });
     }
 
     public void ResetComicProgress(Guid comicId)
     {
-      comicProgress.Remove(comicId);
-      Database.Instance.ExecuteNonQuery("DELETE FROM comic_progress WHERE comic_id = '" + comicId + "' AND user_id = " + UserId + ";");
+      comicProgress2.Remove(comicId);
+      string comic_id = comicId.ToString();
+      
+      Database.Instance.DB.comic_progress
+        .Where(p => p.comic_id == comic_id && p.user_id == UserId)
+        .Delete();
     }
 
     public bool SetAccessLevel()
@@ -77,35 +79,37 @@ namespace BCR
 
     public void UpdateComicProgress(Guid comicId, int currentPage)
     {
-      ComicProgress progress;
-      if (comicProgress.TryGetValue(comicId, out progress))
+      comic_progress progress2;
+      if (comicProgress2.TryGetValue(comicId, out progress2))
       {
-        if (currentPage > progress.LastPageRead)
-          progress.LastPageRead = currentPage;
+        if (currentPage > progress2.last_page_read)
+          progress2.last_page_read = currentPage;
 
-        progress.CurrentPage = currentPage;
-        progress.DateLastRead = System.DateTime.Now.ToString("s");
-        Database.Instance.ExecuteNonQuery("UPDATE comic_progress SET current_page = " + progress.CurrentPage + ", last_page_read = " + progress.LastPageRead + ", date_last_read = '" + progress.DateLastRead + "' WHERE id = " + progress.DatabaseId);
+        progress2.current_page = currentPage;
+        progress2.date_last_read = System.DateTime.Now.ToString("s");
+
+        Database.Instance.DB.Update(progress2);
       }
       else
       {
-        progress = new ComicProgress();
-        progress.Id = comicId;
-        progress.LastPageRead = currentPage;
-        progress.CurrentPage = currentPage;
-        progress.DateLastRead = System.DateTime.Now.ToString("s");
+        progress2 = new comic_progress();
+        progress2.comic_id = comicId.ToString();
+        progress2.last_page_read = currentPage;
+        progress2.current_page = currentPage;
+        progress2.date_last_read = System.DateTime.Now.ToString("s");
 
-        Database.Instance.ExecuteNonQuery("INSERT INTO comic_progress (user_id, comic_id, current_page, last_page_read, date_last_read) VALUES(" + UserId + ", '" + progress.Id.ToString() + "', " + progress.CurrentPage + ", " + progress.LastPageRead + ", '" + progress.DateLastRead + "');");
+        comicProgress2.Add(comicId, progress2);
 
-        progress.DatabaseId = (int)Database.Instance.GetLastInsertRowId();
-        comicProgress.Add(comicId, progress);
+        progress2.id = Convert.ToInt64(Database.Instance.DB.InsertWithIdentity(progress2));
+        comicProgress2.Add(comicId, progress2);
+        
       }
     }
 
-    public void UpdateSettings(UserSettings settings)
+    public void UpdateSettings(user_settings settings)
     {
-      this.settings = settings;
-      settings.Save(this);
+      settings2 = settings;
+      Database.Instance.DB.Update(settings2);
     }
     /*
     public Guid GetHomeList()

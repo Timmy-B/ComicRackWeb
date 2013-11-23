@@ -308,7 +308,7 @@ namespace BCR
         	    try 
         	    {
           	    var user = (BCRUser)this.Context.CurrentUser;
-          	    user.UpdateSettings(this.Bind<UserSettings>());
+          	    user.UpdateSettings(this.Bind<user_settings>());
           	    
           	    return HttpStatusCode.OK;
         	    }
