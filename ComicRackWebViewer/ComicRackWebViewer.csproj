@@ -181,7 +181,6 @@
     <None Include="tablet\app.js" />
     <None Include="tablet\app.json" />
     <None Include="tablet\app\controller\Comic.js" />
-    <None Include="tablet\app\controller\Comic.js.org" />
     <None Include="tablet\app\controller\ComicInfo.js" />
     <None Include="tablet\app\controller\ComicList.js" />
     <None Include="tablet\app\controller\ComicSettings.js" />
