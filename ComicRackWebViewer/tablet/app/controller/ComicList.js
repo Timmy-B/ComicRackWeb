@@ -183,15 +183,20 @@ Ext.define('Comic.controller.ComicList', {
         store.setFilters([]);
       */
       
+      comiclistview.setScrollToTopOnRefresh(true);
       store.load({
-        callback: function(records, operation, success) {
-           
+        callback: function (records, operation, success)
+        {
+          /* fixed by override in View/ComicList.js 
+             TODO: check if next ST update has this fixed....
+
             var scrollable = comiclistview.getScrollable();
             if (scrollable)
             {
-              scrollable.getScroller().scrollToTop();
+              scrollable.getScroller().scrollTo(0, 0.1);
             }
               
+            */
             comiclistview.setMasked(false);
             me.getComiclisttitlebar().setTitle(me.title + ' [#: ' + store.getTotalCount() + ']');
             
