@@ -99,7 +99,7 @@ Ext.define('Comic.view.ComicList', {
               text: 'Lists',
               style: {
               //  fontSize: '12px'
-              },
+              }
             }
             ]
         },
@@ -117,7 +117,7 @@ Ext.define('Comic.view.ComicList', {
               html: '1st order',
               style: {
                 fontSize: '12px'
-              },
+              }
             },
             {
               xtype: 'selectfield',
@@ -200,7 +200,7 @@ Ext.define('Comic.view.ComicList', {
               html: '2nd order',
               style: {
                 fontSize: '12px'
-              },
+              }
             },
             {
               xtype: 'selectfield',
@@ -299,7 +299,7 @@ Ext.define('Comic.view.ComicList', {
               iconMask: true,
               style: {
                 fontSize: '12px'
-              },
+              }
             }
           ]
         }
