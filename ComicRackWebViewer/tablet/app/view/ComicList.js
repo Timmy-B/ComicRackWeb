@@ -88,7 +88,20 @@ Ext.define('Comic.view.ComicList', {
           ui: 'light', 
           title: 'Comics',
           itemId: 'comiclisttitlebar',
-          inline: true, 
+          inline: true,
+          items: [
+            {
+              xtype: 'button',
+              itemId: 'toggleLibrary',
+              align: 'left',
+              //iconCls: 'arrow_left',
+              //iconMask: true,
+              text: 'Lists',
+              style: {
+              //  fontSize: '12px'
+              },
+            }
+            ]
         },
         {
           docked: 'top',

@@ -26,7 +26,8 @@ Ext.define('Comic.controller.ComicList', {
           'Comic.view.Search',
           'Comic.view.Series',
           'Comic.view.TreeList',
-          'Comic.store.ComicList'
+          'Comic.store.ComicList',
+          'Comic.view.TabPanel'
     ],
     
     config: {
@@ -36,8 +37,10 @@ Ext.define('Comic.controller.ComicList', {
           comiclisttitlebar: 'comiclistview #comiclisttitlebar',
           ordertoolbar: 'comiclistview #ordertoolbar',
           refreshbutton: 'comiclistview #refreshbutton',
+          toggleLibraryButton: 'comiclistview #toggleLibrary',
+
           searchview: 'searchview',
-          treelistview: 'treelistview',
+          maintabpanel: 'maintabpanel',
           seriesview: 'seriesview',
           
           comicview: { selector: 'comicview', xtype: 'comicview', autoCreate: true },
@@ -48,6 +51,7 @@ Ext.define('Comic.controller.ComicList', {
           order_orderby_2: '#ordertoolbar #orderby_2',
           order_direction_2: '#ordertoolbar #direction_2',
           order_refresh: '#ordertoolbar #refreshbutton'
+
         },
         
         control: {
@@ -71,6 +75,10 @@ Ext.define('Comic.controller.ComicList', {
           
           refreshbutton: {
             tap: 'onRefreshButton'
+          },
+
+          toggleLibraryButton: {
+            tap: 'onToggleLibraryButton'
           },
           
           
@@ -117,6 +125,28 @@ Ext.define('Comic.controller.ComicList', {
       };
     },
      
+    onToggleLibraryButton: function()
+    {
+      var me = this,
+          maintabpanel = me.getMaintabpanel();
+
+      if (maintabpanel.isHidden())
+      {
+        maintabpanel.setShowAnimation({ type: 'slide', direction: 'right' });
+        //maintabpanel.setShowAnimation('fadeIn');
+        maintabpanel.show();
+        //me.setLeft(100);
+      }
+      else
+      {
+        maintabpanel.setHideAnimation({ type: 'slideOut', direction: 'left' });
+        //maintabpanel.setHideAnimation('fadeOut');
+        maintabpanel.hide();
+        //me.setLeft(0);
+      }
+      
+
+    },
     onRefreshButton: function()
     {
       var me = this,

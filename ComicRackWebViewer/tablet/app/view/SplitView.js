@@ -36,6 +36,9 @@ Ext.define('Comic.view.SplitView', {
                 
         items: [
             {
+              xtype: 'maintabpanel',
+              flex: 1
+              /*
               xtype: 'container',
               layout: { type: 'vbox' },
               flex: 1,
@@ -45,6 +48,7 @@ Ext.define('Comic.view.SplitView', {
                   xtype: 'maintabpanel'
                 }
               ]
+              */
             },
             {
               xtype: 'container',
