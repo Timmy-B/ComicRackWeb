@@ -92,6 +92,8 @@ Ext.define('Comic.view.ImageViewer',{
         me.imgEl.setStyle({
             '-webkit-user-drag': 'none',
             '-webkit-transform-origin': '0 0',
+            'user-drag': 'none',
+            'transform-origin': '0 0',
             'visibility': 'hidden'
         });
 
@@ -102,7 +104,8 @@ Ext.define('Comic.view.ImageViewer',{
                 backgroundImage: 'url('+me.getPreviewSrc()+')',
                 backgroundPosition: 'center center',
                 backgroundRepeat: 'no-repeat',
-                webkitBackgroundSize: 'contain'
+                //webkitBackgroundSize: 'contain',
+                backgroundSize: 'contain'
             });
         }
 
@@ -541,8 +544,15 @@ Ext.define('Comic.view.ImageViewer',{
         }
     },
     
-    setOrigin: function(x, y) {
-        this.imgEl.dom.style.webkitTransformOrigin = x+'px '+y+'px';
+    setOrigin: function (x, y) {
+      if (Ext.browser.is.WebKit)
+      {
+        this.imgEl.dom.style.webkitTransformOrigin = x + 'px ' + y + 'px';
+      }
+      else
+      {
+        this.imgEl.dom.style.transformOrigin = x + 'px ' + y + 'px';
+      }
     },
     
     setTranslation:  function(translateX, translateY) {
@@ -672,9 +682,19 @@ Ext.define('Comic.view.ImageViewer',{
         }
         else
         {
+          if (Ext.browser.is.WebKit)
+          {
             me.imgEl.dom.style.webkitTransform =
-                'translate3d('+fixedX+'px, '+fixedY+'px, 0)'
-                +' scale3d('+fixedScale+','+fixedScale+',1)';
+                'translate3d(' + fixedX + 'px, ' + fixedY + 'px, 0)'
+                + ' scale3d(' + fixedScale + ',' + fixedScale + ',1)';
+          }
+          else
+          {
+            me.imgEl.dom.style.transform =
+                'translate3d(' + fixedX + 'px, ' + fixedY + 'px, 0)'
+                + ' scale3d(' + fixedScale + ',' + fixedScale + ',1)';
+          }
+          
         }
     },
 
