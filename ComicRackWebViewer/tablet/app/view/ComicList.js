@@ -71,6 +71,7 @@ Ext.define('Comic.view.ComicList', {
       itemCls: 'comiclist-item',
       itemHeight: 88,
       variableHeights: false,
+      infinite: true,
       
       displayField: 'Caption',
         
@@ -86,23 +87,208 @@ Ext.define('Comic.view.ComicList', {
           xtype: 'titlebar', 
           ui: 'light', 
           title: 'Comics',
-          itemId: 'comiclisttoolbar',
+          itemId: 'comiclisttitlebar',
           inline: true, 
-          items: [ 
+        },
+        {
+          docked: 'top',
+          xtype: 'toolbar',
+          ui: 'light',
+          //title: 'Filter',
+          //align: 'left',
+          itemId: 'ordertoolbar',
+          inline: true,
+          items: [
             {
-              xtype: 'button', 
-              itemId: 'sortbutton',
-              align: 'right',
-              text: 'Sort'
+              xtype: 'label',
+              html: '1st order',
+              style: {
+                fontSize: '12px'
+              },
             },
             {
-              xtype: 'button', 
+              xtype: 'selectfield',
+              //label: '1st Sort by',
+              //labelWidth: '60%',
+              defaultTabletPickerConfig: {
+                height: '90%'
+              },
+              maxWidth: '100px',
+              name: 'orderby_1',
+              itemId: 'orderby_1',
+              value: 1,
+              style: {
+                fontSize: '12px'
+              },
+              options: [
+                {
+                  text: 'Caption',
+                  value: 1
+                },
+                {
+                  text: 'Series',
+                  value: 2
+                },
+                {
+                  text: 'Volume',
+                  value: 3
+                },
+                {
+                  text: 'Title',
+                  value: 4
+                },
+                {
+                  text: 'Number',
+                  value: 5
+                },
+                {
+                  text: 'Year',
+                  value: 6
+                },
+                {
+                  text: 'File',
+                  value: 7
+                },
+                {
+                  text: 'Last Opened',
+                  value: 8
+                },
+                {
+                  text: 'Publish date',
+                  value: 9
+                }
+
+              ]
+            },          
+            {
+              xtype: 'selectfield',
+              //label: 'Direction',
+              //labelWidth: '60%',
+              maxWidth: '100px',
+              name: 'direction_1',
+              itemId: 'direction_1',
+              value: 2,
+              style: {
+                fontSize: '12px'
+              },
+              options: [
+                {
+                  text: 'Ascending',
+                  value: 0
+                },
+                {
+                  text: 'Descending',
+                  value: 1
+                }
+              ]
+            },
+            {
+              xtype: 'label',
+              html: '2nd order',
+              style: {
+                fontSize: '12px'
+              },
+            },
+            {
+              xtype: 'selectfield',
+              //label: '2nd Sort by',
+              //labelWidth: '60%',
+              defaultTabletPickerConfig: {
+                height: '90%'
+              },
+              style: {
+                fontSize: '12px'
+              },
+              maxWidth: '100px',
+              name: 'orderby_2',
+              itemId: 'orderby_2',
+              value: 1,
+              options: [
+                {
+                  text: '[none]',
+                  value: 0
+                },
+                {
+                  text: 'Caption',
+                  value: 1
+                },
+                {
+                  text: 'Series',
+                  value: 2
+                },
+                {
+                  text: 'Volume',
+                  value: 3
+                },
+                {
+                  text: 'Title',
+                  value: 4
+                },
+                {
+                  text: 'Volume',
+                  value: 5
+                },
+                {
+                  text: 'Year',
+                  value: 6
+                },
+                {
+                  text: 'File',
+                  value: 7
+                },
+                {
+                  text: 'Last Opened',
+                  value: 8
+                },
+                {
+                  text: 'Publish date',
+                  value: 9
+                }
+              ]
+            },          
+            {
+              xtype: 'selectfield',
+              //label: 'Direction',
+              //labelWidth: '60%',
+              name: 'direction_2',
+              itemId: 'direction_2',
+              value: 2,
+              maxWidth: '100px',
+              style: {
+                fontSize: '12px'
+              },
+              options: [
+                {
+                  text: 'Ascending',
+                  value: 0
+                },
+                {
+                  text: 'Descending',
+                  value: 1
+                }
+              ]
+            },
+            /*
+            {
+              xtype: 'searchfield',
+              //label: 'Search',
+              name: 'query',
+              style: {
+                fontSize: '12px'
+              },
+            },
+            */
+            {
+              xtype: 'button',
               itemId: 'refreshbutton',
               align: 'right',
               iconCls: 'refresh',
-              iconMask: true
+              iconMask: true,
+              style: {
+                fontSize: '12px'
+              },
             }
-          ] 
+          ]
         }
         
       ]

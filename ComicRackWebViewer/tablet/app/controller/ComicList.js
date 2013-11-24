@@ -20,29 +20,34 @@
 
 Ext.define('Comic.controller.ComicList', {
     extend: 'Ext.app.Controller',
-    requires: [ 
+    requires: [
+          'Comic.model.OrderSettings',
           'Comic.view.Comic',
           'Comic.view.Search',
           'Comic.view.Series',
           'Comic.view.TreeList',
-          'Comic.store.ComicList',
-          'Comic.view.ComicListSort'
+          'Comic.store.ComicList'
     ],
     
     config: {
         refs: {
           mainview: 'mainview',
           comiclistview: 'comiclistview',
-          comiclisttoolbar: 'comiclistview #comiclisttoolbar',
+          comiclisttitlebar: 'comiclistview #comiclisttitlebar',
+          ordertoolbar: 'comiclistview #ordertoolbar',
           refreshbutton: 'comiclistview #refreshbutton',
-          sortbutton: 'comiclistview #sortbutton',
           searchview: 'searchview',
           treelistview: 'treelistview',
           seriesview: 'seriesview',
-          comiclistsortview: { selector: 'comiclistsortview', xtype: 'comiclistsortview', autoCreate: true },
           
           comicview: { selector: 'comicview', xtype: 'comicview', autoCreate: true },
-          comicinfoview: { selector: 'comicinfoview', xtype: 'comicinfoview', autoCreate: true }
+          comicinfoview: { selector: 'comicinfoview', xtype: 'comicinfoview', autoCreate: true },
+
+          order_orderby_1: '#ordertoolbar #orderby_1',
+          order_direction_1: '#ordertoolbar #direction_1',
+          order_orderby_2: '#ordertoolbar #orderby_2',
+          order_direction_2: '#ordertoolbar #direction_2',
+          order_refresh: '#ordertoolbar #refreshbutton'
         },
         
         control: {
@@ -68,14 +73,23 @@ Ext.define('Comic.controller.ComicList', {
             tap: 'onRefreshButton'
           },
           
-          sortbutton: {
-            tap: 'onSortButton'
-          },
           
-          comiclistsortview: {
-            show: 'onSortShow',
-            hide: 'onSortHide'
+          order_orderby_1: {
+            change: 'onDoSort'
+          },
+          order_orderby_2: {
+            change: 'onDoSort'
+          },
+          order_direction_1: {
+            change: 'onDoSort'
+          },
+          order_direction_2: {
+            change: 'onDoSort'
+          },
+          order_refresh: {
+            change: 'onDoSort'
           }
+
           
         }
     },
@@ -89,15 +103,7 @@ Ext.define('Comic.controller.ComicList', {
       me.storeName = 'ComicList-';
       me.storeCount = 0;
 
-      
-      Comic.sortsettings = {};
-      Comic.sortsettings.filter = "";
-      Comic.sortsettings.orderby_1 = 1; // caption
-      Comic.sortsettings.direction_1 = 0; // ascending
-      Comic.sortsettings.orderby_2 = 0; // none
-      Comic.sortsettings.direction_2 = 0; // ascending
-      
-      Comic.sortsettings.sortfields = { 
+      Comic.sortfields = { 
         0: '',
         1: 'Caption', 
         2: 'ShadowSeries', 
@@ -125,14 +131,14 @@ Ext.define('Comic.controller.ComicList', {
         });
         
       sorters.push({
-          property : Comic.sortsettings.sortfields[Comic.sortsettings.orderby_1],
-          direction: Comic.sortsettings.direction_1 == 0 ? 'asc' : 'desc'
+          property : Comic.sortfields[Comic.ordersettings.get('orderby_1')],
+          direction: Comic.ordersettings.get('direction_1') == 0 ? 'asc' : 'desc'
       });
-      if (Comic.sortsettings.orderby_2 > 0)
+      if (Comic.ordersettings.get('orderby_2') > 0)
       {
         sorters.push({
-            property : Comic.sortsettings.sortfields[Comic.sortsettings.orderby_2],
-            direction: Comic.sortsettings.direction_2 == 0 ? 'asc' : 'desc'
+            property : Comic.sortfields[Comic.odersettings.get('orderby_2')],
+            direction: Comic.ordersettings.get('direction_2') == 0 ? 'asc' : 'desc'
         });
       }
       
@@ -157,7 +163,7 @@ Ext.define('Comic.controller.ComicList', {
             }
               
             comiclistview.setMasked(false);
-            me.getComiclisttoolbar().setTitle(me.title + ' [#: ' + store.getTotalCount() + ']');
+            me.getComiclisttitlebar().setTitle(me.title + ' [#: ' + store.getTotalCount() + ']');
             
         },
         scope: me
@@ -167,13 +173,51 @@ Ext.define('Comic.controller.ComicList', {
     
     onComicListViewInitialize: function()
     {
-    /*
       var me = this;
-      Comic.RemoteApi.GetComicsFromList('f3e6cc52-2f39-416c-afee-f84cad603033', function(success, result) {
-          //console.log(result);
-          me.getComiclistview().getStore().setData(result);
-      });
-    */
+      
+      var apiToken = ApiToken.Get();
+      var store = Ext.create('Ext.data.Store', { model: "Comic.model.OrderSettings" });
+
+      //loads any existing Search data from localStorage
+      store.load();
+
+      var index = store.findExact('user', apiToken.Username);
+      if (index == -1)
+      {
+        Comic.ordersettings = Ext.create('Comic.model.OrderSettings',
+            {
+              user : apiToken.Username,
+              orderby_1: 1,// caption
+              direction_1: 0, // ascending
+              orderby_2: 0, // none
+              direction_2: 0 // ascending
+            });
+        
+        // Save to localStorage
+        Comic.ordersettings.save();
+      }
+      else
+      {
+        Comic.ordersettings = store.getAt(index);
+      }
+
+      
+      me.getOrder_orderby_1().suspendEvents();
+      me.getOrder_orderby_1().setValue(Comic.ordersettings.get('orderby_1'));
+      me.getOrder_orderby_1().resumeEvents(true);
+      
+      me.getOrder_direction_1().suspendEvents();
+      me.getOrder_direction_1().setValue(Comic.ordersettings.get('direction_1'));
+      me.getOrder_direction_1().resumeEvents(true);
+
+      me.getOrder_orderby_2().suspendEvents();
+      me.getOrder_orderby_2().setValue(Comic.ordersettings.get('orderby_2'));
+      me.getOrder_orderby_2().resumeEvents(true);
+
+      me.getOrder_direction_2().suspendEvents();
+      me.getOrder_direction_2().setValue(Comic.ordersettings.get('direction_2'));
+      me.getOrder_direction_2().resumeEvents(true);
+      
     },
        
     onComicListViewItemTap: function(/*Ext.dataview.DataView*/ list, /*Number*/ index, /*Ext.Element/Ext.dataview.component.DataItem*/ target, /*Ext.data.Model*/ record, /*Ext.EventObject*/ e, /*Object*/ eOpts)
@@ -233,7 +277,7 @@ Ext.define('Comic.controller.ComicList', {
       store.setRemoteGroup(true);
 
       me.title = title;
-			me.getComiclisttoolbar().setTitle(title);
+      me.getComiclisttitlebar().setTitle(title);
       me.getComiclistview().setStore(store);
       
       if (oldstore)
@@ -244,42 +288,21 @@ Ext.define('Comic.controller.ComicList', {
       me.onRefreshButton();
     },
     
-    onSortButton: function()
+    
+    onDoSort: function ()
     {
       var me = this;
+         
+      Comic.ordersettings.set('orderby_1' ,me.getOrder_orderby_1().getValue());
+      Comic.ordersettings.set('direction_1', me.getOrder_direction_1().getValue());
+      Comic.ordersettings.set('orderby_2', me.getOrder_orderby_2().getValue());
+      Comic.ordersettings.set('direction_2', me.getOrder_direction_2().getValue());
 
-      if (!me.sortview) 
-      {
-        me.sortview = Ext.Viewport.add(me.getComiclistsortview());
-      }
+      if (Comic.ordersettings.get('orderby_2') == Comic.ordersettings.get('orderby_1'))
+        Comic.ordersettings.set('orderby_2', 0);
 
-      me.sortview.show();
-    },
-    
-    onSortShow: function() {
-      var me = this,
-          view = me.getComiclistsortview();
-             
-      view.setValues({
-        filter: Comic.sortsettings.filter,
-        orderby_1: Comic.sortsettings.orderby_1,
-        direction_1: Comic.sortsettings.direction_1,
-        orderby_2: Comic.sortsettings.orderby_2,
-        direction_2: Comic.sortsettings.direction_2
-      });
-    },
-    
-    onSortHide: function() {
-      var me = this,
-          view = me.getComiclistsortview(),
-          values = view.getValues();
-        
-      Comic.sortsettings.filter = values.filter;
-      Comic.sortsettings.orderby_1 = values.orderby_1;
-      Comic.sortsettings.direction_1 = values.direction_1;
-      Comic.sortsettings.orderby_2 = values.orderby_2;
-      Comic.sortsettings.direction_2 = values.direction_2;
-      
+      Comic.ordersettings.save();
+
       me.onRefreshButton();
     }
 });

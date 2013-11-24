@@ -24,7 +24,7 @@ Ext.define('Comic.controller.Series', {
           mainview: 'mainview',
           seriesview: 'seriesview',
           comiclistview: 'comiclistview',
-          comiclisttoolbar: '#comiclisttoolbar',
+          comiclisttitlebar: '#comiclisttitlebar',
           refreshbutton: 'seriesview #refreshbutton',
           pullrefresh: 'seriesview #pullrefresh',
           titlebar: 'seriesview titlebar',
