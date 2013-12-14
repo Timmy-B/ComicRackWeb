@@ -59,14 +59,16 @@ Ext.define('Comic.view.Series', {
       //displayField: 'name',
       store: 'Series',
       emptyText: '<center>No series found.</center>',
+      infinite: true,
       
       grouped     : true,
+      
       indexBar    : {
                         letters: ["#", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"].sort()
       },
       
       itemTpl: TheSeriesItemTemplate,
-      
+
       items: [
         {
           xtype: 'titlebar',

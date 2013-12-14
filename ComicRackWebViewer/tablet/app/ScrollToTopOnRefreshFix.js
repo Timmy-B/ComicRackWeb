@@ -8,12 +8,21 @@
 
 Ext.define('Comic.ScrollToTopOnRefreshFix', {
   override: 'Ext.dataview.List',
-  scrollToTopOnRefresh: false,
-
+  config: { scrollToTopOnRefresh: false },
+  
   doRefresh: function ()
   {
-    this.getScrollable().getScroller().scrollTo(0, 0.01, false);
-    this.callParent(arguments);
+    var me = this,
+        scrollToTopOnRefresh = me.getScrollToTopOnRefresh();
+
+    // call base doRefresh first in order to update the itemMap in case the list is infinite and grouped....
+    me.callParent(arguments);
+    
+    if (scrollToTopOnRefresh)
+    {
+      me.getScrollable().getScroller().scrollTo(0, 0.01, false);
+      me.callParent(arguments);
+    }
   }
 });
 
