@@ -30,13 +30,13 @@ Ext.Loader.addClassPathMappings({
   "Ext.ux.IconSpinner": "lib/ux/IconSpinner.js",
   "Ext.ux.data.Connection": "lib/ux/OData.js",
   "Ext.ux.data.proxy.OData": "lib/ux/ODataProxy.js",
-  "Ext.ux.data.reader.OData": "lib/ux/ODataProxy.js",
-  "MyApp.override.dataview.List": "app/view/ComicList.js"
+  "Ext.ux.data.reader.OData": "lib/ux/ODataProxy.js"
 });
 Ext.ClassManager.addNameAlternateMappings({
   "Comic.NestedListFix": [],
   "Comic.RemoteApi": [],
   "Comic.RestODataProxy": [],
+  "Comic.ScrollToTopOnRefreshFix": [],
   "Comic.Scrollerfix": [],
   "Comic.controller.Comic": [],
   "Comic.controller.ComicInfo": [],
@@ -809,8 +809,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.viewport.Viewport": [],
   "Ext.viewport.WindowsPhone": [
     "Ext.viewport.WP"
-  ],
-  "MyApp.override.dataview.List": []
+  ]
 });
 Ext.ClassManager.addNameAliasMappings({
   "Comic.NestedListFix": [],
@@ -818,6 +817,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Comic.RestODataProxy": [
     "proxy.restodata"
   ],
+  "Comic.ScrollToTopOnRefreshFix": [],
   "Comic.Scrollerfix": [],
   "Comic.controller.Comic": [],
   "Comic.controller.ComicInfo": [],
@@ -1848,6 +1848,5 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "Ext.viewport.Ios": [],
   "Ext.viewport.Viewport": [],
-  "Ext.viewport.WindowsPhone": [],
-  "MyApp.override.dataview.List": []
+  "Ext.viewport.WindowsPhone": []
 });

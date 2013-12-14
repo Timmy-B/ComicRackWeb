@@ -50,7 +50,7 @@
         {
             "path": "app.js",
             "bundle": true,  /* Indicates that all class dependencies are concatenated into this file when build */
-            "update": "delta"
+            "update": "full"
         },
         {
           "path": "lib/add2home/add2home.js",
@@ -78,7 +78,7 @@
     "css": [
         {
             "path": "resources/css/app.css",
-            "update": "delta"
+            "update": "full"
         },
     {
       "path": "resources/css/comic.css",
