@@ -1542,6 +1542,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="tablet\app\model\OrderSettings.js" />
+    <Content Include="tablet\app\ScrollToTopOnRefreshFix.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

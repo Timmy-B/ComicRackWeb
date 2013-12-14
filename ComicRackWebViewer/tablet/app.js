@@ -107,7 +107,8 @@ Ext.application({
         
     requires: [
       'Ext.MessageBox',
-      'Comic.RemoteApi'
+      'Comic.RemoteApi',
+      'Comic.ScrollToTopOnRefreshFix'
     ],
 
     stores: ['List', 'TreeList', 'Series'],
