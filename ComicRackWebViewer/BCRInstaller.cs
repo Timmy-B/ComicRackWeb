@@ -69,7 +69,7 @@ namespace ComicRackWebViewer
         var connection = new SQLiteConnection();
         //connection.Open();
       }
-      catch (System.DllNotFoundException e)
+      catch (Exception e)
       {
         Trace.WriteLine(String.Format("Exception: {0}", e));
         System.IO.File.Copy(dir + (Environment.Is64BitProcess ? "SQLite.Interop.64bit.dll" : "SQLite.Interop.32bit.dll"), dir + "SQLite.Interop.dll", true);
