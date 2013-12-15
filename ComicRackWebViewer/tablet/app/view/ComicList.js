@@ -63,8 +63,50 @@ Ext.define('Comic.view.ComicList', {
       'Ext.dataview.List',
       'Comic.view.ComicListSort'
     ],
-    
-        
+    /*
+    // override
+    initialize: function() {
+      // call base class initializer
+      console.log('ComicList.initialize()');
+      this.callParent(arguments);
+      this.initializeMe();
+    },
+
+    initializeMe: function() {
+      if ( this.hasOwnProperty('hasBeenInitialized') ) {
+        return;
+      }
+
+      console.log('ComicList.initializeMe()');
+      var me = this;
+
+      this.hasBeenInitialized = true;
+
+      // cache the reference to our scroller object, which will be used often
+      this.scroller = this.getScrollable().getScroller();
+
+      // initialize listeners for scroll events
+      this.scroller.on({
+        scrollstart: this.onScrollStart,
+        scroll: this.onScroll,
+        scrollend: this.onScrollStop,
+        scope: this
+      });
+    },
+      
+    onScroll: function ()
+    {
+      console.log('ComicList.onScroll()');
+    },
+    onScrollStart: function() {
+      console.log('ComicList.onScrollStart()');
+    },
+    onScrollStop: function ()
+    {
+      console.log('ComicList.onScrollStop()');
+    },
+    */
+
     config: {
       title: 'List',
       itemTpl: TheComicListItemTemplate,

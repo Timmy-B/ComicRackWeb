@@ -15,7 +15,7 @@ namespace ComicRackWebViewer
   {
     private const string INSTALLER_FILE = "BCRPlugin.zip";
     private const string VERSION_FILE = "BCRVersion.txt";
-    private const string VERSION = "1.26";
+    private const string VERSION = "1.27";
     
     public string installFolder = "";
     
@@ -39,15 +39,15 @@ namespace ComicRackWebViewer
 
       ///////////////////////////////////////////////////////////
       //
+      /*
       if (!InstallState.IsVC90RedistSP1Installed())
       {
         if (MessageBoxResult.Yes != MessageBox.Show("The required component 'Microsoft Visual C++ 2008 SP1 Redistributable Package' seems to be missing.\nDownload and install the correct version (32/64bit) from the Microsoft website, then restart ComicRack.\n\nDo you want to continue anyway (expect a crash...)?", "Badaap Comic Reader Plugin", MessageBoxButton.YesNo, MessageBoxImage.Error))
         {
           return false;
         }
-            
-        return true;
       }
+      */
       
       ///////////////////////////////////////////////////////////
       // Install the correct FreeImage.dll
