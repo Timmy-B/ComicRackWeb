@@ -51,8 +51,9 @@ namespace ComicRackWebViewer
       
       webBrowserAbout.Url = new Uri("file://" + path);
       
-      textBoxPort.Text = Database.Instance.globalSettings.webserver_port.ToString();
-      actualPort = Database.Instance.globalSettings.webserver_port;
+      textBoxPort.Text = Database.Instance.GlobalSettings.webserver_port.ToString();
+      actualPort = Database.Instance.GlobalSettings.webserver_port;
+      textBoxUrlBase.Text = Database.Instance.GlobalSettings.url_base;
 
       string s = "cYo.Projects.ComicRack.Engine.Database.ComicLibraryListItem";
       ComicListItem item = Program.Database.ComicLists.GetItems<ComicListItem>(false).FirstOrDefault((ComicListItem cli) => cli.GetType().ToString() == s);
@@ -75,6 +76,7 @@ namespace ComicRackWebViewer
       }
       buttonStart.Enabled = actualPort.HasValue;
       textBoxPort.Enabled = host == null;
+      textBoxUrlBase.Enabled = host == null;
 
       if (host == null)
       {
@@ -92,6 +94,7 @@ namespace ComicRackWebViewer
     public void StartService()
     {
       textBoxPort.Enabled = false;
+      textBoxUrlBase.Enabled = false;
       System.Windows.Input.Mouse.SetCursor(System.Windows.Input.Cursors.Wait);
       Task.Factory.StartNew(() => LoadService());
       labelStatus.Text = "Starting";
@@ -167,8 +170,9 @@ namespace ComicRackWebViewer
       {
         if (IsCurrentlyRunningAsAdmin())
         {
-          Database.Instance.globalSettings.webserver_port = actualPort.HasValue ? actualPort.Value : 8080;
-          Database.Instance.globalSettings.Save();
+          Database.Instance.GlobalSettings.webserver_port = actualPort.HasValue ? actualPort.Value : 8080;
+          Database.Instance.GlobalSettings.url_base = textBoxUrlBase.Text;
+          Database.Instance.GlobalSettings.Save();
           
           StartService();
         }

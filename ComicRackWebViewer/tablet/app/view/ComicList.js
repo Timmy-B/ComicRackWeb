@@ -19,7 +19,7 @@
   
 // Use one template instance for all list items instead of creating one for each list item separately.....
 var TheComicListItemTemplate = new Ext.XTemplate(
-    '<div class="comiclist-item-inner"><img height="64px" class="cl-img" src="/BCR/Comics/{Id}/Pages/0?height=64"/>{Caption}</br>{[this.getPublishedDate(values)]}<span class="progress">{[this.getProgressText(values)]}</span><span class="date_last_read">{[this.getOpenedDate(values)]}</span></div>',
+    '<div class="comiclist-item-inner"><img height="64px" class="cl-img" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=64"/>{Caption}</br>{[this.getPublishedDate(values)]}<span class="progress">{[this.getProgressText(values)]}</span><span class="date_last_read">{[this.getOpenedDate(values)]}</span></div>',
     {
       // XTemplate configuration:
       disableFormats: true,

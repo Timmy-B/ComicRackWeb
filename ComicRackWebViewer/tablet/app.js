@@ -22,6 +22,8 @@
 
 var disableCache = Ext.os.deviceType == 'Tablet';
 
+
+
 Ext.Loader.setConfig({
   disableCaching: disableCache
   /*

@@ -76,7 +76,7 @@ Ext.define('Comic.store.Series', {
 
       proxy: {
             type: 'restodata',
-            url : '/BCR/Series',
+            url: bcrBase + '/BCR/Series',
             format: 'json',
             reader: {
               type: 'json',

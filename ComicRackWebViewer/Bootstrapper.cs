@@ -48,9 +48,9 @@ namespace ComicRackWebViewer
             StaticConfiguration.CaseSensitive = false;
             
             
-            StaticConfiguration.EnableRequestTracing = Database.Instance.globalSettings.nancy_request_tracing;
+            StaticConfiguration.EnableRequestTracing = Database.Instance.GlobalSettings.nancy_request_tracing;
             
-            if (Database.Instance.globalSettings.nancy_diagnostics_password == "")
+            if (Database.Instance.GlobalSettings.nancy_diagnostics_password == "")
               DiagnosticsHook.Disable(pipelines);
             
             // Make sure static content isn't cached, because this really messes up the ipad browsers (Atomic Browser specifically) 
@@ -71,13 +71,13 @@ namespace ComicRackWebViewer
 	        base.ConfigureConventions(conventions);
 	 
 	        conventions.StaticContentsConventions.Add(
-            	StaticContentConventionBuilder.AddDirectory("/tablet", "/tablet")
+              StaticContentConventionBuilder.AddDirectory(Database.Instance.GlobalSettings.url_base, "/tablet")
         	);
 	      }
         
         protected override DiagnosticsConfiguration DiagnosticsConfiguration
         {
-          get { return new DiagnosticsConfiguration { Password = Database.Instance.globalSettings.nancy_diagnostics_password }; }
+          get { return new DiagnosticsConfiguration { Password = Database.Instance.GlobalSettings.nancy_diagnostics_password }; }
         }
         
 

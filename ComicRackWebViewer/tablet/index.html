@@ -13,7 +13,13 @@
       var addToHomeConfig = {
               returningVisitor: true,		// Show the message only to returning visitors (ie: don't show it the first time)
               expire: 720					// Show the message only once every 12 hours
-            };
+      };
+
+      var l = document.location.pathname.split('/');
+      l.pop();
+      var bcrBase = document.location.origin + l.join('/');
+      console.log("BCR URL Base: " + bcrBase);
+
     </script>
     
     <style type="text/css">

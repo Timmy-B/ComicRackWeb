@@ -64,6 +64,8 @@ namespace ComicRackWebViewer
       this.buttonClearPageCache = new System.Windows.Forms.Button();
       this.tabPageAbout = new System.Windows.Forms.TabPage();
       this.webBrowserAbout = new System.Windows.Forms.WebBrowser();
+      this.textBoxUrlBase = new System.Windows.Forms.TextBox();
+      this.label3 = new System.Windows.Forms.Label();
       this.tabControl.SuspendLayout();
       this.tabPageWebServer.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -88,6 +90,8 @@ namespace ComicRackWebViewer
       // 
       // tabPageWebServer
       // 
+      this.tabPageWebServer.Controls.Add(this.textBoxUrlBase);
+      this.tabPageWebServer.Controls.Add(this.label3);
       this.tabPageWebServer.Controls.Add(this.pictureBox1);
       this.tabPageWebServer.Controls.Add(this.buttonStart);
       this.tabPageWebServer.Controls.Add(this.labelStatus);
@@ -123,7 +127,7 @@ namespace ComicRackWebViewer
       // 
       // labelStatus
       // 
-      this.labelStatus.Location = new System.Drawing.Point(8, 60);
+      this.labelStatus.Location = new System.Drawing.Point(8, 69);
       this.labelStatus.Name = "labelStatus";
       this.labelStatus.Size = new System.Drawing.Size(303, 23);
       this.labelStatus.TabIndex = 2;
@@ -355,6 +359,21 @@ namespace ComicRackWebViewer
       this.webBrowserAbout.TabIndex = 0;
       this.webBrowserAbout.Url = new System.Uri("", System.UriKind.Relative);
       // 
+      // textBoxUrlBase
+      // 
+      this.textBoxUrlBase.Location = new System.Drawing.Point(114, 46);
+      this.textBoxUrlBase.Name = "textBoxUrlBase";
+      this.textBoxUrlBase.Size = new System.Drawing.Size(197, 20);
+      this.textBoxUrlBase.TabIndex = 6;
+      // 
+      // label3
+      // 
+      this.label3.Location = new System.Drawing.Point(8, 49);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(100, 17);
+      this.label3.TabIndex = 5;
+      this.label3.Text = "URL Base";
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -377,6 +396,7 @@ namespace ComicRackWebViewer
       this.tabPageMisc.ResumeLayout(false);
       this.tabPageAbout.ResumeLayout(false);
       this.ResumeLayout(false);
+
     }
     private System.Windows.Forms.CheckBox checkBoxUseProgressFromComicRack;
     private System.Windows.Forms.CheckBox checkBoxAllowLibrary;
@@ -405,6 +425,8 @@ namespace ComicRackWebViewer
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.TabPage tabPageWebServer;
     private System.Windows.Forms.TabControl tabControl;
+    private System.Windows.Forms.TextBox textBoxUrlBase;
+    private System.Windows.Forms.Label label3;
 
   }
 }

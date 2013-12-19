@@ -80,7 +80,7 @@ Ext.define('Comic.controller.ComicInfo', {
             
           s += 'Published: ' + values.ShadowYear + '/' + values.Month + '<br/>' + values.PageCount + ' pages</br/>';
           
-          comicinfofieldset.setTitle('<div class="comicinfo-header"><img src="/BCR/Comics/'+values.Id+'/Pages/0?height=128" height="128"/><span>' + s + "</span>");
+          comicinfofieldset.setTitle('<div class="comicinfo-header"><img src="' + bcrBase + '/BCR/Comics/'+values.Id+'/Pages/0?height=128" height="128"/><span>' + s + "</span>");
                     
           /*
           comicinfofieldset.removeAll();

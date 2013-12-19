@@ -4,7 +4,8 @@ namespace BCR
 {
     public class AuthModule : NancyModule
     {
-        public AuthModule() : base("/auth/")
+        public AuthModule() 
+          : base(Database.Instance.GlobalSettings.url_base + "/auth")
         {
             ///////////////////////////////////////////////////////////////////////////////////////////
             // Login

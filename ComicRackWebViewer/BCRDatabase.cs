@@ -30,7 +30,7 @@ namespace BCR
     private Guid libraryGuid = Guid.Empty;
     private Guid bcrGuid = Guid.Empty;
     
-    public GlobalSettings globalSettings { get { return _globalSettings; } }
+    public GlobalSettings GlobalSettings { get { return _globalSettings; } }
     
     
     public static Database Instance 
@@ -222,7 +222,7 @@ namespace BCR
         ExecuteNonQuery("UPDATE settings SET value='" + COMIC_DB_VERSION + "' WHERE key='version';");
       }
       
-      globalSettings.Initialize();
+      GlobalSettings.Initialize();
       
       Validate();
     }

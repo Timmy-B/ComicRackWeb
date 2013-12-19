@@ -15,12 +15,12 @@ namespace BCR
     public class BCRModule : NancyModule
     {
         public BCRModule()
-            : base("/BCR")
+          : base(Database.Instance.GlobalSettings.url_base + "/BCR")
         {
             // The user must be authenticated in order to use the BCR API.
             this.RequiresAuthentication();
-              
-            Get["/"] = x => { return Response.AsRedirect("/", RedirectResponse.RedirectType.Permanent); };
+
+            Get["/"] = x => { return Response.AsText("Authentication OK"); };
             
                         
             ///////////////////////////////////////////////////////////////////////////////////////////////
