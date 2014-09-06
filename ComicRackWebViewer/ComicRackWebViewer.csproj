@@ -1541,6 +1541,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="badaap_packagelogo_64.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Content Include="tablet\app\model\OrderSettings.js" />
     <Content Include="tablet\app\ScrollToTopOnRefreshFix.js" />
   </ItemGroup>
