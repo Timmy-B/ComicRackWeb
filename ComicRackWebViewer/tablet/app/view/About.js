@@ -38,14 +38,14 @@ Ext.define('Comic.view.About', {
             xtype: 'textfield',
             name: 'version',
             label: 'Version',
-            value: '1.27',
+            value: '1.28',
             readOnly: true
           },
           {
             xtype: 'textfield',
             name: 'copyright',
             label: 'Copyright',
-            value: 'Copyright (c) 2013 Jeroen Walter',
+            value: 'Copyright (c) 2014 Jeroen Walter',
             readOnly: true
           },
           {
