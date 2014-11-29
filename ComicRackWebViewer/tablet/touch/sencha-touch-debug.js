@@ -1,22 +1,19 @@
 /*
-This file is part of Sencha Touch 2.3
+This file is part of Sencha Touch 2.4
 
-Copyright (c) 2011-2013 Sencha Inc
+Copyright (c) 2011-2014 Sencha Inc
 
 Contact:  http://www.sencha.com/contact
 
-GNU General Public License Usage
-This file may be used under the terms of the GNU General Public License version 3.0 as
-published by the Free Software Foundation and appearing in the file LICENSE included in the
-packaging of this file.
-
-Please review the following information to ensure the GNU General Public License version 3.0
-requirements will be met: http://www.gnu.org/copyleft/gpl.html.
+Commercial Usage
+Licensees holding valid commercial licenses may use this file in accordance with the Commercial
+Software License Agreement provided with the Software or, alternatively, in accordance with the
+terms contained in a written agreement between you and Sencha.
 
 If you are unsure which license is appropriate for your use, please contact the sales department
 at http://www.sencha.com/contact.
 
-Build date: 2013-11-08 13:58:42 (d989f4377b0a56f9f540fd415741d1f2db1c7977)
+Build date: 2014-10-22 11:38:23 (733f32116ad89611b6e3f1861049fa2f7733e61d)
 */
 //@tag foundation,core
 //@define Ext
@@ -679,7 +676,7 @@ Build date: 2013-11-08 13:58:42 (d989f4377b0a56f9f540fd415741d1f2db1c7977)
 (function() {
 
 // Current core version
-var version = '4.1.0', Version;
+var version = '2.4.1.527', Version;
     Ext.Version = Version = Ext.extend(Object, {
 
         /**
@@ -3715,7 +3712,7 @@ Ext.JSON = new(function() {
      * __The returned value includes enclosing double quotation marks.__
      *
      * The default return format is "yyyy-mm-ddThh:mm:ss".
-     * 
+     *
      * To override this:
      *
      *     Ext.JSON.encodeDate = function(d) {
@@ -3726,7 +3723,7 @@ Ext.JSON = new(function() {
      * @return {String} The string literal to use in a JSON string.
      */
     this.encodeDate = function(o) {
-        return '"' + o.getFullYear() + "-" 
+        return '"' + o.getFullYear() + "-"
         + pad(o.getMonth() + 1) + "-"
         + pad(o.getDate()) + "T"
         + pad(o.getHours()) + ":"
@@ -3782,6 +3779,13 @@ Ext.JSON = new(function() {
     }();
 
 })();
+
+//@private Alias for backwards compatibility
+if (!Ext.util) {
+    Ext.util = {};
+}
+Ext.util.JSON = Ext.JSON;
+
 /**
  * Shorthand for {@link Ext.JSON#encode}.
  * @member Ext
@@ -9033,7 +9037,7 @@ var noArgs = [],
  *
  * [getting_started]: #!/guide/getting_started
  */
-Ext.setVersion('touch', '2.3.1');
+Ext.setVersion('touch', '2.4.1.527');
 
 Ext.apply(Ext, {
     /**
@@ -9294,11 +9298,6 @@ Ext.apply(Ext, {
             elementSize: {
                 xclass: 'Ext.event.publisher.ElementSize'
             }
-            //<feature charts>
-            ,seriesItemEvents: {
-                xclass: 'Ext.chart.series.ItemPublisher'
-            }
-            //</feature>
         },
 
         //<feature logger>
@@ -9673,7 +9672,7 @@ Ext.apply(Ext, {
             addMeta('viewport', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0');
         }
         else {
-            addMeta('viewport', 'initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0');
+            addMeta('viewport', 'initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, minimum-ui');
         }
         addMeta('apple-mobile-web-app-capable', 'yes');
         addMeta('apple-touch-fullscreen', 'yes');
@@ -10661,6 +10660,10 @@ Ext.define('Ext.env.Browser', {
             browserVersion = new Ext.Version(browserMatch[1]);
         }
 
+        if(browserName === 'Safari' && userAgent.match(/BB10/)) {
+            browserName = 'BlackBerry';
+        }
+
         Ext.apply(this, {
             engineName: engineName,
             engineVersion: engineVersion,
@@ -10711,6 +10714,10 @@ Ext.define('Ext.env.Browser', {
         else if (!!window.isNK) {
             isWebView = true;
             this.setFlag('Sencha');
+        }
+
+        if (/(Glass)/i.test(userAgent)) {
+            this.setFlag('GoogleGlass');
         }
 
         // Check if running in UIWebView
@@ -11378,7 +11385,14 @@ Ext.define('Ext.env.Feature', {
         },
 
         CssTransformNoPrefix: function() {
-            return this.isStyleSupportedWithoutPrefix('transform');
+            // This extra check is needed to get around a browser bug where both 'transform' and '-webkit-transform' are present
+            // but the device really only uses '-webkit-transform'. This is seen on the HTC One for example.
+            // https://sencha.jira.com/browse/TOUCH-5029
+            if(!Ext.browser.is.AndroidStock) {
+                return this.isStyleSupportedWithoutPrefix('transform')
+            } else {
+                return this.isStyleSupportedWithoutPrefix('transform') && !this.isStyleSupportedWithoutPrefix('-webkit-transform');
+            }
         },
 
         Css3dTransforms: function() {
@@ -11630,6 +11644,7 @@ Ext.define('Ext.dom.Query', {
 /**
  * @class Ext.DomHelper
  * @alternateClassName Ext.dom.Helper
+ * @singleton
  *
  * The DomHelper class provides a layer of abstraction from DOM and transparently supports creating elements via DOM or
  * using HTML fragments. It also has the ability to create HTML fragment templates from your DOM building code.
@@ -15132,6 +15147,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.Template": [],
   "Ext.Title": [],
   "Ext.TitleBar": [],
+  "Ext.Toast": [],
   "Ext.Toolbar": [],
   "Ext.Video": [],
   "Ext.XTemplate": [],
@@ -15156,68 +15172,6 @@ Ext.ClassManager.addNameAlternateMappings({
   ],
   "Ext.carousel.Infinite": [],
   "Ext.carousel.Item": [],
-  "Ext.chart.AbstractChart": [],
-  "Ext.chart.CartesianChart": [
-    "Ext.chart.Chart"
-  ],
-  "Ext.chart.Legend": [],
-  "Ext.chart.MarkerHolder": [],
-  "Ext.chart.Markers": [],
-  "Ext.chart.PolarChart": [],
-  "Ext.chart.SpaceFillingChart": [],
-  "Ext.chart.axis.Axis": [],
-  "Ext.chart.axis.Category": [],
-  "Ext.chart.axis.Numeric": [],
-  "Ext.chart.axis.Time": [],
-  "Ext.chart.axis.layout.CombineDuplicate": [],
-  "Ext.chart.axis.layout.Continuous": [],
-  "Ext.chart.axis.layout.Discrete": [],
-  "Ext.chart.axis.layout.Layout": [],
-  "Ext.chart.axis.segmenter.Names": [],
-  "Ext.chart.axis.segmenter.Numeric": [],
-  "Ext.chart.axis.segmenter.Segmenter": [],
-  "Ext.chart.axis.segmenter.Time": [],
-  "Ext.chart.axis.sprite.Axis": [],
-  "Ext.chart.grid.CircularGrid": [],
-  "Ext.chart.grid.HorizontalGrid": [],
-  "Ext.chart.grid.RadialGrid": [],
-  "Ext.chart.grid.VerticalGrid": [],
-  "Ext.chart.interactions.Abstract": [],
-  "Ext.chart.interactions.CrossZoom": [],
-  "Ext.chart.interactions.Crosshair": [],
-  "Ext.chart.interactions.ItemHighlight": [],
-  "Ext.chart.interactions.ItemInfo": [],
-  "Ext.chart.interactions.PanZoom": [],
-  "Ext.chart.interactions.Rotate": [],
-  "Ext.chart.interactions.RotatePie3D": [],
-  "Ext.chart.label.Callout": [],
-  "Ext.chart.label.Label": [],
-  "Ext.chart.series.Area": [],
-  "Ext.chart.series.Bar": [],
-  "Ext.chart.series.CandleStick": [],
-  "Ext.chart.series.Cartesian": [],
-  "Ext.chart.series.Gauge": [],
-  "Ext.chart.series.ItemPublisher": [],
-  "Ext.chart.series.Line": [],
-  "Ext.chart.series.Pie": [],
-  "Ext.chart.series.Pie3D": [],
-  "Ext.chart.series.Polar": [],
-  "Ext.chart.series.Radar": [],
-  "Ext.chart.series.Scatter": [],
-  "Ext.chart.series.Series": [],
-  "Ext.chart.series.StackedCartesian": [],
-  "Ext.chart.series.sprite.Aggregative": [],
-  "Ext.chart.series.sprite.Area": [],
-  "Ext.chart.series.sprite.Bar": [],
-  "Ext.chart.series.sprite.CandleStick": [],
-  "Ext.chart.series.sprite.Cartesian": [],
-  "Ext.chart.series.sprite.Line": [],
-  "Ext.chart.series.sprite.Pie3DPart": [],
-  "Ext.chart.series.sprite.PieSlice": [],
-  "Ext.chart.series.sprite.Polar": [],
-  "Ext.chart.series.sprite.Radar": [],
-  "Ext.chart.series.sprite.Scatter": [],
-  "Ext.chart.series.sprite.StackedCartesian": [],
   "Ext.data.ArrayStore": [],
   "Ext.data.Batch": [],
   "Ext.data.Connection": [],
@@ -15495,48 +15449,6 @@ Ext.ClassManager.addNameAlternateMappings({
   "Ext.dom.CompositeElement": [
     "Ext.CompositeElement"
   ],
-  "Ext.draw.Animator": [],
-  "Ext.draw.Color": [],
-  "Ext.draw.Component": [],
-  "Ext.draw.Draw": [],
-  "Ext.draw.Group": [],
-  "Ext.draw.LimitedCache": [],
-  "Ext.draw.Matrix": [],
-  "Ext.draw.Path": [],
-  "Ext.draw.SegmentTree": [],
-  "Ext.draw.Solver": [],
-  "Ext.draw.Surface": [],
-  "Ext.draw.TextMeasurer": [],
-  "Ext.draw.TimingFunctions": [],
-  "Ext.draw.engine.Canvas": [],
-  "Ext.draw.engine.Svg": [],
-  "Ext.draw.engine.SvgContext": [],
-  "Ext.draw.engine.SvgContext.Gradient": [],
-  "Ext.draw.engine.SvgExporter": [],
-  "Ext.draw.gradient.Gradient": [],
-  "Ext.draw.gradient.Linear": [],
-  "Ext.draw.gradient.Radial": [],
-  "Ext.draw.modifier.Animation": [],
-  "Ext.draw.modifier.Highlight": [],
-  "Ext.draw.modifier.Modifier": [],
-  "Ext.draw.modifier.Target": [],
-  "Ext.draw.sprite.AnimationParser": [],
-  "Ext.draw.sprite.Arc": [],
-  "Ext.draw.sprite.AttributeDefinition": [],
-  "Ext.draw.sprite.AttributeParser": [],
-  "Ext.draw.sprite.Circle": [],
-  "Ext.draw.sprite.Composite": [],
-  "Ext.draw.sprite.Ellipse": [],
-  "Ext.draw.sprite.EllipticalArc": [],
-  "Ext.draw.sprite.GradientDefinition": [],
-  "Ext.draw.sprite.Image": [],
-  "Ext.draw.sprite.Instancing": [],
-  "Ext.draw.sprite.Line": [],
-  "Ext.draw.sprite.Path": [],
-  "Ext.draw.sprite.Rect": [],
-  "Ext.draw.sprite.Sector": [],
-  "Ext.draw.sprite.Sprite": [],
-  "Ext.draw.sprite.Text": [],
   "Ext.event.Controller": [],
   "Ext.event.Dispatcher": [],
   "Ext.event.Dom": [],
@@ -15896,6 +15808,7 @@ Ext.ClassManager.addNameAliasMappings({
   "Ext.TitleBar": [
     "widget.titlebar"
   ],
+  "Ext.Toast": [],
   "Ext.Toolbar": [
     "widget.toolbar"
   ],
@@ -15924,153 +15837,6 @@ Ext.ClassManager.addNameAliasMappings({
   ],
   "Ext.carousel.Infinite": [],
   "Ext.carousel.Item": [],
-  "Ext.chart.AbstractChart": [],
-  "Ext.chart.CartesianChart": [
-    "Ext.chart.Chart",
-    "widget.chart"
-  ],
-  "Ext.chart.Legend": [
-    "widget.legend"
-  ],
-  "Ext.chart.MarkerHolder": [],
-  "Ext.chart.Markers": [],
-  "Ext.chart.PolarChart": [
-    "widget.polar"
-  ],
-  "Ext.chart.SpaceFillingChart": [
-    "widget.spacefilling"
-  ],
-  "Ext.chart.axis.Axis": [
-    "widget.axis"
-  ],
-  "Ext.chart.axis.Category": [
-    "axis.category"
-  ],
-  "Ext.chart.axis.Numeric": [
-    "axis.numeric"
-  ],
-  "Ext.chart.axis.Time": [
-    "axis.time"
-  ],
-  "Ext.chart.axis.layout.CombineDuplicate": [
-    "axisLayout.combineDuplicate"
-  ],
-  "Ext.chart.axis.layout.Continuous": [
-    "axisLayout.continuous"
-  ],
-  "Ext.chart.axis.layout.Discrete": [
-    "axisLayout.discrete"
-  ],
-  "Ext.chart.axis.layout.Layout": [],
-  "Ext.chart.axis.segmenter.Names": [
-    "segmenter.names"
-  ],
-  "Ext.chart.axis.segmenter.Numeric": [
-    "segmenter.numeric"
-  ],
-  "Ext.chart.axis.segmenter.Segmenter": [],
-  "Ext.chart.axis.segmenter.Time": [
-    "segmenter.time"
-  ],
-  "Ext.chart.axis.sprite.Axis": [],
-  "Ext.chart.grid.CircularGrid": [
-    "grid.circular"
-  ],
-  "Ext.chart.grid.HorizontalGrid": [
-    "grid.horizontal"
-  ],
-  "Ext.chart.grid.RadialGrid": [
-    "grid.radial"
-  ],
-  "Ext.chart.grid.VerticalGrid": [
-    "grid.vertical"
-  ],
-  "Ext.chart.interactions.Abstract": [
-    "widget.interaction"
-  ],
-  "Ext.chart.interactions.CrossZoom": [
-    "interaction.crosszoom"
-  ],
-  "Ext.chart.interactions.Crosshair": [
-    "interaction.crosshair"
-  ],
-  "Ext.chart.interactions.ItemHighlight": [
-    "interaction.itemhighlight"
-  ],
-  "Ext.chart.interactions.ItemInfo": [
-    "interaction.iteminfo"
-  ],
-  "Ext.chart.interactions.PanZoom": [
-    "interaction.panzoom"
-  ],
-  "Ext.chart.interactions.Rotate": [
-    "interaction.rotate"
-  ],
-  "Ext.chart.interactions.RotatePie3D": [
-    "interaction.rotatePie3d"
-  ],
-  "Ext.chart.label.Callout": [],
-  "Ext.chart.label.Label": [],
-  "Ext.chart.series.Area": [
-    "series.area"
-  ],
-  "Ext.chart.series.Bar": [
-    "series.bar"
-  ],
-  "Ext.chart.series.CandleStick": [
-    "series.candlestick"
-  ],
-  "Ext.chart.series.Cartesian": [],
-  "Ext.chart.series.Gauge": [
-    "series.gauge"
-  ],
-  "Ext.chart.series.ItemPublisher": [],
-  "Ext.chart.series.Line": [
-    "series.line"
-  ],
-  "Ext.chart.series.Pie": [
-    "series.pie"
-  ],
-  "Ext.chart.series.Pie3D": [
-    "series.pie3d"
-  ],
-  "Ext.chart.series.Polar": [],
-  "Ext.chart.series.Radar": [
-    "series.radar"
-  ],
-  "Ext.chart.series.Scatter": [
-    "series.scatter"
-  ],
-  "Ext.chart.series.Series": [],
-  "Ext.chart.series.StackedCartesian": [],
-  "Ext.chart.series.sprite.Aggregative": [],
-  "Ext.chart.series.sprite.Area": [
-    "sprite.areaSeries"
-  ],
-  "Ext.chart.series.sprite.Bar": [
-    "sprite.barSeries"
-  ],
-  "Ext.chart.series.sprite.CandleStick": [
-    "sprite.candlestickSeries"
-  ],
-  "Ext.chart.series.sprite.Cartesian": [],
-  "Ext.chart.series.sprite.Line": [
-    "sprite.lineSeries"
-  ],
-  "Ext.chart.series.sprite.Pie3DPart": [
-    "sprite.pie3dPart"
-  ],
-  "Ext.chart.series.sprite.PieSlice": [
-    "sprite.pieslice"
-  ],
-  "Ext.chart.series.sprite.Polar": [],
-  "Ext.chart.series.sprite.Radar": [
-    "sprite.radar"
-  ],
-  "Ext.chart.series.sprite.Scatter": [
-    "sprite.scatterSeries"
-  ],
-  "Ext.chart.series.sprite.StackedCartesian": [],
   "Ext.data.ArrayStore": [
     "store.array"
   ],
@@ -16330,84 +16096,6 @@ Ext.ClassManager.addNameAliasMappings({
     "direct.transaction"
   ],
   "Ext.dom.CompositeElement": [],
-  "Ext.draw.Animator": [],
-  "Ext.draw.Color": [],
-  "Ext.draw.Component": [
-    "widget.draw"
-  ],
-  "Ext.draw.Draw": [],
-  "Ext.draw.Group": [],
-  "Ext.draw.LimitedCache": [],
-  "Ext.draw.Matrix": [],
-  "Ext.draw.Path": [],
-  "Ext.draw.SegmentTree": [],
-  "Ext.draw.Solver": [],
-  "Ext.draw.Surface": [
-    "widget.surface"
-  ],
-  "Ext.draw.TextMeasurer": [],
-  "Ext.draw.TimingFunctions": [],
-  "Ext.draw.engine.Canvas": [],
-  "Ext.draw.engine.Svg": [],
-  "Ext.draw.engine.SvgContext": [],
-  "Ext.draw.engine.SvgContext.Gradient": [],
-  "Ext.draw.engine.SvgExporter": [],
-  "Ext.draw.gradient.Gradient": [],
-  "Ext.draw.gradient.Linear": [],
-  "Ext.draw.gradient.Radial": [],
-  "Ext.draw.modifier.Animation": [
-    "modifier.animation"
-  ],
-  "Ext.draw.modifier.Highlight": [
-    "modifier.highlight"
-  ],
-  "Ext.draw.modifier.Modifier": [],
-  "Ext.draw.modifier.Target": [
-    "modifier.target"
-  ],
-  "Ext.draw.sprite.AnimationParser": [],
-  "Ext.draw.sprite.Arc": [
-    "sprite.arc"
-  ],
-  "Ext.draw.sprite.AttributeDefinition": [],
-  "Ext.draw.sprite.AttributeParser": [],
-  "Ext.draw.sprite.Circle": [
-    "sprite.circle"
-  ],
-  "Ext.draw.sprite.Composite": [
-    "sprite.composite"
-  ],
-  "Ext.draw.sprite.Ellipse": [
-    "sprite.ellipse"
-  ],
-  "Ext.draw.sprite.EllipticalArc": [
-    "sprite.ellipticalArc"
-  ],
-  "Ext.draw.sprite.GradientDefinition": [],
-  "Ext.draw.sprite.Image": [
-    "sprite.image"
-  ],
-  "Ext.draw.sprite.Instancing": [
-    "sprite.instancing"
-  ],
-  "Ext.draw.sprite.Line": [
-    "sprite.line"
-  ],
-  "Ext.draw.sprite.Path": [
-    "sprite.path"
-  ],
-  "Ext.draw.sprite.Rect": [
-    "sprite.rect"
-  ],
-  "Ext.draw.sprite.Sector": [
-    "sprite.sector"
-  ],
-  "Ext.draw.sprite.Sprite": [
-    "sprite.sprite"
-  ],
-  "Ext.draw.sprite.Text": [
-    "sprite.text"
-  ],
   "Ext.event.Controller": [],
   "Ext.event.Dispatcher": [],
   "Ext.event.Dom": [],

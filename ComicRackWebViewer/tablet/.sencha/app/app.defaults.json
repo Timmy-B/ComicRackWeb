@@ -152,7 +152,10 @@
      *
      */
     "output": {
-        "base": "${workspace.build.dir}/${build.environment}/${app.name}"
+        "base": "${workspace.build.dir}/${build.environment}/${app.name}",
+        "microloader": {
+            "enable": true
+        }
     },
 
     /**
@@ -202,7 +205,8 @@
         "js": [
             {
                 "path": "cordova.js",
-                "remote": true
+                "remote": true,
+                "priority": 1000
             }
         ],
         "microloader": "${app.config.dir}/microloader/testing.js",
@@ -265,7 +269,8 @@
         "js": [
             {
                 "path": "phonegap.js",
-                "remote": true
+                "remote": true,
+                "priority": 1000
             }
         ],
         "microloader": "${app.config.dir}/microloader/testing.js",
