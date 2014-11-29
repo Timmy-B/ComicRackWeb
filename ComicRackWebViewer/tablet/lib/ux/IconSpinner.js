@@ -13,9 +13,23 @@ Ext.define('Ext.ux.IconSpinner', {
     'Ext.field.Spinner'
   ],
   config: {
-    iconPlus: 'resources/images/spinner-plus.png',
-    iconMinus: 'resources/images/spinner-minus.png'
-  },    
+    iconPlusDisabled: 'resources/images/spinner-plus.png',
+    iconMinusDisabled: 'resources/images/spinner-minus.png',
+    iconPlusEnabled: 'resources/images/spinner-plus-color.png',
+    iconMinusEnabled: 'resources/images/spinner-minus-color.png',
+  },
+
+  initialize: function()
+  {
+    this.on('disabledchange', this.onDisabledChange);
+  },
+  
+  onDisabledChange: function( spinner, value, oldValue, eOpts )
+  {
+    var me = this;
+    me.spinDownButton.setHtml('<img class="icon-spinner-button" src="' + me.getImageMinus() + '"/>');
+    me.spinUpButton.setHtml('<img class="icon-spinner-button" src="' + me.getImagePlus() + '"/>');
+  },
 
   updateComponent: function (newComponent) {
         this.callParent(arguments);
@@ -26,16 +40,25 @@ Ext.define('Ext.ux.IconSpinner', {
         if (newComponent) {
             this.spinDownButton = Ext.Element.create({
                 cls: 'minusButton',
-                html: '<img class="icon-spinner-button" src="' + this.getIconMinus() + '"/>'
+                html: '<img class="icon-spinner-button" src="' + this.getImageMinus() + '"/>'
             });
 
             this.spinUpButton = Ext.Element.create({
                 cls:'plusButton',
-                html: '<img class="icon-spinner-button" src="' + this.getIconPlus() + '"/>'
+                html: '<img class="icon-spinner-button" src="' + this.getImagePlus() + '"/>'
             });
 
             this.downRepeater = this.createRepeater(this.spinDownButton, this.onSpinDown);
             this.upRepeater = this.createRepeater(this.spinUpButton, this.onSpinUp);
         }
-    }
+  },
+
+  getImageMinus: function ()
+  {
+    return this.isDisabled() ? this.getIconMinusDisabled() : this.getIconMinusEnabled();
+  },
+  getImagePlus: function () {
+    return this.isDisabled() ? this.getIconPlusDisabled() : this.getIconPlusEnabled();
+  }
+
 });
