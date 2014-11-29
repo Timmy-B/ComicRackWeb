@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
-	
+  
 /*
  * This class is a slighty modified copy of the Nancy.Hosting.Self.NancyHost.
  * The main difference is that this class allows for the http://+:port/ and http://*:port/ HTTPListener prefixes.
