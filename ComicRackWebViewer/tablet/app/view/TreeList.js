@@ -62,7 +62,6 @@ Ext.define('Comic.view.TreeList', {
       toolbar: {
         docked: "top", 
         xtype: "titlebar", 
-        //ui: "light", 
         inline: true, 
         items: [ 
           {
@@ -77,10 +76,8 @@ Ext.define('Comic.view.TreeList', {
       displayField: 'Name',
       store: 'TreeList',
       onItemDisclosure: false,
-      //baseCls: 'filesystem',
+      baseCls: 'filesystem',
       //itemCls: 'filesystem',
-      //itemHeight: 100,
-      
       
       listConfig : {
         xtype: 'list',
@@ -89,19 +86,19 @@ Ext.define('Comic.view.TreeList', {
         //itemHeight: 47,
         variableHeights: true,
         //cls: 'filesystem-list',
-        //baseCls: 'filesystem-list',
+        baseCls: 'filesystem-list',
         //itemCls: 'filesystem-list-item',
                 
-        plugins: [
-          {
-              xclass: 'Ext.plugin.PullRefresh',
-              itemId: 'pullrefresh',
-              pullText: 'Pull down to refresh...',
-              refreshFn: function(plugin) {
-                    plugin.fireEvent('refresh', plugin);
-                }
-          }
-        ]
+        //plugins: [
+        //  {
+        //      xclass: 'Ext.plugin.PullRefresh',
+        //      itemId: 'pullrefresh',
+        //      pullText: 'Pull down to refresh...',
+        //      refreshFn: function(plugin) {
+        //            plugin.fireEvent('refresh', plugin);
+        //        }
+        //  }
+        //]
         
       }
       

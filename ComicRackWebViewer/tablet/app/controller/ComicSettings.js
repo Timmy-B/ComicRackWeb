@@ -38,7 +38,7 @@ Ext.define('Comic.controller.ComicSettings', {
           usePageChangeArea: 'comicsettingsview [name=use_page_change_area]',
           pageChangeAreaWidth: 'comicsettingsview [name=page_change_area_width]',
           openNextComic: 'comicsettingsview [name=open_next_comic]',
-          openCurrentComicAtLaunch: 'comicsettingsview [name=open_current_comic_at_launch]',
+          //openCurrentComicAtLaunch: 'comicsettingsview [name=open_current_comic_at_launch]',
           pageFitMode: 'comicsettingsview [name=page_fit_mode]'
         },
         

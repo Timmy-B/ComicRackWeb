@@ -103,7 +103,7 @@ Ext.define('Comic.controller.Series', {
         {
           callback: function(records, operation, success) 
           {
-            titlebar.setTitle('Series [#: ' + store.getTotalCount() + ']');
+            titlebar.setTitle('Series [' + store.getTotalCount() + ' Comics]');
           },
           scope: me
         }

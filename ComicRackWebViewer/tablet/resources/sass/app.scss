@@ -1,10 +1,45 @@
 // The following two lines import the default Sencha Touch theme. If you are building
 // a new theme, remove them and the add your own CSS on top of the base CSS (which
 // is already included in your app.json file).
-@import 'sencha-touch/default';
-@import 'sencha-touch/default/all';
+//@import 'sencha-touch/default';
+//@import 'sencha-touch/default/all';
 
 // Custom code goes here..
 
 // Examples of using the icon mixin:
 // @include icon('user');
+
+$body-bg-color: #000; 
+$base-color:#333; 
+$base-gradient: 'matte'; 
+$active-color: rgba(247, 193, 61, 1);
+$tabs-dark-active-color: #f7c13d; 
+$tabs-light-active:#f7c13d;
+$tabs-dark:#f7c13d; 
+$tabs-light-active:#f7c13d;
+$tabs-light:#f7c13d; 
+$tabs-dark: #f7c13d; 
+$tabs-light: #555;
+$tabs-bottom-radius: .4em; 
+$tabs-bottom-gradient: 'bevel';
+$tabs-bar-gradient: 'matte'; 
+$tabs-bottom-active-gradient:'recessed'; 
+$toolbar-gradient: 'glossy'; 
+//$list-color: #FFF !default;
+
+
+@import 'sencha-touch/default';
+@import 'sencha-touch/default/all';
+
+.x-toolbar .x-toolbar-title { 
+    color: saturate(lighten($active-color, 10%), 20%); 
+}
+.x-tabbar.x-docked-bottom .x-tab { 
+    .x-tab-active {
+        -webkit-box-shadow: inset rgba(#000, .8) 0 0 5px !important; 
+    } 
+} 
+
+/*.x-list .x-list-item.x-item-selected .x-dock-horizontal, .x-list .x-list-item.x-item-selected.x-list-item-tpl { 
+    color: #FFF;
+}*/

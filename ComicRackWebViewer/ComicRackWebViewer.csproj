@@ -24,7 +24,6 @@
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
     <RunCodeAnalysis>False</RunCodeAnalysis>
     <RunSourceAnalysis>False</RunSourceAnalysis>
-    <NoWin32Manifest>False</NoWin32Manifest>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -66,6 +65,7 @@
     <StartProgram>bin\Debug\ComicRack.exe</StartProgram>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
   </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="ComboTreeControls">
       <HintPath>components\ComboTreeControls.dll</HintPath>
@@ -170,6 +170,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="postbuild.bat" />
     <None Include="Program.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -186,14 +187,18 @@
     <None Include="tablet\app\controller\ComicSettings.js" />
     <None Include="tablet\app\controller\FileSystem.js" />
     <None Include="tablet\app\controller\Main.js" />
+    <None Include="tablet\app\controller\Readme.md" />
     <None Include="tablet\app\controller\Search.js" />
     <None Include="tablet\app\controller\Series.js" />
     <None Include="tablet\app\controller\TreeList.js" />
+    <None Include="tablet\app\form\Readme.md" />
     <None Include="tablet\app\model\ComicInfo.js" />
     <None Include="tablet\app\model\File.js" />
     <None Include="tablet\app\model\List.js" />
+    <None Include="tablet\app\model\Readme.md" />
     <None Include="tablet\app\model\Series.js" />
     <None Include="tablet\app\NestedListFix.js" />
+    <None Include="tablet\app\Readme.md" />
     <None Include="tablet\app\RemoteApi.js" />
     <None Include="tablet\app\RestODataProxy.js" />
     <None Include="tablet\app\scrollerfix.js" />
@@ -202,6 +207,7 @@
     <None Include="tablet\app\store\ComicList.js" />
     <None Include="tablet\app\store\FileSystem.js" />
     <None Include="tablet\app\store\List.js" />
+    <None Include="tablet\app\store\Readme.md" />
     <None Include="tablet\app\store\Series.js" />
     <None Include="tablet\app\store\TreeList.js" />
     <None Include="tablet\app\view\About.js" />
@@ -216,18 +222,17 @@
     <None Include="tablet\app\view\Login.js" />
     <None Include="tablet\app\view\Logout.js" />
     <None Include="tablet\app\view\Main.js" />
+    <None Include="tablet\app\view\Readme.md" />
     <None Include="tablet\app\view\Search.js" />
     <None Include="tablet\app\view\Series.js" />
     <None Include="tablet\app\view\SplitView.js" />
     <None Include="tablet\app\view\TabPanel.js" />
     <None Include="tablet\app\view\TreeList.js" />
     <None Include="tablet\bootstrap.js" />
-    <None Include="tablet\BUILD.txt" />
+    <None Include="tablet\bootstrap.json" />
     <None Include="tablet\build.xml" />
     <None Include="tablet\build_package.bat" />
-    <None Include="tablet\build_production.bat" />
     <None Include="tablet\COPYING" />
-    <None Include="tablet\copyright-notice.txt" />
     <None Include="tablet\CREDITS.txt" />
     <None Include="tablet\index.html" />
     <None Include="tablet\lib\add2home\add2home.css" />
@@ -238,15 +243,12 @@
     <None Include="tablet\lib\strnatcasecmp.js" />
     <None Include="tablet\lib\strncmp.js" />
     <None Include="tablet\lib\ux\BufferedList.js" />
-    <None Include="tablet\lib\ux\BufferedList.js.jepp" />
     <None Include="tablet\lib\ux\cover.css" />
     <None Include="tablet\lib\ux\Cover.js" />
     <None Include="tablet\lib\ux\IconSpinner.css" />
     <None Include="tablet\lib\ux\IconSpinner.js" />
     <None Include="tablet\lib\ux\IOS5Toggle.css" />
     <None Include="tablet\lib\ux\IOS5Toggle.js" />
-    <None Include="tablet\lib\ux\LoadingIndicator.js" />
-    <None Include="tablet\lib\ux\LoadingIndicator2.js" />
     <None Include="tablet\lib\ux\OData.js" />
     <None Include="tablet\lib\ux\ODataProxy.js" />
     <None Include="tablet\LICENSE.txt" />
@@ -254,7 +256,6 @@
     <None Include="tablet\README" />
     <None Include="tablet\resources\css\app.css" />
     <None Include="tablet\resources\css\comic.css" />
-    <None Include="tablet\resources\css\users.css" />
     <None Include="tablet\resources\icons\bcr_icon_114.png" />
     <None Include="tablet\resources\icons\bcr_icon_144.png" />
     <None Include="tablet\resources\icons\bcr_icon_57.png" />
@@ -270,8 +271,6 @@
     <None Include="tablet\resources\images\ajax-loader2.gif" />
     <None Include="tablet\resources\images\arrow_left.png" />
     <None Include="tablet\resources\images\arrow_right.png" />
-    <None Include="tablet\resources\images\background_1.jpg" />
-    <None Include="tablet\resources\images\background_2.jpg" />
     <None Include="tablet\resources\images\ComicIdListItem.png" />
     <None Include="tablet\resources\images\ComicLibraryListItem.png" />
     <None Include="tablet\resources\images\ComicListItemFolder.png" />
@@ -384,7 +383,17 @@
     <None Include="tablet\resources\sass\.sass-cache\e55e85826961a0468394eae53db23aedfeaca582\app.scssc" />
     <None Include="tablet\resources\sass\app.scss" />
     <None Include="tablet\resources\sass\config.rb" />
-    <None Include="tablet\resources\sass\make app_css.bat" />
+    <None Include="tablet\resources\sass\stylesheets\fonts\ios7\ios7.eot" />
+    <None Include="tablet\resources\sass\stylesheets\fonts\ios7\ios7.ttf" />
+    <None Include="tablet\resources\sass\stylesheets\fonts\ios7\ios7.woff" />
+    <None Include="tablet\resources\sass\stylesheets\fonts\pictos\pictos-web.eot" />
+    <None Include="tablet\resources\sass\stylesheets\fonts\pictos\pictos-web.ttf" />
+    <None Include="tablet\resources\sass\stylesheets\fonts\pictos\pictos-web.woff" />
+    <None Include="tablet\resources\sass\stylesheets\fonts\tizen\tizen-icon.eot" />
+    <None Include="tablet\resources\sass\stylesheets\fonts\tizen\tizen-icon.ttf" />
+    <None Include="tablet\resources\sass\stylesheets\fonts\tizen\tizen-icon.woff" />
+    <None Include="tablet\resources\sass\stylesheets\fonts\tizen\TizenSansMedium.ttf" />
+    <None Include="tablet\resources\sass\stylesheets\fonts\tizen\TizenSansRegular.ttf" />
     <None Include="tablet\resources\startup\1496x2048.jpg" />
     <None Include="tablet\resources\startup\1496x2048.png" />
     <None Include="tablet\resources\startup\1536x2008.jpg" />
@@ -396,8 +405,6 @@
     <None Include="tablet\resources\startup\748x1024.png" />
     <None Include="tablet\resources\startup\768x1004.jpg" />
     <None Include="tablet\resources\startup\768x1004.png" />
-    <None Include="tablet\ROADMAP.txt" />
-    <None Include="tablet\TODO.txt" />
     <None Include="tablet\touch\build.xml" />
     <None Include="tablet\touch\cmd\sencha.cfg" />
     <None Include="tablet\touch\file-header.txt" />
@@ -1533,6 +1540,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="tablet\app\profile\" />
+    <Folder Include="tablet\packages\" />
     <Folder Include="tablet\touch\resources\icons\" />
   </ItemGroup>
   <ItemGroup>
@@ -1541,10 +1549,20 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="badaap_background.png" />
+    <Content Include="tablet\resources\images\background-darkgray-noise.png" />
+    <Content Include="tablet\resources\images\background-lightgray-noise.png" />
+    <Content Include="tablet\resources\sass\stylesheets\fonts\ios7\ios7.svg" />
+    <Content Include="tablet\resources\sass\stylesheets\fonts\pictos\pictos-web.svg" />
+    <Content Include="tablet\resources\sass\stylesheets\fonts\tizen\tizen-icon.svg" />
+    <None Include="tablet\app\view\ComicListSettings.js" />
     <None Include="badaap_packagelogo_64.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="tablet\app\controller\ComicListSettings.js" />
+    <Content Include="tablet\app\controller\Login.js" />
     <Content Include="tablet\app\model\OrderSettings.js" />
+    <Content Include="tablet\app\plugin\DataViewPaging.js" />
     <Content Include="tablet\app\ScrollToTopOnRefreshFix.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -37,6 +37,33 @@ Ext.Loader.setConfig({
 });
 
 
+var EnumOrderBy = {
+  NONE: 0,
+  CAPTION: 1,
+  SERIES: 2,
+  VOLUME: 3,
+  TITLE: 4,
+  NUMBER: 5,
+  YEAR: 6,
+  FILE: 7,
+  LAST_OPENED: 8,
+  PUBLISH_DATE: 9
+};
+
+var EnumDirection = {
+  ASCENDING: 0,
+  DESCENDING: 1
+};
+
+var EnumComicListLayout = {
+  LIST_SMALL: 0,
+  LIST_MEDIUM: 1,
+  LIST_LARGE: 2,
+  GRID_SMALL: 3,
+  GRID_MEDIUM: 4,
+  GRID_LARGE: 5
+};
+
 // Simple remote logging without AJAX.
 function RemoteLog(severity, message) 
 {
@@ -103,6 +130,7 @@ Ext.application({
       'Comic',
       'ComicInfo',
       'ComicSettings',
+      'ComicListSettings',
       'Series',
       'Search'
     ],

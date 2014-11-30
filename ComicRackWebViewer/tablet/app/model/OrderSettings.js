@@ -20,7 +20,7 @@
 Ext.define('Comic.model.OrderSettings', {
     extend: 'Ext.data.Model',
     config: {
-        fields: ['id', 'user', 'orderby_1', 'direction_1', 'orderby_2', 'direction_2'],
+        fields: ['id', 'user', 'orderby_1', 'direction_1', 'orderby_2', 'direction_2', 'layout'],
         proxy: {
             type: 'localstorage',
             id  : 'bcr-OrderSettings'

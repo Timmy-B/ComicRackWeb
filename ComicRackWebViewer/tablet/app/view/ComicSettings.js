@@ -21,7 +21,6 @@ Ext.define('Comic.view.ComicSettings', {
   extend: 'Ext.form.Panel',
   xtype: 'comicsettingsview',
   requires: [
-    //'Ext.ux.IOS5Toggle',
     'Ext.ux.IconSpinner',
     'Ext.field.Select'
   ],
@@ -30,38 +29,28 @@ Ext.define('Comic.view.ComicSettings', {
     hideOnMaskTap: true,
     modal: true,
     padding: '0 10 10 10',
-    /*
-    showAnimation: {
-        type: 'popIn',
-        duration: 250,
-        easing: 'ease-out'
-    },
-    hideAnimation: {
-        type: 'popOut',
-        duration: 250,
-        easing: 'ease-out'
-    },
-    */
-    width: Ext.os.deviceType == 'Phone' ? 260 : 600,
-    height: Ext.os.deviceType == 'Phone' ? 220 : 500,    
+
+    width: '90%',
+    height: '90%',
     items: [
       {
         xtype: 'fieldset',
         title: 'Interface Settings',
         items: [
-          {
-            xtype: 'checkboxfield',
-            label: 'Open current comic at app launch',
-            labelWidth: '60%',
-            name: 'open_current_comic_at_launch'
-          },
-          {
-            xtype: 'checkboxfield',
-            label: 'Open next comic on comic finish',
-            labelWidth: '60%',
-            name: 'open_next_comic',
-            disabled: true
-          },
+          //{
+          //  xtype: 'checkboxfield',
+          //  label: 'Open current comic at app launch',
+          //  labelWidth: '60%',
+          //  name: 'open_current_comic_at_launch',
+          //  disabled: true
+          //},
+          //{
+          //  xtype: 'checkboxfield',
+          //  label: 'Open next comic on comic finish',
+          //  labelWidth: '60%',
+          //  name: 'open_next_comic',
+          //  disabled: true
+          //},
           {
             xtype: 'selectfield',
             label: 'Page fit mode',
