@@ -18,12 +18,21 @@
 */  
 
 Ext.define('Comic.model.OrderSettings', {
-    extend: 'Ext.data.Model',
-    config: {
-        fields: ['id', 'user', 'orderby_1', 'direction_1', 'orderby_2', 'direction_2', 'layout'],
-        proxy: {
-            type: 'localstorage',
-            id  : 'bcr-OrderSettings'
-        }
+  extend: 'Ext.data.Model',
+  requires: ['Comic.Enums'],
+  config: {
+    fields: [
+        { name: 'user', type: 'string', defaultValue: '' },
+        { name: 'orderby_1', type: 'int', defaultValue: Comic.Enums.OrderBy.CAPTION },
+        { name: 'direction_1', type: 'int', defaultValue: Comic.Enums.Direction.ASCENDING },
+        { name: 'orderby_2', type: 'int', defaultValue: Comic.Enums.OrderBy.NONE },
+        { name: 'direction_2', type: 'int', defaultValue: Comic.Enums.Direction.ASCENDING },
+        { name: 'layout', type: 'int', defaultValue: Comic.Enums.ComicListLayout.GRID_MEDIUM },
+    ],
+    proxy: {
+        // IE is stupid, doesn't allow localstorage for local addresses......
+        type: Ext.browser.is.IE ? 'sessionstorage' : 'localstorage',
+        id  : 'bcr-OrderSettings'
     }
+  }
 });

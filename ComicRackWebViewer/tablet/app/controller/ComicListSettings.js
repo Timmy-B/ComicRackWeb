@@ -80,14 +80,11 @@ Ext.define('Comic.controller.ComicListSettings', {
       Comic.ordersettings.set('layout', values.layout);
 
       if (Comic.ordersettings.get('orderby_2') == Comic.ordersettings.get('orderby_1'))
-        Comic.ordersettings.set('orderby_2', EnumOrderBy.NONE);
+        Comic.ordersettings.set('orderby_2', Comic.Enums.OrderBy.NONE);
 
       Comic.ordersettings.save();
 
       var comiclistcontroller = me.getApplication().getController('ComicList');
       comiclistcontroller.onSettingsChanged();
-    },
-    
-    
-   
+    }
 });

@@ -1550,6 +1550,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="badaap_background.png" />
+    <None Include="tablet\app\Enums.js" />
     <Content Include="tablet\resources\images\background-darkgray-noise.png" />
     <Content Include="tablet\resources\images\background-lightgray-noise.png" />
     <Content Include="tablet\resources\sass\stylesheets\fonts\ios7\ios7.svg" />

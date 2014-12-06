@@ -24,7 +24,7 @@
   /*background: #FFF;*/
   background-image: url('../../resources/images/background-darkgray-noise.png');
   
-  text-shadow: 0 -1px 1px #145072;
+  text-shadow: 1px 1px 2px #202020;
 }
 
 /*.filesystem-list .x-list-item , .filesystem-list-item {*/
@@ -110,17 +110,6 @@
 
 .comiclist-item {
   font-size: 11px;
-    
-
-  /*
-  padding: 0.65em;
-  height: 85px;
-  margin: 0.4em;
-  */
-  /*
-  background: #EEE;
-  border: 1px solid #dedede;
-  */
 }
 
 
@@ -161,21 +150,18 @@
 
 
 .comiclist-item.layout-grid-small {
-  height: 96px;
   width: 80px;  
   color: white;
   text-shadow: 1px 1px 2px #202020;
 }
 
 .comiclist-item.layout-grid-medium {
-  height: 160px;
   width: 144px;  
   color: white;
   text-shadow: 1px 1px 2px #202020;
 }
 
 .comiclist-item.layout-grid-large {
-  height: 288px;
   width: 272px;  
   color: white;
   text-shadow: 1px 1px 2px #202020;
@@ -185,8 +171,8 @@
 
 .comiclist-item .cover {
   margin-bottom: 10px;
+  box-shadow: 3px 3px 5px #202020;
 }
-
 
 .comiclist-item.layout-list-small .cover {
   float: left;
@@ -208,15 +194,25 @@
 
 .comiclist-item.layout-grid-small .cover {
   height: 64px;
+  /*display: block;
+  margin-left: auto;
+  margin-right: auto;*/ 
 }
 
 .comiclist-item.layout-grid-medium .cover {
   height: 128px;
+  /*display: block;
+  margin-left: auto;
+  margin-right: auto;*/ 
+  
 }
 
 
 .comiclist-item.layout-grid-large .cover {
   height: 256px;
+  /*display: block;
+  margin-left: auto;
+  margin-right: auto;*/
 }
 
 /* CAPTION *****************************************************************/

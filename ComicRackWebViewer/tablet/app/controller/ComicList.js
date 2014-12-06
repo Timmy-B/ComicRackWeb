@@ -234,12 +234,7 @@ Ext.define('Comic.controller.ComicList', {
       {
         Comic.ordersettings = Ext.create('Comic.model.OrderSettings',
             {
-              user : apiToken.Username,
-              orderby_1: EnumOrderBy.CAPTION,// caption
-              direction_1: EnumDirection.ASCENDING, // ascending
-              orderby_2: EnumOrderBy.NONE, // none
-              direction_2: EnumDirection.ASCENDING, // ascending
-              layout: EnumComicListLayout.GRID_MEDIUM // grid medium
+              user: apiToken.Username
             });
         
         // Save to localStorage

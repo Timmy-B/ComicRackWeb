@@ -48,7 +48,7 @@ var LayoutFunctions = {
 
 var ComicListItemTemplates = [];
 
-ComicListItemTemplates[EnumComicListLayout.LIST_SMALL] = new Ext.XTemplate(
+ComicListItemTemplates[Comic.Enums.ComicListLayout.LIST_SMALL] = new Ext.XTemplate(
       '<div class="comiclist-item layout-list-small"><img height="64px" class="cover" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=64"/>\
       <span class="caption">{Caption}</span></br>\
       <span class="published">Published: {[LayoutFunctions.getPublishedDate(values)]}</span></br>\
@@ -62,7 +62,7 @@ ComicListItemTemplates[EnumComicListLayout.LIST_SMALL] = new Ext.XTemplate(
       }
     );
 
-ComicListItemTemplates[EnumComicListLayout.LIST_MEDIUM] = new Ext.XTemplate(
+ComicListItemTemplates[Comic.Enums.ComicListLayout.LIST_MEDIUM] = new Ext.XTemplate(
       '<div class="comiclist-item layout-list-medium"><img height="128px" class="cover" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=128"/>\
       <span class="caption">{Caption}</span></br>\
       <span class="published">Published: {[LayoutFunctions.getPublishedDate(values)]}</span></br>\
@@ -76,7 +76,7 @@ ComicListItemTemplates[EnumComicListLayout.LIST_MEDIUM] = new Ext.XTemplate(
       }
     );
 
-ComicListItemTemplates[EnumComicListLayout.LIST_LARGE] = new Ext.XTemplate(
+ComicListItemTemplates[Comic.Enums.ComicListLayout.LIST_LARGE] = new Ext.XTemplate(
       '<div class="comiclist-item layout-list-large"><img height="256px" class="cover" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=256"/>\
       <span class="caption">{Caption}</span></br>\
       <span class="published">Published: {[LayoutFunctions.getPublishedDate(values)]}</span></br>\
@@ -92,7 +92,7 @@ ComicListItemTemplates[EnumComicListLayout.LIST_LARGE] = new Ext.XTemplate(
 
 
 // Use one template instance for all list items instead of creating one for each list item separately.....
-ComicListItemTemplates[EnumComicListLayout.GRID_SMALL] = new Ext.XTemplate(
+ComicListItemTemplates[Comic.Enums.ComicListLayout.GRID_SMALL] = new Ext.XTemplate(
     '<div class="comiclist-item layout-grid-small">\
     <img class="cover" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=64"/></br>\
     <span class="caption">{Caption}</span></br>\
@@ -104,7 +104,7 @@ ComicListItemTemplates[EnumComicListLayout.GRID_SMALL] = new Ext.XTemplate(
     }
   );
 
-ComicListItemTemplates[EnumComicListLayout.GRID_MEDIUM] = new Ext.XTemplate(
+ComicListItemTemplates[Comic.Enums.ComicListLayout.GRID_MEDIUM] = new Ext.XTemplate(
     '<div class="comiclist-item layout-grid-medium">\
     <img class="cover" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=128"/></br>\
     <span class="caption">{Caption}</span></br>\
@@ -119,7 +119,7 @@ ComicListItemTemplates[EnumComicListLayout.GRID_MEDIUM] = new Ext.XTemplate(
     }
   );
 
-ComicListItemTemplates[EnumComicListLayout.GRID_LARGE] = new Ext.XTemplate(
+ComicListItemTemplates[Comic.Enums.ComicListLayout.GRID_LARGE] = new Ext.XTemplate(
     '<div class="comiclist-item layout-grid-large">\
     <img class="cover" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=256"/></br>\
     <span class="caption">{Caption}</span></br>\
@@ -174,12 +174,7 @@ Ext.define('Comic.view.ComicList', {
                 xtype: 'button',
                 itemId: 'toggleLibrary',
                 align: 'left',
-                //iconCls: 'arrow_left',
-                //iconMask: true,
                 text: 'Lists',
-                style: {
-                //  fontSize: '12px'
-                }
               },
               {
                 xtype: 'button',
@@ -192,243 +187,11 @@ Ext.define('Comic.view.ComicList', {
                 xtype: 'button',
                 align: 'right',
                 itemId: 'settingsbutton',
-                //icon: 'resources/images/settings.png',
                 iconCls: 'settings',
                 iconMask: true
               }
             ]
         }
-
-        //,
-        //{
-        //  docked: 'top',
-        //  xtype: 'toolbar',
-        //  ui: 'light',
-        //  //title: 'Filter',
-        //  //align: 'left',
-        //  itemId: 'ordertoolbar',
-        //  inline: true,
-        //  items: [
-        //    {
-        //      xtype: 'label',
-        //      html: '1st order',
-        //      style: {
-        //        fontSize: '12px'
-        //      }
-        //    },
-        //    {
-        //      xtype: 'selectfield',
-        //      //label: '1st Sort by',
-        //      //labelWidth: '60%',
-        //      defaultTabletPickerConfig: {
-        //        height: '90%'
-        //      },
-        //      maxWidth: '100px',
-        //      name: 'orderby_1',
-        //      itemId: 'orderby_1',
-        //      value: EnumOrderBy.CAPTION,
-        //      style: {
-        //        fontSize: '12px'
-        //      },
-        //      options: [
-        //        {
-        //          text: 'Caption',
-        //          value: EnumOrderBy.CAPTION
-        //        },
-        //        {
-        //          text: 'Series',
-        //          value: EnumOrderBy.SERIES
-        //        },
-        //        {
-        //          text: 'Volume',
-        //          value: EnumOrderBy.VOLUME
-        //        },
-        //        {
-        //          text: 'Title',
-        //          value: EnumOrderBy.TITLE
-        //        },
-        //        {
-        //          text: 'Number',
-        //          value: EnumOrderBy.NUMBER
-        //        },
-        //        {
-        //          text: 'Year',
-        //          value: EnumOrderBy.YEAR
-        //        },
-        //        {
-        //          text: 'File',
-        //          value: EnumOrderBy.FILE
-        //        },
-        //        {
-        //          text: 'Last Opened',
-        //          value: EnumOrderBy.LAST_OPENED
-        //        },
-        //        {
-        //          text: 'Publish date',
-        //          value: EnumOrderBy.PUBLISH_DATE
-        //        }
-
-        //      ]
-        //    },          
-        //    {
-        //      xtype: 'selectfield',
-        //      //label: 'Direction',
-        //      //labelWidth: '60%',
-        //      maxWidth: '100px',
-        //      name: 'direction_1',
-        //      itemId: 'direction_1',
-        //      value: EnumDirection.ASCENDING,
-        //      style: {
-        //        fontSize: '12px'
-        //      },
-        //      options: [
-        //        {
-        //          text: 'Ascending',
-        //          value: EnumDirection.ASCENDING
-        //        },
-        //        {
-        //          text: 'Descending',
-        //          value: EnumDirection.DESCENDING
-        //        }
-        //      ]
-        //    },
-        //    {
-        //      xtype: 'label',
-        //      html: '2nd order',
-        //      style: {
-        //        fontSize: '12px'
-        //      }
-        //    },
-        //    {
-        //      xtype: 'selectfield',
-        //      //label: '2nd Sort by',
-        //      //labelWidth: '60%',
-        //      defaultTabletPickerConfig: {
-        //        height: '90%'
-        //      },
-        //      style: {
-        //        fontSize: '12px'
-        //      },
-        //      maxWidth: '100px',
-        //      name: 'orderby_2',
-        //      itemId: 'orderby_2',
-        //      value: EnumOrderBy.NONE,
-        //      options: [
-        //        {
-        //          text: '[none]',
-        //          value: EnumOrderBy.NONE
-        //        },
-        //        {
-        //          text: 'Caption',
-        //          value: EnumOrderBy.CAPTION
-        //        },
-        //        {
-        //          text: 'Series',
-        //          value: EnumOrderBy.SERIES
-        //        },
-        //        {
-        //          text: 'Volume',
-        //          value: EnumOrderBy.VOLUME
-        //        },
-        //        {
-        //          text: 'Title',
-        //          value: EnumOrderBy.TITLE
-        //        },
-        //        {
-        //          text: 'Number',
-        //          value: EnumOrderBy.NUMBER
-        //        },
-        //        {
-        //          text: 'Year',
-        //          value: EnumOrderBy.YEAR
-        //        },
-        //        {
-        //          text: 'File',
-        //          value: EnumOrderBy.FILE
-        //        },
-        //        {
-        //          text: 'Last Opened',
-        //          value: EnumOrderBy.LAST_OPENED
-        //        },
-        //        {
-        //          text: 'Publish date',
-        //          value: EnumOrderBy.PUBLISH_DATE
-        //        }
-        //      ]
-        //    },          
-        //    {
-        //      xtype: 'selectfield',
-        //      //label: 'Direction',
-        //      //labelWidth: '60%',
-        //      name: 'direction_2',
-        //      itemId: 'direction_2',
-        //      value: EnumDirection.ASCENDING,
-        //      maxWidth: '100px',
-        //      style: {
-        //        fontSize: '12px'
-        //      },
-        //      options: [
-        //        {
-        //          text: 'Ascending',
-        //          value: EnumDirection.ASCENDING
-        //        },
-        //        {
-        //          text: 'Descending',
-        //          value: EnumDirection.DESCENDING
-        //        }
-        //      ]
-        //    },
-        //    //{
-        //    //  xtype: 'button',
-        //    //  itemId: 'refreshbutton',
-        //    //  align: 'right',
-        //    //  iconCls: 'refresh',
-        //    //  iconMask: true,
-        //    //  style: {
-        //    //    fontSize: '12px'
-        //    //  }
-        //    //},
-        //    {
-        //      xtype: 'selectfield',
-        //      //label: 'Layout',
-        //      //labelWidth: '60%',
-        //      //maxWidth: '100px',
-        //      name: 'layout',
-        //      itemId: 'layout',
-        //      value: 2,
-        //      style: {
-        //        fontSize: '12px'
-        //      },
-        //      options: [
-        //        {
-        //          text: 'List small',
-        //          value: EnumComicListLayout.LIST_SMALL
-        //        },
-        //        {
-        //          text: 'List medium',
-        //          value: EnumComicListLayout.LIST_MEDIUM
-        //        },
-        //        {
-        //          text: 'List large',
-        //          value: EnumComicListLayout.LIST_LARGE
-        //        },
-        //        {
-        //          text: 'Grid small',
-        //          value: EnumComicListLayout.GRID_SMALL
-        //        },
-        //        {
-        //          text: 'Grid medium',
-        //          value: EnumComicListLayout.GRID_MEDIUM
-        //        },
-        //        {
-        //          text: 'Grid large',
-        //          value: EnumComicListLayout.GRID_LARGE
-        //        }
-        //      ]
-        //    }
-        //  ]
-        //}
-        
       ]
     }
 });

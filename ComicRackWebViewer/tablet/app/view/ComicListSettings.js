@@ -50,46 +50,46 @@ Ext.define('Comic.view.ComicListSettings', {
               //maxWidth: '100px',
               name: 'orderby_1',
               itemId: 'orderby_1',
-              value: EnumOrderBy.CAPTION,
+              value: Comic.Enums.OrderBy.CAPTION,
               //style: {
               //  fontSize: '12px'
               //},
               options: [
                 {
                   text: 'Caption',
-                  value: EnumOrderBy.CAPTION
+                  value: Comic.Enums.OrderBy.CAPTION
                 },
                 {
                   text: 'Series',
-                  value: EnumOrderBy.SERIES
+                  value: Comic.Enums.OrderBy.SERIES
                 },
                 {
                   text: 'Volume',
-                  value: EnumOrderBy.VOLUME
+                  value: Comic.Enums.OrderBy.VOLUME
                 },
                 {
                   text: 'Title',
-                  value: EnumOrderBy.TITLE
+                  value: Comic.Enums.OrderBy.TITLE
                 },
                 {
                   text: 'Number',
-                  value: EnumOrderBy.NUMBER
+                  value: Comic.Enums.OrderBy.NUMBER
                 },
                 {
                   text: 'Year',
-                  value: EnumOrderBy.YEAR
+                  value: Comic.Enums.OrderBy.YEAR
                 },
                 {
                   text: 'File',
-                  value: EnumOrderBy.FILE
+                  value: Comic.Enums.OrderBy.FILE
                 },
                 {
                   text: 'Last Opened',
-                  value: EnumOrderBy.LAST_OPENED
+                  value: Comic.Enums.OrderBy.LAST_OPENED
                 },
                 {
                   text: 'Publish date',
-                  value: EnumOrderBy.PUBLISH_DATE
+                  value: Comic.Enums.OrderBy.PUBLISH_DATE
                 }
 
               ]
@@ -101,16 +101,16 @@ Ext.define('Comic.view.ComicListSettings', {
               
               name: 'direction_1',
               itemId: 'direction_1',
-              value: EnumDirection.ASCENDING,
+              value: Comic.Enums.Direction.ASCENDING,
               
               options: [
                 {
                   text: 'Ascending',
-                  value: EnumDirection.ASCENDING
+                  value: Comic.Enums.Direction.ASCENDING
                 },
                 {
                   text: 'Descending',
-                  value: EnumDirection.DESCENDING
+                  value: Comic.Enums.Direction.DESCENDING
                 }
               ]
             },
@@ -126,47 +126,47 @@ Ext.define('Comic.view.ComicListSettings', {
               
               name: 'orderby_2',
               itemId: 'orderby_2',
-              value: EnumOrderBy.NONE,
+              value: Comic.Enums.OrderBy.NONE,
               options: [
                 {
                   text: '[none]',
-                  value: EnumOrderBy.NONE
+                  value: Comic.Enums.OrderBy.NONE
                 },
                 {
                   text: 'Caption',
-                  value: EnumOrderBy.CAPTION
+                  value: Comic.Enums.OrderBy.CAPTION
                 },
                 {
                   text: 'Series',
-                  value: EnumOrderBy.SERIES
+                  value: Comic.Enums.OrderBy.SERIES
                 },
                 {
                   text: 'Volume',
-                  value: EnumOrderBy.VOLUME
+                  value: Comic.Enums.OrderBy.VOLUME
                 },
                 {
                   text: 'Title',
-                  value: EnumOrderBy.TITLE
+                  value: Comic.Enums.OrderBy.TITLE
                 },
                 {
                   text: 'Number',
-                  value: EnumOrderBy.NUMBER
+                  value: Comic.Enums.OrderBy.NUMBER
                 },
                 {
                   text: 'Year',
-                  value: EnumOrderBy.YEAR
+                  value: Comic.Enums.OrderBy.YEAR
                 },
                 {
                   text: 'File',
-                  value: EnumOrderBy.FILE
+                  value: Comic.Enums.OrderBy.FILE
                 },
                 {
                   text: 'Last Opened',
-                  value: EnumOrderBy.LAST_OPENED
+                  value: Comic.Enums.OrderBy.LAST_OPENED
                 },
                 {
                   text: 'Publish date',
-                  value: EnumOrderBy.PUBLISH_DATE
+                  value: Comic.Enums.OrderBy.PUBLISH_DATE
                 }
               ]
             },
@@ -176,16 +176,16 @@ Ext.define('Comic.view.ComicListSettings', {
               //labelWidth: '60%',
               name: 'direction_2',
               itemId: 'direction_2',
-              value: EnumDirection.ASCENDING,
+              value: Comic.Enums.Direction.ASCENDING,
               
               options: [
                 {
                   text: 'Ascending',
-                  value: EnumDirection.ASCENDING
+                  value: Comic.Enums.Direction.ASCENDING
                 },
                 {
                   text: 'Descending',
-                  value: EnumDirection.DESCENDING
+                  value: Comic.Enums.Direction.DESCENDING
                 }
               ]
             }
@@ -202,32 +202,32 @@ Ext.define('Comic.view.ComicListSettings', {
               
               name: 'layout',
               itemId: 'layout',
-              value: EnumComicListLayout.LIST_MEDIUM,
+              value: Comic.Enums.ComicListLayout.LIST_MEDIUM,
               
               options: [
                 {
                   text: 'List small',
-                  value: EnumComicListLayout.LIST_SMALL
+                  value: Comic.Enums.ComicListLayout.LIST_SMALL
                 },
                 {
                   text: 'List medium',
-                  value: EnumComicListLayout.LIST_MEDIUM
+                  value: Comic.Enums.ComicListLayout.LIST_MEDIUM
                 },
                 {
                   text: 'List large',
-                  value: EnumComicListLayout.LIST_LARGE
+                  value: Comic.Enums.ComicListLayout.LIST_LARGE
                 },
                 {
                   text: 'Grid small',
-                  value: EnumComicListLayout.GRID_SMALL
+                  value: Comic.Enums.ComicListLayout.GRID_SMALL
                 },
                 {
                   text: 'Grid medium',
-                  value: EnumComicListLayout.GRID_MEDIUM
+                  value: Comic.Enums.ComicListLayout.GRID_MEDIUM
                 },
                 {
                   text: 'Grid large',
-                  value: EnumComicListLayout.GRID_LARGE
+                  value: Comic.Enums.ComicListLayout.GRID_LARGE
                 }
               ]
             }
