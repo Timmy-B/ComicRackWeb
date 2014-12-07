@@ -36,79 +36,39 @@ Ext.define('Comic.controller.ComicList', {
           mainview: 'mainview',
           comiclistview: 'comiclistview',
           comiclisttitlebar: 'comiclistview #comiclisttitlebar',
-          ordertoolbar: 'comiclistview #ordertoolbar',
           refreshbutton: 'comiclistview #refreshbutton',
           toggleLibraryButton: 'comiclistview #toggleLibrary',
           settingsbutton: 'comiclistview #settingsbutton',
-
           searchview: 'searchview',
           maintabpanel: 'maintabpanel',
           seriesview: 'seriesview',
-          
           comicview: { selector: 'comicview', xtype: 'comicview', autoCreate: true },
-          comicinfoview: { selector: 'comicinfoview', xtype: 'comicinfoview', autoCreate: true },
-
-          order_orderby_1: '#ordertoolbar #orderby_1',
-          order_direction_1: '#ordertoolbar #direction_1',
-          order_orderby_2: '#ordertoolbar #orderby_2',
-          order_direction_2: '#ordertoolbar #direction_2',
-          order_refresh: '#ordertoolbar #refreshbutton',
-          order_layout: '#ordertoolbar #layout',
-
           comiclistsettingsview: { selector: 'comiclistsettingsview', xtype: 'comiclistsettingsview', autoCreate: true }
         },
         
         control: {
-        
           comiclistview: {
             initialize: 'onComicListViewInitialize',
             itemtap: 'onComicListViewItemTap'
           },
-          
           searchview: {
             search: 'onSearch'
           },
-          
           treelistview: {
             showlist: 'onShowList'
           },
-          
           seriesview: {
             showseries: 'onShowSeries'
           },
-          
           refreshbutton: {
             tap: 'onRefreshButton'
           },
-
           toggleLibraryButton: {
             tap: 'onToggleLibraryButton'
-          },
-          
-          
-          order_orderby_1: {
-            change: 'onDoSort'
-          },
-          order_orderby_2: {
-            change: 'onDoSort'
-          },
-          order_direction_1: {
-            change: 'onDoSort'
-          },
-          order_direction_2: {
-            change: 'onDoSort'
-          },
-          order_refresh: {
-            change: 'onDoSort'
-          },
-          order_layout: {
-            change: 'onChangeLayout'
           },
           settingsbutton: {
             tap: 'onSettingsButton'
           }
-
-          
         }
     },
     
@@ -144,16 +104,12 @@ Ext.define('Comic.controller.ComicList', {
       if (maintabpanel.isHidden())
       {
         maintabpanel.setShowAnimation({ type: 'slide', direction: 'right' });
-        //maintabpanel.setShowAnimation('fadeIn');
         maintabpanel.show();
-        //me.setLeft(100);
       }
       else
       {
         maintabpanel.setHideAnimation({ type: 'slideOut', direction: 'left' });
-        //maintabpanel.setHideAnimation('fadeOut');
         maintabpanel.hide();
-        //me.setLeft(0);
       }
     },
 
@@ -169,7 +125,14 @@ Ext.define('Comic.controller.ComicList', {
       me.overlay.show();
     },
 
-    onRefreshButton: function()
+    onRefreshButton: function ()
+    {
+      var me = this;
+
+      me.SetStore(me.storeParams, me.storeTitle);
+    },
+
+    doRefresh: function()
     {
       var me = this,
           comiclistview = me.getComiclistview(),
@@ -195,15 +158,6 @@ Ext.define('Comic.controller.ComicList', {
       }
       
       store.setSorters( sorters );
-      /*
-      if (Comic.sortsettings.filter.length != 0)
-      {
-        filter = "substringof('" + Comic.sortsettings.filter +"', tolower(Caption)) eq true";
-        store.setFilters( { property: filter, type: 'use' } );
-      }
-      else
-        store.setFilters([]);
-      */
       
       comiclistview.setScrollToTopOnRefresh(true);
       store.load({
@@ -246,7 +200,7 @@ Ext.define('Comic.controller.ComicList', {
       }
 
       
-      comiclistview.SetLayout(Comic.ordersettings.get('layout'));
+      comiclistview.UpdateLayout();
     },
        
     onComicListViewItemTap: function(/*Ext.dataview.DataView*/ list, /*Number*/ index, /*Ext.Element/Ext.dataview.component.DataItem*/ target, /*Ext.data.Model*/ record, /*Ext.EventObject*/ e, /*Object*/ eOpts)
@@ -294,6 +248,9 @@ Ext.define('Comic.controller.ComicList', {
           store = Ext.create('Comic.store.ComicList', { storeId : me.storeName + me.storeCount++ }),
           url = params.url;
           
+      me.storeParams = params;
+      me.storeTitle = title;
+
       if (params.filter)
       {
         url += '?$filter=' + params.filter;
@@ -314,19 +271,17 @@ Ext.define('Comic.controller.ComicList', {
         oldstore.destroy();
       }
       
-      me.onRefreshButton();
+      me.doRefresh();
     },
     
     
     onSettingsChanged: function ()
     {
       var me = this,
-          comiclistview = me.getComiclistview(),
-          layout = Comic.ordersettings.get('layout');
+          comiclistview = me.getComiclistview();
          
-      comiclistview.setItemTpl(ComicListItemTemplates[layout]);
-      comiclistview.setItemCls(ComicListItemTemplates[layout].containerCls);
-
+      comiclistview.UpdateLayout();
+      
       me.onRefreshButton();
     }
 

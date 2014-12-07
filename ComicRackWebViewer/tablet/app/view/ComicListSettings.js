@@ -39,21 +39,12 @@ Ext.define('Comic.view.ComicListSettings', {
         xtype: 'fieldset',
         title: 'Comic List Order',
         items: [
-            
             {
               xtype: 'selectfield',
               label: 'Sort by',
-              //labelWidth: '60%',
-              defaultTabletPickerConfig: {
-                height: '90%'
-              },
-              //maxWidth: '100px',
               name: 'orderby_1',
               itemId: 'orderby_1',
               value: Comic.Enums.OrderBy.CAPTION,
-              //style: {
-              //  fontSize: '12px'
-              //},
               options: [
                 {
                   text: 'Caption',
@@ -91,18 +82,14 @@ Ext.define('Comic.view.ComicListSettings', {
                   text: 'Publish date',
                   value: Comic.Enums.OrderBy.PUBLISH_DATE
                 }
-
               ]
             },
             {
               xtype: 'selectfield',
               label: 'Direction',
-              //labelWidth: '60%',
-              
               name: 'direction_1',
               itemId: 'direction_1',
               value: Comic.Enums.Direction.ASCENDING,
-              
               options: [
                 {
                   text: 'Ascending',
@@ -114,16 +101,12 @@ Ext.define('Comic.view.ComicListSettings', {
                 }
               ]
             },
-           
             {
               xtype: 'selectfield',
               label: 'Then sort by',
-              //labelWidth: '60%',
               defaultTabletPickerConfig: {
                 height: '90%'
               },
-              
-              
               name: 'orderby_2',
               itemId: 'orderby_2',
               value: Comic.Enums.OrderBy.NONE,
@@ -173,11 +156,9 @@ Ext.define('Comic.view.ComicListSettings', {
             {
               xtype: 'selectfield',
               label: 'Direction',
-              //labelWidth: '60%',
               name: 'direction_2',
               itemId: 'direction_2',
               value: Comic.Enums.Direction.ASCENDING,
-              
               options: [
                 {
                   text: 'Ascending',
@@ -194,16 +175,30 @@ Ext.define('Comic.view.ComicListSettings', {
           xtype: 'fieldset',
           title: 'Comic List Layout',
           items: [
-            
+            {
+              xtype: 'selectfield',
+              label: 'Theme',
+              name: 'theme',
+              itemId: 'theme',
+              value: Comic.Enums.Theme.NORMAL,
+              options: [
+                {
+                  text: 'Normal',
+                  value: Comic.Enums.Theme.NORMAL
+                },
+                {
+                  text: 'Lite',
+                  value: Comic.Enums.Theme.LITE
+                }
+                
+              ]
+            },
             {
               xtype: 'selectfield',
               label: 'Layout',
-              //labelWidth: '60%',
-              
               name: 'layout',
               itemId: 'layout',
               value: Comic.Enums.ComicListLayout.LIST_MEDIUM,
-              
               options: [
                 {
                   text: 'List small',
@@ -233,7 +228,6 @@ Ext.define('Comic.view.ComicListSettings', {
             }
         ]
       }
-      
     ]
   }
 

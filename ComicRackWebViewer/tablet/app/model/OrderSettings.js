@@ -28,6 +28,7 @@ Ext.define('Comic.model.OrderSettings', {
         { name: 'orderby_2', type: 'int', defaultValue: Comic.Enums.OrderBy.NONE },
         { name: 'direction_2', type: 'int', defaultValue: Comic.Enums.Direction.ASCENDING },
         { name: 'layout', type: 'int', defaultValue: Comic.Enums.ComicListLayout.GRID_MEDIUM },
+        { name: 'theme', type: 'int', defaultValue: Comic.Enums.Theme.NORMAL }
     ],
     proxy: {
         // IE is stupid, doesn't allow localstorage for local addresses......

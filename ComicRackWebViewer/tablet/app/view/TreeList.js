@@ -25,7 +25,7 @@ var ComicListItemIcons = { ComicLibraryListItem : 'resources/images/ComicLibrary
 
 // Use one template instance for all list items instead of creating one for each list item separately.....
 var TheTreeListItemTemplate = new Ext.XTemplate(
-    '<img src="{[this.getIcon(values)]}" height="40px" style="vertical-align:middle;"/>{Name}',
+    '<img class="icon" src="{[this.getIcon(values)]}"/><span class="label">{Name}</span>',
     {
       // XTemplate configuration:
       disableFormats: true,
@@ -52,7 +52,6 @@ Ext.define('Comic.view.TreeList', {
     
     requires: [ 
       'Comic.store.TreeList',
-      'Ext.plugin.PullRefresh',
       'Ext.dataview.List'
     ],
     
@@ -77,48 +76,37 @@ Ext.define('Comic.view.TreeList', {
       store: 'TreeList',
       onItemDisclosure: false,
       baseCls: 'filesystem',
-      //itemCls: 'filesystem',
-      
+      //cls: 'lite',
       listConfig : {
-        xtype: 'list',
         itemTpl: TheTreeListItemTemplate,
-        
-        //itemHeight: 47,
-        variableHeights: true,
-        //cls: 'filesystem-list',
         baseCls: 'filesystem-list',
-        //itemCls: 'filesystem-list-item',
-                
-        //plugins: [
-        //  {
-        //      xclass: 'Ext.plugin.PullRefresh',
-        //      itemId: 'pullrefresh',
-        //      pullText: 'Pull down to refresh...',
-        //      refreshFn: function(plugin) {
-        //            plugin.fireEvent('refresh', plugin);
-        //        }
-        //  }
-        //]
-        
+        //cls: 'lite'
       }
       
     },
     
-    onItemTapHold: function(list, index, target, record, e) {
-      alert('onItemTapHold');
-      /*
-        var me = this,
-            store = list.getStore(),
-            node = store.getAt(index);
-
-        me.fireEvent('itemtaphold', this, list, index, target, record, e);
-        if (node.isLeaf()) {
-            me.fireEvent('leafitemtaphold', this, list, index, target, record, e);
-        }
-      */
-    },
-    
-    getTitleTextTpl: function() {
-      return '{' + this.getDisplayField() + '}';
+    UpdateLayout: function ()
+    {
+      //var me = this;
+      
+      //switch (Comic.ordersettings.get('theme'))
+      //{
+      //  case Comic.Enums.Theme.LITE:
+      //    me.setListConfig({
+      //      itemTpl: TheTreeListItemTemplate,
+      //      baseCls: 'filesystem-list',
+      //      cls: 'lite'
+      //    });
+      //    break;
+      //  case Comic.Enums.Theme.NORMAL:
+      //  default:
+      //    me.setListConfig({
+      //      itemTpl: TheTreeListItemTemplate,
+      //      baseCls: 'filesystem-list'
+      //    });
+      //    break;
+      //}
+      
+      //me.getStore().load();
     }
 });

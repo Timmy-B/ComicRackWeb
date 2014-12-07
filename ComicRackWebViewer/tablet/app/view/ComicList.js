@@ -127,25 +127,18 @@ ComicListItemTemplates[Comic.Enums.ComicListLayout.GRID_LARGE] = new Ext.XTempla
 
 
 Ext.define('Comic.view.ComicList', {
-    //extend: 'Ext.ux.BufferedList',
-  //extend: 'Ext.dataview.List',
   extend: 'Ext.DataView',
     xtype: 'comiclistview',
     
     requires: [ 
       'Comic.plugin.DataViewPaging',
-      'Ext.DataView',
-      'Ext.dataview.List',
-      'Comic.view.ComicListSort'
+      'Ext.DataView'
     ],
-
-
+    
     config: {
       title: 'Comics',
-      //itemTpl: TheComicListItemTemplate,
       cls: 'comiclist',
-      //cls: 'list',
-      //itemCls: 'comiclist-item',
+      //baseCls: 'comiclist',
 
       plugins: [
         {
@@ -186,10 +179,23 @@ Ext.define('Comic.view.ComicList', {
       ]
     },
 
-    SetLayout: function(layout)
+    UpdateLayout: function()
     {
-      var me = this;
+      var me = this,
+          layout = Comic.ordersettings.get('layout');
+
       me.setItemTpl(ComicListItemTemplates[layout]);
       me.setItemCls(ComicListItemTemplates[layout].containerCls);
+      switch (Comic.ordersettings.get('theme'))
+      {
+        case Comic.Enums.Theme.LITE:
+          me.setCls('comiclist lite');
+          break;
+        case Comic.Enums.Theme.NORMAL:
+        default:
+          me.setCls('comiclist');
+          break;
+      }
+      
     }
 });

@@ -197,7 +197,6 @@
     <None Include="tablet\app\model\List.js" />
     <None Include="tablet\app\model\Readme.md" />
     <None Include="tablet\app\model\Series.js" />
-    <None Include="tablet\app\NestedListFix.js" />
     <None Include="tablet\app\Readme.md" />
     <None Include="tablet\app\RemoteApi.js" />
     <None Include="tablet\app\RestODataProxy.js" />

@@ -77,12 +77,6 @@ Ext.define('Comic.controller.TreeList', {
       store.setPageSize(null);
       treelistview.setStore(store);
       oldstore.destroy();
-      
-      /*  
-      var store = treelistview.getStore();
-      var root = store.getRoot();
-      store.load({node: root});
-      */
     },
     
     onTreeListLeafItemTap: function(/*Ext.dataview.NestedList*/ nestedlist, /*Ext.List*/ list, /*Number*/ index, /*Ext.dom.Element*/ target, /*Ext.data.Record*/ record, /*Ext.event.Event*/ e, /*Object*/ eOpts)
@@ -117,7 +111,10 @@ Ext.define('Comic.controller.TreeList', {
     
     onTreeListInitialize: function(list, opts) 
     {
-      //alert('onTreeListInitialize');
+      var me = this,
+            treelistview = me.getTreelistview();
+
+      //treelistview.UpdateLayout();
     },
     
     onTreeListLoad: function( /*Ext.dataview.NestedList*/ nestedlist, /*Ext.data.Store*/ store, /*Ext.util.Grouper[]*/ records, /*Boolean*/ successful, /*Ext.data.Operation*/ operation, /*Object*/ eOpts ) 
@@ -137,6 +134,16 @@ Ext.define('Comic.controller.TreeList', {
         Comic.RemoteApi.library_id = library.data.Id;
         me.onTreeListLeafItemTap(null, null, 0, null, library);
       }
+    },
+
+    onSettingsChanged: function ()
+    {
+      var me = this,
+          treelistview = me.getTreelistview();
+
+      treelistview.UpdateLayout();
+
+      me.onRefreshButton();
     }
     
 });

@@ -25,6 +25,10 @@ Ext.define('Comic.Enums', {
   },
   
   
+  Theme: {
+    NORMAL: 0,
+    LITE: 1
+  },
 
   OrderBy: {
     NONE: 0,

@@ -21,20 +21,18 @@
 /******************************************************************/
 /* file list styles */
 .filesystem-list {
-  /*background: #FFF;*/
   background-image: url('../../resources/images/background-darkgray-noise.png');
-  
   text-shadow: 1px 1px 2px #202020;
 }
 
-/*.filesystem-list .x-list-item , .filesystem-list-item {*/
-  
-  
+.filesystem-list.lite {
+  background: rgb(96, 96, 96);
+  text-shadow: none;
+}
+
 .filesystem-list .x-list-item {
-  
   padding: 0.65em;
   margin: 0.4em;
-  /*background: #EEE;*/
   border: 1px solid rgba(128, 128, 128, 0.70);
   color: white !important;
 }
@@ -57,15 +55,14 @@
 }
 
 
-.filesystem-list-item span {
+.filesystem-list .label {
   
 }
 
-.filesystem-list-item img {
-  float: left;
-  height: 64px;
+.filesystem-list .icon {
+  height: 40px;
   margin-right: 10px;
-  margin-bottom: 10px;
+  vertical-align:middle;
 }
 
 .filesystem-list-item .name {
@@ -85,14 +82,25 @@
 
 
 .comiclist {
-  /*background: #F00;*/
   background-image: url('../../resources/images/background-darkgray-noise.png');
+}
+
+.comiclist.lite {
+  background: rgb(96, 96, 96);
+}
+
+
+.comiclist .x-dataview-item {
   font-size: 11px;
   color: white;
   text-shadow: 1px 1px 2px #202020;
 }
 
-
+.comiclist.lite .x-dataview-item {
+  font-size: 11px;
+  color: white;
+  text-shadow: none;
+}
 
 /* LIST LAYOUT *****************************************************************/
 
@@ -102,6 +110,10 @@
   padding: 0.65em;
   margin: 0.4em;
   border-bottom: 1px solid rgba(128, 128, 128, 0.70);
+}
+
+.comiclist .x-dataview-item.layout-style-list.lite {
+  border-bottom: 1px solid rgb(128, 128, 128);
 }
 
 

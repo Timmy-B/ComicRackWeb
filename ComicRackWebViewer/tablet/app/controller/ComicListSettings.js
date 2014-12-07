@@ -23,7 +23,7 @@ Ext.define('Comic.controller.ComicListSettings', {
       
       'Comic.view.ComicList', 
       'Comic.view.ComicListSettings',
-     
+      'Comic.view.TreeList'
     ],
 
     config: {
@@ -65,7 +65,8 @@ Ext.define('Comic.controller.ComicListSettings', {
         direction_1: Comic.ordersettings.get('direction_1'),
         orderby_2: Comic.ordersettings.get('orderby_2'),
         direction_2: Comic.ordersettings.get('direction_2'),
-        layout: Comic.ordersettings.get('layout')
+        layout: Comic.ordersettings.get('layout'),
+        theme: Comic.ordersettings.get('theme')
       });
     },
     
@@ -78,6 +79,7 @@ Ext.define('Comic.controller.ComicListSettings', {
       Comic.ordersettings.set('orderby_2', values.orderby_2);
       Comic.ordersettings.set('direction_2', values.direction_2);
       Comic.ordersettings.set('layout', values.layout);
+      Comic.ordersettings.set('theme', values.theme);
 
       if (Comic.ordersettings.get('orderby_2') == Comic.ordersettings.get('orderby_1'))
         Comic.ordersettings.set('orderby_2', Comic.Enums.OrderBy.NONE);
@@ -86,5 +88,8 @@ Ext.define('Comic.controller.ComicListSettings', {
 
       var comiclistcontroller = me.getApplication().getController('ComicList');
       comiclistcontroller.onSettingsChanged();
+
+      var treelistcontroller = me.getApplication().getController('TreeList');
+      treelistcontroller.onSettingsChanged();
     }
 });
