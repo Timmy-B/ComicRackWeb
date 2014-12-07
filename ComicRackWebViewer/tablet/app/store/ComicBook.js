@@ -32,7 +32,7 @@ Ext.define('Comic.store.ComicBook', {
       
       proxy: {
             type: 'restodata',
-            url: bcrBase + '/BCR/Comics',
+            url: BcrBaseUrl + '/BCR/Comics',
             listeners:{
               exception:function(proxy, response, orientation){
                   // empty list ?

@@ -9,6 +9,7 @@
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="-1">    
+
     
     <!-- Weinre remote debugging -->
     <!--<script src="http://192.168.0.104:8081/target/target-script-min.js"></script>-->
@@ -20,10 +21,11 @@
               expire: 720					// Show the message only once every 12 hours
       };
 
+      // TODO: move BcrBaseUrl to Comic namespace?
       var l = document.location.pathname.split('/');
       l.pop();
-      var bcrBase = document.location.origin + l.join('/');
-      console.log("BCR URL Base: " + bcrBase);
+      var BcrBaseUrl = document.location.origin + l.join('/');
+      console.log("BCR Base URL: " + BcrBaseUrl);
 
     </script>
     

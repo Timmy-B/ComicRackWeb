@@ -31,7 +31,7 @@ Ext.define('Comic.store.TreeList', {
 
       proxy: {
             type: 'restodata',
-            url: bcrBase + '/BCR/Lists',
+            url: BcrBaseUrl + '/BCR/Lists',
             listeners:{
               exception:function(proxy, response, orientation){
                   console.error('Failure Notification', response.responseText);

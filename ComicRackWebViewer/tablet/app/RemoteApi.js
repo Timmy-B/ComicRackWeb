@@ -51,7 +51,7 @@ function eraseCookie(name)
 
            
 var ApiToken = {
-    authUrl: bcrBase + '/auth',
+    authUrl: BcrBaseUrl + '/auth',
     apiKeyKey : 'BCR_apiKey',
     usernameKey : 'BCR_username',
 
@@ -122,7 +122,7 @@ Ext.define('Comic.RemoteApi', {
   ValidateAuthentication: function(callback) {
     var me = this;
     Ext.Ajax.request({
-      url: bcrBase + '/BCR',
+      url: BcrBaseUrl + '/BCR',
       method: 'GET',
       params: {},
       success: function(response) {
@@ -252,7 +252,7 @@ Ext.define('Comic.RemoteApi', {
   UpdateProgress: function(comic_id, current_page, callback)
   {
     Ext.Ajax.request({
-      url: bcrBase + '/BCR/Comics/' + comic_id + '/Progress',
+      url: BcrBaseUrl + '/BCR/Comics/' + comic_id + '/Progress',
       method: 'PUT',
       params: { CurrentPage : current_page },
       success: function(response){
@@ -265,7 +265,7 @@ Ext.define('Comic.RemoteApi', {
   GetImageUrl: function(comic_id, page_nr, width, height)
   {
     //width = 1024;
-    var url = bcrBase + '/BCR/Comics/' + comic_id + '/Pages/' + page_nr;
+    var url = BcrBaseUrl + '/BCR/Comics/' + comic_id + '/Pages/' + page_nr;
     if (width)
     {
       url = Ext.String.urlAppend(url, 'width='+width);
@@ -285,7 +285,7 @@ Ext.define('Comic.RemoteApi', {
    
   CreateStoreParams_ListComics: function(list_id)
   {
-    return { url: bcrBase + '/BCR/Lists/' + list_id + '/Comics' };
+    return { url: BcrBaseUrl + '/BCR/Lists/' + list_id + '/Comics' };
   },
   
   CreateStoreParams_SearchComics: function(values)
@@ -320,19 +320,19 @@ Ext.define('Comic.RemoteApi', {
       combined_filter += ")";
     }
     
-    return { url: bcrBase + '/BCR/Comics', filter: combined_filter };
+    return { url: BcrBaseUrl + '/BCR/Comics', filter: combined_filter };
   },
   
   CreateStoreParams_SerieComics: function(series_id)
   {
-    return { url: bcrBase + '/BCR/Series/' + series_id };
+    return { url: BcrBaseUrl + '/BCR/Series/' + series_id };
   },
   
   
   GetSettings: function(callback)
   {
     Ext.Ajax.request({
-      url: bcrBase + '/BCR/Settings',
+      url: BcrBaseUrl + '/BCR/Settings',
       method: 'GET',
       success: function(response){
 
@@ -351,7 +351,7 @@ Ext.define('Comic.RemoteApi', {
   SetSettings: function(settings, callback)
   {
     Ext.Ajax.request({
-      url: bcrBase + '/BCR/Settings',
+      url: BcrBaseUrl + '/BCR/Settings',
       method: 'PUT',
       params: settings,
       success: function(response){

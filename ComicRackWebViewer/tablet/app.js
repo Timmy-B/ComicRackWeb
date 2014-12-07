@@ -24,6 +24,7 @@ var disableCache = Ext.os.deviceType == 'Tablet';
 
 
 
+
 Ext.Loader.setConfig({
   disableCaching: disableCache
   /*
@@ -88,12 +89,6 @@ Ext.application({
         '1496x2048': 'resources/startup/1496x2048.jpg'
     },
     
-    /*
-    viewport: {
-      autoMaximize: true
-    },
-    */
-    //profiles: ['Phone', 'Tablet'],
     
     views: ['Main', 'Login'],
     controllers: [
@@ -151,17 +146,3 @@ Ext.application({
         );
     }
 });
-/*
-function hideAddressBar() {
-    setTimeout(function() {
-        window.scrollTo(0, 1);
-    }, 1000); // The delay can be tweaked a bit, but is necessary.
-}
-
-window.onresize = function() {
-     if (document.activeElement.tagName.toLowerCase() == 'body') {
-        // Do this check to prevent scrolling when typing in a textfield
-        hideAddressBar();
-    }
-};
-*/

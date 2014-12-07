@@ -73,7 +73,6 @@ Ext.define('Comic.view.Comic', {
       {
         xtype: 'toolbar',
         docked: 'bottom',
-        //ui: 'transparent',
         style: 'opacity: 0.8;',
         bottom: '0px',
         width: '100%',

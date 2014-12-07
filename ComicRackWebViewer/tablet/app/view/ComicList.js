@@ -49,88 +49,79 @@ var LayoutFunctions = {
 var ComicListItemTemplates = [];
 
 ComicListItemTemplates[Comic.Enums.ComicListLayout.LIST_SMALL] = new Ext.XTemplate(
-      '<div class="comiclist-item layout-list-small"><img height="64px" class="cover" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=64"/>\
+      '<img height="64px" class="cover" src="' + BcrBaseUrl + '/BCR/Comics/{Id}/Pages/0?height=64"/>\
       <span class="caption">{Caption}</span></br>\
       <span class="published">Published: {[LayoutFunctions.getPublishedDate(values)]}</span></br>\
       <span class="progress">Progress: {[LayoutFunctions.getProgressText(values)]}</span></br>\
-      <span class="last_opened">Last opened: {[LayoutFunctions.getOpenedDate(values)]}</span>\
-      </div>',
+      <span class="last_opened">Last opened: {[LayoutFunctions.getOpenedDate(values)]}</span>',
       {
         // XTemplate configuration:
         disableFormats: true,
-        containerCls: 'layout-style-list'
+        containerCls: 'layout-style-list small'
       }
     );
 
 ComicListItemTemplates[Comic.Enums.ComicListLayout.LIST_MEDIUM] = new Ext.XTemplate(
-      '<div class="comiclist-item layout-list-medium"><img height="128px" class="cover" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=128"/>\
+      '<img height="128px" class="cover" src="' + BcrBaseUrl + '/BCR/Comics/{Id}/Pages/0?height=128"/>\
       <span class="caption">{Caption}</span></br>\
       <span class="published">Published: {[LayoutFunctions.getPublishedDate(values)]}</span></br>\
       <span class="progress">Progress: {[LayoutFunctions.getProgressText(values)]}</span></br>\
-      <span class="last_opened">Last opened: {[LayoutFunctions.getOpenedDate(values)]}</span>\
-      </div>',
+      <span class="last_opened">Last opened: {[LayoutFunctions.getOpenedDate(values)]}</span>',
       {
         // XTemplate configuration:
         disableFormats: true,
-        containerCls: 'layout-style-list'
+        containerCls: 'layout-style-list medium'
       }
     );
 
 ComicListItemTemplates[Comic.Enums.ComicListLayout.LIST_LARGE] = new Ext.XTemplate(
-      '<div class="comiclist-item layout-list-large"><img height="256px" class="cover" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=256"/>\
+      '<img height="256px" class="cover" src="' + BcrBaseUrl + '/BCR/Comics/{Id}/Pages/0?height=256"/>\
       <span class="caption">{Caption}</span></br>\
       <span class="published">Published: {[LayoutFunctions.getPublishedDate(values)]}</span></br>\
       <span class="progress">Progress: {[LayoutFunctions.getProgressText(values)]}</span></br>\
-      <span class="last_opened">Last opened: {[LayoutFunctions.getOpenedDate(values)]}</span>\
-      </div>',
+      <span class="last_opened">Last opened: {[LayoutFunctions.getOpenedDate(values)]}</span>',
       {
         // XTemplate configuration:
         disableFormats: true,
-        containerCls: 'layout-style-list'
+        containerCls: 'layout-style-list large'
       }
     );
 
 
 // Use one template instance for all list items instead of creating one for each list item separately.....
 ComicListItemTemplates[Comic.Enums.ComicListLayout.GRID_SMALL] = new Ext.XTemplate(
-    '<div class="comiclist-item layout-grid-small">\
-    <img class="cover" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=64"/></br>\
-    <span class="caption">{Caption}</span></br>\
-    </div>',
+    '<img class="cover" src="' + BcrBaseUrl + '/BCR/Comics/{Id}/Pages/0?height=64"/></br>\
+    <span class="caption">{Caption}</span></br>',
     {
       // XTemplate configuration:
       disableFormats: true,
-      containerCls: 'layout-style-grid'
+      containerCls: 'layout-style-grid small'
     }
   );
 
 ComicListItemTemplates[Comic.Enums.ComicListLayout.GRID_MEDIUM] = new Ext.XTemplate(
-    '<div class="comiclist-item layout-grid-medium">\
-    <img class="cover" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=128"/></br>\
+    '<img class="cover" src="' + BcrBaseUrl + '/BCR/Comics/{Id}/Pages/0?height=128"/></br>\
     <span class="caption">{Caption}</span></br>\
     <span class="published">Published: {[LayoutFunctions.getPublishedDate(values)]}</span></br>\
     <span class="progress">Progress: {[LayoutFunctions.getProgressText(values)]}</span></br>\
-    <span class="last_opened">Last opened: {[LayoutFunctions.getOpenedDate(values)]}</span>\
-    </div>',
+    <span class="last_opened">Last opened: {[LayoutFunctions.getOpenedDate(values)]}</span>',
     {
       // XTemplate configuration:
       disableFormats: true,
-      containerCls: 'layout-style-grid'
+      containerCls: 'layout-style-grid medium'
     }
   );
 
 ComicListItemTemplates[Comic.Enums.ComicListLayout.GRID_LARGE] = new Ext.XTemplate(
-    '<div class="comiclist-item layout-grid-large">\
-    <img class="cover" src="' + bcrBase + '/BCR/Comics/{Id}/Pages/0?height=256"/></br>\
+    '<img class="cover" src="' + BcrBaseUrl + '/BCR/Comics/{Id}/Pages/0?height=256"/></br>\
     <span class="caption">{Caption}</span></br>\
     <span class="published">Published: {[LayoutFunctions.getPublishedDate(values)]}</span></br>\
     <span class="progress">Progress: {[LayoutFunctions.getProgressText(values)]}</span></br>\
-    <span class="last_opened">Last opened: {[LayoutFunctions.getOpenedDate(values)]}</span>\
-    </div>',
+    <span class="last_opened">Last opened: {[LayoutFunctions.getOpenedDate(values)]}</span>',
     {
       // XTemplate configuration:
       disableFormats: true,
-      containerCls: 'layout-style-grid'
+      containerCls: 'layout-style-grid large'
     }
   );
 
@@ -193,5 +184,12 @@ Ext.define('Comic.view.ComicList', {
             ]
         }
       ]
+    },
+
+    SetLayout: function(layout)
+    {
+      var me = this;
+      me.setItemTpl(ComicListItemTemplates[layout]);
+      me.setItemCls(ComicListItemTemplates[layout].containerCls);
     }
 });

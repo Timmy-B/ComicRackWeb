@@ -1,7 +1,7 @@
 /*
   This file is part of Badaap Comic Reader.
   
-  Copyright (c) 2012 Jeroen Walter
+  Copyright (c) 2014 Jeroen Walter
   
   Badaap Comic Reader is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -69,8 +69,6 @@
 }
 
 .filesystem-list-item .name {
-  //margin-left: 70px;
-  //min-height: 50px;
 }
 
 .filesystem-list-item .folder {
@@ -89,15 +87,39 @@
 .comiclist {
   /*background: #F00;*/
   background-image: url('../../resources/images/background-darkgray-noise.png');
-  color: #FFF;
+  font-size: 11px;
+  color: white;
+  text-shadow: 1px 1px 2px #202020;
 }
 
 
-/* LIST layout */
+
+/* LIST LAYOUT *****************************************************************/
+
 
 .comiclist .x-dataview-item.layout-style-list {
-  /*display: block;*/
+  display: block;
+  padding: 0.65em;
+  margin: 0.4em;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.70);
 }
+
+
+
+.comiclist .x-dataview-item.layout-style-list.small {
+  height: 88px;
+}
+
+.comiclist .x-dataview-item.layout-style-list.medium {
+  height: 152px;
+}
+
+
+.comiclist .x-dataview-item.layout-style-list.large {
+  height: 280px;
+}
+
+/* GRID LAYOUT *****************************************************************/
 
 .comiclist .x-dataview-item.layout-style-grid {
   display: inline-block;
@@ -105,216 +127,153 @@
   margin: 0.4em;
 }
 
-
-/* ITEM *****************************************************************/
-
-.comiclist-item {
-  font-size: 11px;
-}
-
-
-.comiclist-item.layout-list-small {
-  height: 88px;
-  padding: 0.65em;
-  margin: 0.4em;
-  
-  color: white;
-  text-shadow: 1px 1px 2px #202020;
-
-  
-  border-bottom: 1px solid rgba(128, 128, 128, 0.70);
-}
-
-.comiclist-item.layout-list-medium {
-  height: 152px;
-  padding: 0.65em;
-  margin: 0.4em;
-  
-  color: white;
-  text-shadow: 1px 1px 2px #202020;
-
-  border-bottom: 1px solid #dedede;
-}
-
-
-.comiclist-item.layout-list-large {
-  height: 280px;
-  padding: 0.65em;
-  margin: 0.4em;
-  
-  color: white;
-  text-shadow: 1px 1px 2px #202020;
-
-  border-bottom: 1px solid #dedede;
-}
-
-
-.comiclist-item.layout-grid-small {
+.comiclist .x-dataview-item.layout-style-grid.small {
   width: 80px;  
-  color: white;
-  text-shadow: 1px 1px 2px #202020;
 }
 
-.comiclist-item.layout-grid-medium {
+.comiclist .x-dataview-item.layout-style-grid.medium {
   width: 144px;  
-  color: white;
-  text-shadow: 1px 1px 2px #202020;
 }
 
-.comiclist-item.layout-grid-large {
+.comiclist .x-dataview-item.layout-style-grid.large {
   width: 272px;  
-  color: white;
-  text-shadow: 1px 1px 2px #202020;
 }
 
 /* COVER *****************************************************************/
 
 .comiclist-item .cover {
-  margin-bottom: 10px;
   box-shadow: 3px 3px 5px #202020;
 }
 
-.comiclist-item.layout-list-small .cover {
+.comiclist .x-dataview-item.layout-style-list .cover {
   float: left;
+  margin-right: 10px;
+}
+
+.comiclist .x-dataview-item.layout-style-list.small .cover {
   height: 64px;
-  margin-right: 10px;
 }
 
-.comiclist-item.layout-list-medium .cover {
-  float: left;
+.comiclist .x-dataview-item.layout-style-list.medium .cover {
   height: 128px;
-  margin-right: 10px;
 }
 
-.comiclist-item.layout-list-large .cover {
-  float: left;
+.comiclist .x-dataview-item.layout-style-list .cover {
+  margin-bottom: 10px;
+}
+
+.comiclist .x-dataview-item.layout-style-list.large .cover {
   height: 256px;
-  margin-right: 10px;
 }
 
-.comiclist-item.layout-grid-small .cover {
+.comiclist .x-dataview-item.layout-style-grid.small .cover {
   height: 64px;
-  /*display: block;
-  margin-left: auto;
-  margin-right: auto;*/ 
 }
 
-.comiclist-item.layout-grid-medium .cover {
+.comiclist .x-dataview-item.layout-style-grid.medium .cover {
   height: 128px;
-  /*display: block;
-  margin-left: auto;
-  margin-right: auto;*/ 
-  
 }
 
 
-.comiclist-item.layout-grid-large .cover {
+.comiclist .x-dataview-item.layout-style-grid.large .cover {
   height: 256px;
-  /*display: block;
-  margin-left: auto;
-  margin-right: auto;*/
 }
 
 /* CAPTION *****************************************************************/
 
-.comiclist-item.layout-list-small .caption {
+.comiclist .x-dataview-item.layout-style-list .caption {
   font-size: 16px;
   font-weight: bold;
 }
 
-.comiclist-item.layout-list-medium .caption {
-  font-size: 16px;
+.comiclist .x-dataview-item.layout-style-list.small .caption {
+}
+
+.comiclist .x-dataview-item.layout-style-list.medium .caption {
+}
+
+.comiclist .x-dataview-item.layout-style-list.large .caption {
+}
+
+.comiclist .x-dataview-item.layout-style-grid .caption {
   font-weight: bold;
 }
 
-.comiclist-item.layout-list-large .caption {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.comiclist-item.layout-grid-small .caption {
+.comiclist .x-dataview-item.layout-style-grid.small .caption {
   font-size: 10px;
-  font-weight: bold;
 }
 
 
-.comiclist-item.layout-grid-medium .caption {
+.comiclist .x-dataview-item.layout-style-grid.medium .caption {
   font-size: 13px;
-  font-weight: bold;
 }
 
 
-.comiclist-item.layout-grid-large .caption {
+.comiclist .x-dataview-item.layout-style-grid.large .caption {
   font-size: 16px;
-  font-weight: bold;
 }
 
 /* PROGRESS *****************************************************************/
 
-.comiclist-item.layout-list-small .progress {
+.comiclist .x-dataview-item.layout-style-list .progress {
   font-size: 11px;
   font-weight: bold;
 }
 
-.comiclist-item.layout-list-medium .progress {
+.comiclist .x-dataview-item.layout-style-list.small .progress {
+}
+
+.comiclist .x-dataview-item.layout-style-list.medium .progress {
+}
+
+.comiclist .x-dataview-item.layout-style-list.large .progress {
+}
+
+.comiclist .x-dataview-item.layout-style-grid .progress {
   font-size: 11px;
   font-weight: bold;
 }
 
-.comiclist-item.layout-list-large .progress {
-  font-size: 11px;
-  font-weight: bold;
+.comiclist .x-dataview-item.layout-style-grid.small .progress {
 }
 
-.comiclist-item.layout-grid-small .progress {
-  font-size: 11px;
-  font-weight: bold;
-  
+.comiclist .x-dataview-item.layout-style-grid.medium .progress {
 }
 
-.comiclist-item.layout-grid-medium .progress {
-  font-size: 11px;
-  font-weight: bold;
-}
-
-.comiclist-item.layout-grid-large .progress {
-  font-size: 11px;
-  font-weight: bold;
+.comiclist .x-dataview-item.layout-style-grid.large .progress {
 }
 
 /* LAST OPENED *****************************************************************/
 
-.comiclist-item.layout-list-small .last_opened {
+.comiclist .x-dataview-item.layout-style-list .last_opened {
   font-size: 11px;
   font-weight: bold;
 }
 
-.comiclist-item.layout-list-medium .last_opened {
-  font-size: 11px;
-  font-weight: bold;
+.comiclist .x-dataview-item.layout-style-list.small .last_opened {
 }
 
-.comiclist-item.layout-list-large .last_opened {
-  font-size: 11px;
-  font-weight: bold;
+.comiclist .x-dataview-item.layout-style-list.medium .last_opened {
 }
 
-
-.comiclist-item.layout-grid-small .last_opened  {
-  font-size: 11px;
-  font-weight: bold;
+.comiclist .x-dataview-item.layout-style-list.large .last_opened {
 }
 
-
-.comiclist-item.layout-grid-medium .last_opened {
+.comiclist .x-dataview-item.layout-style-grid .last_opened  {
   font-size: 11px;
   font-weight: bold;
 }
 
 
-.comiclist-item.layout-grid-large .last_opened {
-  font-size: 11px;
-  font-weight: bold;
+.comiclist .x-dataview-item.layout-style-grid.small .last_opened  {
+}
+
+
+.comiclist .x-dataview-item.layout-style-grid.medium .last_opened {
+}
+
+
+.comiclist .x-dataview-item.layout-style-grid.large .last_opened {
 }
 
 

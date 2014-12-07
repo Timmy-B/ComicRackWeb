@@ -246,8 +246,7 @@ Ext.define('Comic.controller.ComicList', {
       }
 
       
-      comiclistview.setItemTpl(ComicListItemTemplates[Comic.ordersettings.get('layout')]);
-      comiclistview.setItemCls(ComicListItemTemplates[Comic.ordersettings.get('layout')].containerCls);
+      comiclistview.SetLayout(Comic.ordersettings.get('layout'));
     },
        
     onComicListViewItemTap: function(/*Ext.dataview.DataView*/ list, /*Number*/ index, /*Ext.Element/Ext.dataview.component.DataItem*/ target, /*Ext.data.Model*/ record, /*Ext.EventObject*/ e, /*Object*/ eOpts)
