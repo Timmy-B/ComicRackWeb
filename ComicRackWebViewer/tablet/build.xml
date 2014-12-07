@@ -63,4 +63,67 @@
         <property name="build.options.native.product" value="product:touch"/>
     </target>
     -->
+    
+<target name="-after-build"/>
+    <target name="build"
+            depends="init,-before-build,-build,-after-build"
+            description="Copy over the font/ultimo folder and remove temp files"></target>
+
+
+    <copy todir="${basedir}/resources/css/stylesheets/fonts/pictos" overwrite="true">
+        <fileset dir="${basedir}/resources/sass/stylesheets/fonts/pictos">
+            <include name="**/*"/>
+        </fileset>
+    </copy>
+    <copy todir="${build.dir}/resources/css/stylesheets/fonts/pictos" overwrite="true">
+        <fileset dir="${basedir}/resources/sass/stylesheets/fonts/pictos">
+            <include name="**/*"/>
+        </fileset>
+    </copy>
+
+
+    <copy todir="${basedir}/resources/images" overwrite="true">
+        <fileset dir="${basedir}/resources/images">
+            <include name="**/*"/>
+        </fileset>
+    </copy>
+    <copy todir="${build.dir}/resources/images" overwrite="true">
+        <fileset dir="${basedir}/resources/images">
+            <include name="**/*"/>
+        </fileset>
+    </copy>
+
+
+    <!-- bug fix for windows -->
+    <copy todir="${basedir}/resources/icons" overwrite="true">
+        <fileset dir="${basedir}/resources/icons">
+            <include name="**/*"/>
+        </fileset>
+    </copy>
+    <copy todir="${build.dir}/resources/icons" overwrite="true">
+        <fileset dir="${basedir}/resources/icons">
+            <include name="**/*"/>
+        </fileset>
+    </copy>
+    <copy todir="${basedir}/resources/loading" overwrite="true">
+        <fileset dir="${basedir}/resources/loading">
+            <include name="**/*"/>
+        </fileset>
+    </copy>
+    <copy todir="${build.dir}/resources/loading" overwrite="true">
+        <fileset dir="${basedir}/resources/loading">
+            <include name="**/*"/>
+        </fileset>
+    </copy>
+    <copy todir="${basedir}/resources/startup" overwrite="true">
+        <fileset dir="${basedir}/resources/startup">
+            <include name="**/*"/>
+        </fileset>
+    </copy>
+    <copy todir="${build.dir}/resources/startup" overwrite="true">
+        <fileset dir="${basedir}/resources/startup">
+            <include name="**/*"/>
+        </fileset>
+    </copy>
+    <delete dir="${basedir}/${build.dir}"/>    
 </project>
