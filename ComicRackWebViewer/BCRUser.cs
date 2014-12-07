@@ -54,7 +54,7 @@ namespace BCR
           progress.CurrentPage = reader.GetInt32(2);
           progress.LastPageRead = reader.GetInt32(3);
           progress.DateLastRead = reader.GetString(4);
-          comicProgress.Add(progress.Id, progress);
+          comicProgress[progress.Id] = progress;
         }
       }
     }
@@ -98,7 +98,7 @@ namespace BCR
         Database.Instance.ExecuteNonQuery("INSERT INTO comic_progress (user_id, comic_id, current_page, last_page_read, date_last_read) VALUES(" + UserId + ", '" + progress.Id.ToString() + "', " + progress.CurrentPage + ", " + progress.LastPageRead + ", '" + progress.DateLastRead + "');");
 
         progress.DatabaseId = (int)Database.Instance.GetLastInsertRowId();
-        comicProgress.Add(comicId, progress);
+        comicProgress[comicId] = progress;
       }
     }
 
