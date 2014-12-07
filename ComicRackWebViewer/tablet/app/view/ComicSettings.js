@@ -40,13 +40,13 @@ Ext.define('Comic.view.ComicSettings', {
           {
             xtype: 'titlebar',
             title: 'Interface Settings',
-            ui: 'light',
+            ui: 'yellow',
             items: [
               {
                 xtype: 'button',
                 iconCls: 'delete',
                 align: 'right',
-                style: 'background-image:none; background-color: rgb(255, 0, 0);',
+                style: 'background-image:none; background-color: rgb(255, 99, 30);',
                 name: 'closeButton'
                 //text: 'Close'
               }

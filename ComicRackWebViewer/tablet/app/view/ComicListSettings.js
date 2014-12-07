@@ -41,13 +41,13 @@ Ext.define('Comic.view.ComicListSettings', {
             {
               xtype: 'titlebar',
               title: 'Comic List Order',
-              ui: 'light',
+              ui: 'yellow',
               items: [
                 {
                   xtype: 'button',
                   iconCls: 'delete',
                   align: 'right',
-                  style: 'background-image:none; background-color: rgb(255, 0, 0);',
+                  style: 'background-image:none; background-color: rgb(255, 99, 30);',
                   name: 'closeButton'
                 }
               ]
@@ -186,8 +186,12 @@ Ext.define('Comic.view.ComicListSettings', {
         ]},
         {
           xtype: 'fieldset',
-          title: 'Comic List Layout',
           items: [
+            {
+              xtype: 'titlebar',
+              title: 'Comic List Layout',
+              ui: 'yellow'
+            },
             {
               xtype: 'selectfield',
               label: 'Theme',

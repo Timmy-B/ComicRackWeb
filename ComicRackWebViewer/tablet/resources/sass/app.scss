@@ -26,10 +26,13 @@ $tabs-bar-gradient: 'matte';
 $tabs-bottom-active-gradient:'recessed'; 
 $toolbar-gradient: 'glossy'; 
 //$list-color: #FFF !default;
+//$toolbar-base-color: $active-color;
 
 
 @import 'sencha-touch/default';
 @import 'sencha-touch/default/all';
+
+@include sencha-toolbar-ui('yellow', $active-color);
 
 .x-toolbar .x-toolbar-title { 
     color: saturate(lighten($active-color, 10%), 20%); 
