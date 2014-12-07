@@ -203,7 +203,7 @@ namespace BCR
 
     public int UserLastPageRead { get { return useComicrackProgress ? book.LastPageRead : (progress == null ? 0 : progress.LastPageRead); } }
 
-    public string UserOpenedTimeAsText { get { return useComicrackProgress ? book.OpenedTimeAsText : (progress == null ? "" : progress.DateLastRead); } }
+    public string UserOpenedTimeAsText { get { return useComicrackProgress ? (book.OpenedTimeAsText == "never" ? "" : book.OpenedTimeAsText) : (progress == null ? "" : progress.DateLastRead); } }
     #endregion User specific properties
   }
 
