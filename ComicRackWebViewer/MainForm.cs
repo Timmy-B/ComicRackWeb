@@ -67,7 +67,23 @@ namespace ComicRackWebViewer
                   
       SetEnabledState();
     }
-    
+
+    private string LocalIPAddress()
+    {
+      IPHostEntry host;
+      string localIP = "";
+      host = Dns.GetHostEntry(Dns.GetHostName());
+      foreach (IPAddress ip in host.AddressList)
+      {
+        if (ip.AddressFamily == AddressFamily.InterNetwork)
+        {
+          localIP = ip.ToString();
+          break;
+        }
+      }
+      return localIP;
+    }
+
     private void SetEnabledState()
     {
       if (buttonStart == null)
@@ -86,7 +102,7 @@ namespace ComicRackWebViewer
       else
       {
         buttonStart.Text = "Stop";
-        labelStatus.Text = "The web server is running.";
+        labelStatus.Text = "The web server is running.\nOpen it on your tablet via http://" + LocalIPAddress() + ":" + textBoxPort.Text + "\nNB: don't forget to allow ComicRack in your firewall.";
       }
       System.Windows.Input.Mouse.SetCursor(null);
     }

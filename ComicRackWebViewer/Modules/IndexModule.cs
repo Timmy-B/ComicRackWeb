@@ -1,4 +1,5 @@
-﻿using Nancy;
+﻿using BCR;
+using Nancy;
 using Nancy.Responses;
 
 namespace ComicRackWebViewer
@@ -8,7 +9,19 @@ namespace ComicRackWebViewer
     public IndexModule()
       : base("/")
     {
-      Get["/"] = x => { return Response.AsRedirect("/tablet/index.html", RedirectResponse.RedirectType.Permanent); };
+      Get["/"] = x => {
+        var baseUrl = Database.Instance.GlobalSettings.url_base;
+        if (string.IsNullOrEmpty(baseUrl))
+        {
+          baseUrl = "/index.html";
+        }
+        else
+        {
+          baseUrl = "/" + baseUrl + "/index.html";
+        }
+
+        return Response.AsRedirect(baseUrl, RedirectResponse.RedirectType.Permanent); 
+      };
     }
   }
 }

@@ -39,6 +39,8 @@ namespace ComicRackWebViewer
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
       this.tabControl = new System.Windows.Forms.TabControl();
       this.tabPageWebServer = new System.Windows.Forms.TabPage();
+      this.textBoxUrlBase = new System.Windows.Forms.TextBox();
+      this.label3 = new System.Windows.Forms.Label();
       this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.buttonStart = new System.Windows.Forms.Button();
       this.labelStatus = new System.Windows.Forms.Label();
@@ -64,8 +66,6 @@ namespace ComicRackWebViewer
       this.buttonClearPageCache = new System.Windows.Forms.Button();
       this.tabPageAbout = new System.Windows.Forms.TabPage();
       this.webBrowserAbout = new System.Windows.Forms.WebBrowser();
-      this.textBoxUrlBase = new System.Windows.Forms.TextBox();
-      this.label3 = new System.Windows.Forms.Label();
       this.tabControl.SuspendLayout();
       this.tabPageWebServer.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -84,7 +84,7 @@ namespace ComicRackWebViewer
       this.tabControl.Location = new System.Drawing.Point(0, 0);
       this.tabControl.Name = "tabControl";
       this.tabControl.SelectedIndex = 0;
-      this.tabControl.Size = new System.Drawing.Size(503, 272);
+      this.tabControl.Size = new System.Drawing.Size(503, 298);
       this.tabControl.TabIndex = 0;
       this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControlSelectedIndexChanged);
       // 
@@ -100,15 +100,30 @@ namespace ComicRackWebViewer
       this.tabPageWebServer.Location = new System.Drawing.Point(4, 22);
       this.tabPageWebServer.Name = "tabPageWebServer";
       this.tabPageWebServer.Padding = new System.Windows.Forms.Padding(3);
-      this.tabPageWebServer.Size = new System.Drawing.Size(495, 246);
+      this.tabPageWebServer.Size = new System.Drawing.Size(495, 272);
       this.tabPageWebServer.TabIndex = 0;
       this.tabPageWebServer.Text = "Web Server";
       this.tabPageWebServer.UseVisualStyleBackColor = true;
       // 
+      // textBoxUrlBase
+      // 
+      this.textBoxUrlBase.Location = new System.Drawing.Point(114, 46);
+      this.textBoxUrlBase.Name = "textBoxUrlBase";
+      this.textBoxUrlBase.Size = new System.Drawing.Size(197, 20);
+      this.textBoxUrlBase.TabIndex = 6;
+      // 
+      // label3
+      // 
+      this.label3.Location = new System.Drawing.Point(8, 49);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(100, 17);
+      this.label3.TabIndex = 5;
+      this.label3.Text = "URL Base";
+      // 
       // pictureBox1
       // 
       this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-      this.pictureBox1.Location = new System.Drawing.Point(158, 96);
+      this.pictureBox1.Location = new System.Drawing.Point(158, 118);
       this.pictureBox1.Name = "pictureBox1";
       this.pictureBox1.Size = new System.Drawing.Size(182, 142);
       this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -129,7 +144,7 @@ namespace ComicRackWebViewer
       // 
       this.labelStatus.Location = new System.Drawing.Point(8, 69);
       this.labelStatus.Name = "labelStatus";
-      this.labelStatus.Size = new System.Drawing.Size(303, 23);
+      this.labelStatus.Size = new System.Drawing.Size(479, 46);
       this.labelStatus.TabIndex = 2;
       this.labelStatus.Text = "status text";
       // 
@@ -359,26 +374,11 @@ namespace ComicRackWebViewer
       this.webBrowserAbout.TabIndex = 0;
       this.webBrowserAbout.Url = new System.Uri("", System.UriKind.Relative);
       // 
-      // textBoxUrlBase
-      // 
-      this.textBoxUrlBase.Location = new System.Drawing.Point(114, 46);
-      this.textBoxUrlBase.Name = "textBoxUrlBase";
-      this.textBoxUrlBase.Size = new System.Drawing.Size(197, 20);
-      this.textBoxUrlBase.TabIndex = 6;
-      // 
-      // label3
-      // 
-      this.label3.Location = new System.Drawing.Point(8, 49);
-      this.label3.Name = "label3";
-      this.label3.Size = new System.Drawing.Size(100, 17);
-      this.label3.TabIndex = 5;
-      this.label3.Text = "URL Base";
-      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(503, 272);
+      this.ClientSize = new System.Drawing.Size(503, 298);
       this.Controls.Add(this.tabControl);
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MaximizeBox = false;
