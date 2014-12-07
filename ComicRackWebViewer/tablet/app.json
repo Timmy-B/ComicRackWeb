@@ -80,18 +80,18 @@
             "path": "resources/css/app.css",
             "update": "full"
         },
-    {
-      "path": "resources/css/comic.css",
-      "update": "full"
-    },
-    {
-      "path": "lib/ux/IconSpinner.css",
-      "update": "full"
-    },
-    {
-      "path": "lib/add2home/add2home.css",
-      "update": "full"
-    }
+        {
+          "path": "resources/css/comic.css",
+          "update": "full"
+        },
+        {
+          "path": "lib/ux/IconSpinner.css",
+          "update": "full"
+        },
+        {
+          "path": "lib/add2home/add2home.css",
+          "update": "full"
+        }
     ],
 
     /**
@@ -123,10 +123,10 @@
         "resources/css",
         "resources/images",
         "resources/icons",
-    "resources/startup",
-    "COPYING",
-    "CREDITS.txt",
-    "LICENSE.txt"
+        "resources/startup",
+        "COPYING",
+        "CREDITS.txt",
+        "LICENSE.txt"
     ],
 
     /**

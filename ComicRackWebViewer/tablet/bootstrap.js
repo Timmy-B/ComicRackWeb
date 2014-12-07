@@ -48,7 +48,7 @@ Ext.Loader.addClassPathMappings({
 });
 
 Ext.ClassManager.addNameAlternateMappings({
-  "Comic.NestedListFix": [],
+  "Comic.Enums": [],
   "Comic.RemoteApi": [],
   "Comic.RestODataProxy": [],
   "Comic.ScrollToTopOnRefreshFix": [],
@@ -728,7 +728,7 @@ Ext.ClassManager.addNameAlternateMappings({
 });
 
 Ext.ClassManager.addNameAliasMappings({
-  "Comic.NestedListFix": [],
+  "Comic.Enums": [],
   "Comic.RemoteApi": [],
   "Comic.RestODataProxy": [
     "proxy.restodata"
