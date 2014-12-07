@@ -29,13 +29,17 @@ Ext.define('Comic.controller.ComicListSettings', {
     config: {
         refs: {
           comiclistview: 'comiclistview',
-          comiclistsettingsview: 'comiclistsettingsview'
+          comiclistsettingsview: 'comiclistsettingsview',
+          closeButton: 'comiclistsettingsview [name=closeButton]'
         },
         
         control: {
           comiclistsettingsview: {
             show: 'onShow',
             hide: 'onHide'
+          },
+        closeButton: {
+            tap: 'onTapCloseButton'
           }
         }
     },
@@ -91,5 +95,14 @@ Ext.define('Comic.controller.ComicListSettings', {
 
       var treelistcontroller = me.getApplication().getController('TreeList');
       treelistcontroller.onSettingsChanged();
+    },
+
+
+    onTapCloseButton: function ()
+    {
+      var me = this,
+          comiclistsettingsview = me.getComiclistsettingsview();
+
+      comiclistsettingsview.hide();
     }
 });

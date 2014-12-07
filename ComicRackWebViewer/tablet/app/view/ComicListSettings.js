@@ -37,8 +37,21 @@ Ext.define('Comic.view.ComicListSettings', {
     items: [
       {
         xtype: 'fieldset',
-        title: 'Comic List Order',
         items: [
+            {
+              xtype: 'titlebar',
+              title: 'Comic List Order',
+              ui: 'light',
+              items: [
+                {
+                  xtype: 'button',
+                  iconCls: 'delete',
+                  align: 'right',
+                  style: 'background-image:none; background-color: rgb(255, 0, 0);',
+                  name: 'closeButton'
+                }
+              ]
+            },
             {
               xtype: 'selectfield',
               label: 'Sort by',

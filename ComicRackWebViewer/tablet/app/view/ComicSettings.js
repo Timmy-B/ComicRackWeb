@@ -33,10 +33,26 @@ Ext.define('Comic.view.ComicSettings', {
     width: '90%',
     height: '90%',
     items: [
+      
       {
         xtype: 'fieldset',
-        title: 'Interface Settings',
         items: [
+          {
+            xtype: 'titlebar',
+            title: 'Interface Settings',
+            ui: 'light',
+            items: [
+              {
+                xtype: 'button',
+                iconCls: 'delete',
+                align: 'right',
+                style: 'background-image:none; background-color: rgb(255, 0, 0);',
+                name: 'closeButton'
+                //text: 'Close'
+              }
+            ]
+          },
+
           //{
           //  xtype: 'checkboxfield',
           //  label: 'Open current comic at app launch',
@@ -51,6 +67,7 @@ Ext.define('Comic.view.ComicSettings', {
           //  name: 'open_next_comic',
           //  disabled: true
           //},
+          
           {
             xtype: 'selectfield',
             label: 'Page fit mode',

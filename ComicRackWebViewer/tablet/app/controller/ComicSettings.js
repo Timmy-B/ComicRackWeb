@@ -39,7 +39,8 @@ Ext.define('Comic.controller.ComicSettings', {
           pageChangeAreaWidth: 'comicsettingsview [name=page_change_area_width]',
           openNextComic: 'comicsettingsview [name=open_next_comic]',
           //openCurrentComicAtLaunch: 'comicsettingsview [name=open_current_comic_at_launch]',
-          pageFitMode: 'comicsettingsview [name=page_fit_mode]'
+          pageFitMode: 'comicsettingsview [name=page_fit_mode]',
+          closeButton: 'comicsettingsview [name=closeButton]'
         },
         
         control: {
@@ -53,6 +54,9 @@ Ext.define('Comic.controller.ComicSettings', {
           },
           usePageChangeArea: {
             change: 'onChangeUsePageChangeArea'
+          },
+          closeButton: {
+            tap: 'onTapCloseButton'
           }
           
           
@@ -157,6 +161,7 @@ Ext.define('Comic.controller.ComicSettings', {
         //pageTurnDragThreshold.setValue(pageTurnDragThreshold.getMinValue());
       }
     },
+
     onChangeUsePageChangeArea: function( checkbox, newValue, oldValue, eOpts )
     {
       var pageChangeAreaWidth = this.getPageChangeAreaWidth();
@@ -169,5 +174,13 @@ Ext.define('Comic.controller.ComicSettings', {
       {
         pageChangeAreaWidth.disable();
       }
-    }    
+    },
+
+    onTapCloseButton: function()
+    {
+      var me = this,
+          comicsettingsview = me.getComicsettingsview();
+
+      comicsettingsview.hide();
+    }
 });
