@@ -1,95 +1,22 @@
 /*
-  Copyright 2013 Jeroen Walter
-*/  
+  This file is part of Badaap Comic Reader.
+  
+  Copyright (c) 2014 Jeroen Walter
+  
+  Badaap Comic Reader is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-// Cookie entries
+  Badaap Comic Reader is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-function createCookie(name, value, days) 
-{
-    var expires = "",
-        date;
-        
-    if (days) 
-    {
-        date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toGMTString();
-    } 
-    
-    document.cookie = name + "=" + value + expires + "; path=/";
-    console.log(document.cookie);
-}
+  You should have received a copy of the GNU General Public License
+  along with Badaap Comic Reader.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
-function readCookie(name) 
-{
-    var cookieValue = null,
-        nameEQ = name + "=",
-        ca = document.cookie.split(';'),
-        i, c, found;
-        
-    for (i = 0; i < ca.length; i++) 
-    {
-        c = ca[i];
-        while (c.charAt(0) == ' ') 
-        {
-          c = c.substring(1, c.length);
-        }
-        
-        if (c.indexOf(nameEQ) == 0) 
-        {
-            found = c.substring(nameEQ.length, c.length);
-            cookieValue = found;
-        }
-    }
-    return cookieValue;
-}
-
-function eraseCookie(name) 
-{
-    createCookie(name, "", -1);
-}
-
-           
-var ApiToken = {
-    authUrl: bcrBase + '/auth',
-    apiKeyKey : 'BCR_apiKey',
-    usernameKey : 'BCR_username',
-
-    Set: function (username, apiKey, rememberMe) {
-        var me = this,
-            days = rememberMe ? 10 : 0;
-            
-        createCookie(me.apiKeyKey, apiKey, days);
-        createCookie(me.usernameKey, username, days);
-        
-        //localStorage.setItem(me.apiKeyKey, apiKey);
-        //localStorage.setItem(me.usernameKey, username);
-    },
-
-    Get: function () {
-        var me = this;
-        //localStorage.getItem(me.apiKeyKey);
-        //localStorage.getItem(me.usernameKey);
-        
-        var key = readCookie(me.apiKeyKey);
-        var username = readCookie(me.usernameKey);
-        var token = { Key: key, Username: username, IsValid: key != null };        
-        return token;
-    },
-
-    Delete: function () {
-        var me = this;
-        eraseCookie(me.apiKeyKey);
-        eraseCookie(me.usernameKey);
-        
-        //localStorage.removeItem(me.apiKeyKey);
-        //localStorage.removeItem(me.usernameKey);
-    }
-    
-    
-};
-     
-////////////////////////////////////////////////////////////////////
 
 Ext.define('Comic.Enums', {
   extend: 'Ext.Base',
