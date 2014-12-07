@@ -30,6 +30,12 @@ Ext.define('Comic.view.Search', {
     submitOnAction: true,
     items: [
       {
+        xtype: 'toolbar',
+        docked: 'top',
+        ui: 'light',
+        title: 'Search All'
+      },
+      {
         xtype: 'fieldset',
         items: [
           {
@@ -85,13 +91,8 @@ Ext.define('Comic.view.Search', {
         text: 'Go',
         ui: 'action',
         iconCls: 'search',
-        iconMask: true
-      },
-      {
-        xtype: 'toolbar',
-        docked: 'top',
-        ui: 'light',
-        title: 'Search All'
+        iconMask: true,
+        margin: '.5em .5em'
       }
     ]
   }

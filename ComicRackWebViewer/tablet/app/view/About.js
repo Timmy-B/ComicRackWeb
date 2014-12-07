@@ -24,8 +24,14 @@ Ext.define('Comic.view.About', {
   config: {
     items: [
       {
+        xtype: 'toolbar',
+        docked: 'top',
+        ui: 'light',
+        title: 'About'
+      },
+      {
         xtype: 'fieldset',
-        title: 'About',
+        //title: 'About',
         items: [
           {
             xtype: 'textfield',
