@@ -49,7 +49,8 @@ Ext.define('Comic.view.Series', {
     requires: [ 
       'Comic.store.Series',
       'Ext.plugin.PullRefresh',
-      'Ext.dataview.List'
+      'Ext.dataview.List',
+      'Ext.field.Search'
     ],
     
     config: {
