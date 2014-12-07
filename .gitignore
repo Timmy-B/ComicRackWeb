@@ -8,3 +8,5 @@ ComicRackWebViewer/tablet/build
 packages/
 ComicRackWebViewer/tablet/archive
 .sass-cache
+obj
+bin
