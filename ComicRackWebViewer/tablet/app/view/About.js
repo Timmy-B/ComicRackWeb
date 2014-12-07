@@ -31,7 +31,6 @@ Ext.define('Comic.view.About', {
       },
       {
         xtype: 'fieldset',
-        //title: 'About',
         items: [
           {
             xtype: 'textfield',
@@ -58,7 +57,7 @@ Ext.define('Comic.view.About', {
             xtype: 'textfield',
             name: 'website',
             label: 'Website',
-            value: '',//'http://www.badaap.nl/',
+            value: '',
             html: '<a href="http://www.badaap.nl" target=_blank>http://www.badaap.nl/</a>',
             readOnly: true
           }
