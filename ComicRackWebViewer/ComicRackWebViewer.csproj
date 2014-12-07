@@ -185,7 +185,6 @@
     <None Include="tablet\app\controller\ComicInfo.js" />
     <None Include="tablet\app\controller\ComicList.js" />
     <None Include="tablet\app\controller\ComicSettings.js" />
-    <None Include="tablet\app\controller\FileSystem.js" />
     <None Include="tablet\app\controller\Main.js" />
     <None Include="tablet\app\controller\Readme.md" />
     <None Include="tablet\app\controller\Search.js" />
@@ -216,7 +215,6 @@
     <None Include="tablet\app\view\ComicList.js" />
     <None Include="tablet\app\view\ComicListSort.js" />
     <None Include="tablet\app\view\ComicSettings.js" />
-    <None Include="tablet\app\view\FileSystem.js" />
     <None Include="tablet\app\view\ImageViewer.js" />
     <None Include="tablet\app\view\Login.js" />
     <None Include="tablet\app\view\Logout.js" />
