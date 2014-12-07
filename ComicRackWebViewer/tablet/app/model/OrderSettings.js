@@ -19,7 +19,11 @@
 
 Ext.define('Comic.model.OrderSettings', {
   extend: 'Ext.data.Model',
-  requires: ['Comic.Enums'],
+  requires: [
+    'Comic.Enums',
+    'Ext.data.proxy.LocalStorage',
+    'Ext.data.proxy.SessionStorage'
+  ],
   config: {
     fields: [
         { name: 'user', type: 'string', defaultValue: '' },
