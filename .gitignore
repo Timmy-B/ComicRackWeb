@@ -7,3 +7,4 @@ ComicRackWebViewer/tablet/build
 *.user
 packages/
 ComicRackWebViewer/tablet/archive
+.sass-cache
