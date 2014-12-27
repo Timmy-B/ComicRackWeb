@@ -24,6 +24,7 @@ namespace ComicRackWebViewer
   using System.Data.SQLite;
   using cYo.Projects.ComicRack.Viewer;
   using cYo.Projects.ComicRack.Engine.Database;
+  using System.IO;
   
   
   
@@ -45,10 +46,9 @@ namespace ComicRackWebViewer
       // The InitializeComponent() call is required for Windows Forms designer support.
       //
       InitializeComponent();
-      
-      string path = BCRInstaller.Instance.installFolder + "about.html";
-      
-      
+
+      string path = Path.Combine(BCRInstaller.Instance.InstallFolder, "about.html");
+            
       webBrowserAbout.Url = new Uri("file://" + path);
       
       textBoxPort.Text = Database.Instance.GlobalSettings.webserver_port.ToString();
