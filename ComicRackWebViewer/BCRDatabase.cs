@@ -311,91 +311,18 @@ namespace BCR
     }
     
 
-/*
-public static List<dynamic> AsDynaList(ADODB.Recordset recordset)
-{
-
-    List<dynamic> rs = new List<dynamic>();
-    while (!recordset.EOF)
-    {
-        var fieldIndex = 0;
-        var test = new ExpandoObject() as IDictionary<string, object>;
-
-        foreach (ADODB.Field fld in recordset.Fields)
-        {
-            test.Add(fld.Name, recordset.Fields[fieldIndex].Value);
-            fieldIndex++;
-        }
-        rs.Add(test);
-        recordset.MoveNext();
-    }
-    return rs;
-}
-
-
-http://sqlite.phxsoftware.com/forums/p/134/465.aspx#465
-
-http://msdn.microsoft.com/en-us/library/ax3wd0k9%28v=vs.100%29.aspx
-
-http://decoding.wordpress.com/2009/01/14/using-sqlite-with-net/
-
-http://csharp-station.com/Tutorial/AdoDotNet/Lesson05
-
-
- public DataTable GetDataTable(string sql)
-{
-var dt = new DataTable();
-try
-{
-using (var conn = new SQLiteConnection(ConnectionStringHelper.ConnectionString))
-{
-conn.Open();
-SQLiteCommand mycommand = new SQLiteCommand(conn);
-mycommand.CommandText = sql;
-SQLiteDataReader reader = mycommand.ExecuteReader();
-dt.Load(reader);
-reader.Close();
-}
-}
-catch (Exception ex)
-{
-throw ex;
-}
-return dt;
-}
-
-public static DataSet GetDataSet(string sql)
-{
-  DataSet ds = new DataSet();
-  using (SQLiteConnection conn = new SQLiteConnection(connString))
-  {
-    conn.Open();
-    using (SQLiteCommand cmd = new SQLiteCommand(conn))
-    {
-      cmd.CommandText = sql;
-      cmd.CommandType = CommandType.Text;
-      using (SQLiteDataAdapter da = new SQLiteDataAdapter(cmd))
-      {
-        da.Fill(ds);
-        return ds;
-      }
-    }
-  }
-}
-
-*/
-
-
     public void Dispose()
     {
-      mConnection.Dispose();
-      mConnection = null;
+      if (mConnection != null)
+      {
+        mConnection.Dispose();
+        mConnection = null;
+      }
     }
 
     ~Database()
     {
-      if (mConnection != null)
-        Dispose();
+      Dispose();
     }
 
   }
