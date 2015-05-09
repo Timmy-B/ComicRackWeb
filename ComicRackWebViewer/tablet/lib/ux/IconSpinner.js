@@ -16,7 +16,7 @@ Ext.define('Ext.ux.IconSpinner', {
     iconPlusDisabled: 'resources/images/spinner-plus.png',
     iconMinusDisabled: 'resources/images/spinner-minus.png',
     iconPlusEnabled: 'resources/images/spinner-plus-color.png',
-    iconMinusEnabled: 'resources/images/spinner-minus-color.png',
+    iconMinusEnabled: 'resources/images/spinner-minus-color.png'
   },
 
   initialize: function()

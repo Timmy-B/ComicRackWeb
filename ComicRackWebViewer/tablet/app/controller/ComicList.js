@@ -28,7 +28,7 @@ Ext.define('Comic.controller.ComicList', {
           'Comic.view.TreeList',
           'Comic.store.ComicList',
           'Comic.view.TabPanel',
-          'Comic.view.ComicListSettings',
+          'Comic.view.ComicListSettings'
     ],
     
     config: {

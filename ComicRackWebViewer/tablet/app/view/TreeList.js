@@ -79,7 +79,7 @@ Ext.define('Comic.view.TreeList', {
       //cls: 'lite',
       listConfig : {
         itemTpl: TheTreeListItemTemplate,
-        baseCls: 'filesystem-list',
+        baseCls: 'filesystem-list'
         //cls: 'lite'
       }
       

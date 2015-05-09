@@ -142,7 +142,7 @@ Ext.define('Comic.view.ComicList', {
 
       plugins: [
         {
-          xclass: 'plugin.dataviewpaging',
+          xclass: 'plugin.dataviewpaging'
         }
       ],
       items: [
@@ -158,14 +158,14 @@ Ext.define('Comic.view.ComicList', {
                 xtype: 'button',
                 itemId: 'toggleLibrary',
                 align: 'left',
-                text: 'Lists',
+                text: 'Lists'
               },
               {
                 xtype: 'button',
                 align: 'right',
                 itemId: 'refreshbutton',
                 iconCls: 'refresh',
-                iconMask: true,
+                iconMask: true
               },
               {
                 xtype: 'button',
