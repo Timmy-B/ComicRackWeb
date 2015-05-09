@@ -246,7 +246,7 @@ namespace BCR
           	    }
           	              	    
           	    BCRUser user = (BCRUser)this.Context.CurrentUser;
-          	    user.UpdateComicProgress(comicId, int.Parse(this.Request.Form.CurrentPage));
+          	    user.UpdateComicProgress(book, int.Parse(this.Request.Form.CurrentPage));
           	              	    
           	    return HttpStatusCode.OK;  
         	    }

@@ -1,3 +1,4 @@
+using cYo.Projects.ComicRack.Engine;
 using Nancy.Security;
 using System;
 using System.Collections.Generic;
@@ -75,10 +76,13 @@ namespace BCR
       return false;
     }
 
-    public void UpdateComicProgress(Guid comicId, int currentPage)
+    public void UpdateComicProgress(ComicBook comicBook, int currentPage)
     {
+      if (comicBook == null)
+        return;
+
       ComicProgress progress;
-      if (comicProgress.TryGetValue(comicId, out progress))
+      if (comicProgress.TryGetValue(comicBook.Id, out progress))
       {
         if (currentPage > progress.LastPageRead)
           progress.LastPageRead = currentPage;
@@ -90,7 +94,7 @@ namespace BCR
       else
       {
         progress = new ComicProgress();
-        progress.Id = comicId;
+        progress.Id = comicBook.Id;
         progress.LastPageRead = currentPage;
         progress.CurrentPage = currentPage;
         progress.DateLastRead = System.DateTime.Now.ToString("s");
@@ -98,7 +102,16 @@ namespace BCR
         Database.Instance.ExecuteNonQuery("INSERT INTO comic_progress (user_id, comic_id, current_page, last_page_read, date_last_read) VALUES(" + UserId + ", '" + progress.Id.ToString() + "', " + progress.CurrentPage + ", " + progress.LastPageRead + ", '" + progress.DateLastRead + "');");
 
         progress.DatabaseId = (int)Database.Instance.GetLastInsertRowId();
-        comicProgress[comicId] = progress;
+        comicProgress[comicBook.Id] = progress;
+      }
+
+      if (settings.use_comicrack_progress)
+      {
+        // Save the progess to the ComicRack database as well
+        comicBook.CurrentPage = currentPage;
+        if (comicBook.LastPageRead < currentPage)
+          comicBook.LastPageRead = currentPage;
+
       }
     }
 
