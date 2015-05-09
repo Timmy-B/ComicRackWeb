@@ -41,7 +41,7 @@ namespace BCR
 
         public static string LoginUser(string username, string password)
         {
-          NameValueCollection result = Database.Instance.QuerySingle("SELECT * FROM user WHERE username = '" + username + "' LIMIT 1;");
+          NameValueCollection result = Database.Instance.QuerySingle("SELECT * FROM user WHERE username = '" + username + "' COLLATE NOCASE LIMIT 1;");
           if (result == null)
             return null;
           
