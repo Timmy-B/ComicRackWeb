@@ -73,7 +73,7 @@
             <then>
                 <x-fashion-compile
                         file="${app.example.scss}"
-                        toFile="${app.example.css.path}"/>
+                        toFile="${app.example.css}"/>
             </then>
             <else>
                 <x-compass-compile

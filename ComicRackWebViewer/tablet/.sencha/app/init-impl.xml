@@ -88,20 +88,27 @@
         calculate the appropriate build.compression value
         -->
         <condition property="build.compression" value="-yui">
-            <x-is-true value="${build.compression.yui}"/>
+            <or>
+                <x-is-true value="${build.compression.yui}"/>
+                <equals arg1="yui" arg2="${app.compressor.type}"/>
+            </or>
         </condition>
 
         <condition property="build.compression" value="-closure">
-            <x-is-true value="${build.compression.closure}"/>
+            <or>
+                <x-is-true value="${build.compression.closure}"/>
+                <equals arg1="closure" arg2="${app.compressor.type}"/>
+            </or>
         </condition>
 
         <condition property="build.compression" value="-uglify">
-            <x-is-true value="${build.compression.uglify}"/>
+            <or>
+                <x-is-true value="${build.compression.uglify}"/>
+                <equals arg1="uglify" arg2="${app.compressor.type}"/>
+            </or>
         </condition>
 
         <property name="build.compression" value=""/>
-
-        <x-verify-app-cmd-ver/>
 
         <!--
         this id string is used to share a common compiler instance
