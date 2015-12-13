@@ -11,68 +11,6 @@ using System.Windows;
 
 namespace ComicRackWebViewer
 {
-  //public static class NativeMethods
-  //{
-  //  [DllImport("kernel32.dll", CallingConvention = CallingConvention.Cdecl)]
-  //  internal static extern bool SetDllDirectory(string pathName);
-  //}
-
-
-  //// http://stackoverflow.com/questions/108971/using-side-by-side-assemblies-to-load-the-x64-or-x32-version-of-a-dll
-  //public static class MultiplatformDllLoader
-  //{
-  //  private static bool _isEnabled;
-
-    //  public static void InitNativeDLLPath()
-    //{
-    //  // Manually set the DLL load path according to the architecture.
-    //  var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-      
-    //  if (Environment.Is64BitProcess)
-    //  {
-    //    path = Path.Combine(path, "X64");
-    //  }
-    //  else
-    //  {
-    //    path = Path.Combine(path, "X86");
-    //  }
-
-    //  NativeMethods.SetDllDirectory(path);
-    //}
-
-  //  public static bool Enable
-  //  {
-  //    get { return _isEnabled; }
-  //    set
-  //    {
-  //      lock (typeof(MultiplatformDllLoader))
-  //      {
-  //        if (_isEnabled != value)
-  //        {
-  //          if (value)
-  //            AppDomain.CurrentDomain.AssemblyResolve += Resolver;
-  //          else
-  //            AppDomain.CurrentDomain.AssemblyResolve -= Resolver;
-  //          _isEnabled = value;
-  //        }
-  //      }
-  //    }
-  //  }
-
-  //  /// Will attempt to load missing assembly from either x86 or x64 subdir
-  //  private static Assembly Resolver(object sender, ResolveEventArgs args)
-  //  {
-  //    string assemblyName = args.Name.Split(new[] { ',' }, 2)[0] + ".dll";
-  //    string archSpecificPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase,
-  //                                           Environment.Is64BitProcess ? "x64" : "x86",
-  //                                           assemblyName);
-
-  //    return File.Exists(archSpecificPath)
-  //               ? Assembly.LoadFile(archSpecificPath)
-  //               : null;
-  //  }
-  //}
-
   /// <summary>
   /// Description of BCRInstaller.
   /// </summary>
@@ -80,7 +18,7 @@ namespace ComicRackWebViewer
   {
     private const string INSTALLER_FILE = "BCRPlugin.zip";
     private const string VERSION_FILE = "BCRVersion.txt";
-    private const string VERSION = "1.30";
+    private const string VERSION = "1.31";
 
     public string InstallFolder { get { return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); } }
 
@@ -94,7 +32,6 @@ namespace ComicRackWebViewer
     
     private BCRInstaller()
     {
-      //MultiplatformDllLoader.InitNativeDLLPath();
     }
 
 

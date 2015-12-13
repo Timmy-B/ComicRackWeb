@@ -43,7 +43,8 @@ namespace ComicRackWebViewer
             // Also, for some reason I don't get InvalidOperationException ("Nancy.Json.JsonSettings.MaxJsonLength exceeded")
             // Instead Nancy generates a response with status OK and content length 0.
             Nancy.Json.JsonSettings.MaxJsonLength = Int32.MaxValue;
-            
+            Nancy.Json.JsonSettings.RetainCasing = true;
+
             // Case sensitivity is buggy in Nancy, so disable it. Or maybe I should generate/parse GUIDs correctly......
             StaticConfiguration.CaseSensitive = false;
             

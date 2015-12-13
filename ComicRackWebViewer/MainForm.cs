@@ -9,25 +9,25 @@
 
 namespace ComicRackWebViewer
 {
-  
+
+  using BCR;
+  using cYo.Projects.ComicRack.Engine.Database;
+  using cYo.Projects.ComicRack.Viewer;
+  using Nancy.Hosting.Self;
   using System;
-  using System.Windows.Forms;
   using System.Collections.Generic;
+  using System.Data.SQLite;
+  using System.IO;
   using System.Linq;
   using System.Net;
   using System.Net.Sockets;
   using System.Security.Principal;
   using System.Threading;
   using System.Threading.Tasks;
+  using System.Windows.Forms;
 
-  using BCR;
-  using System.Data.SQLite;
-  using cYo.Projects.ComicRack.Viewer;
-  using cYo.Projects.ComicRack.Engine.Database;
-  using System.IO;
-  
-  
-  
+
+
   /// <summary>
   /// MainForm provides the user interface of this plugin.
   /// </summary>
@@ -35,7 +35,7 @@ namespace ComicRackWebViewer
   {
     
     private static ManualResetEvent mre = new ManualResetEvent(false);
-    private static WebHost host;
+    private static NancyHost host;
     private int? actualPort;
     private Guid libraryGuid;
     private bool cacheSizesInitialized = false;
@@ -123,12 +123,17 @@ namespace ComicRackWebViewer
         StopService();
       }
 
-      int port = actualPort.Value;
-            
-      host = new WebHost(new Bootstrapper(), true, port, new Uri[] {});
+      
 
       try
       {
+        int port = actualPort.Value;
+        
+        Uri uri = new Uri(String.Format("http://localhost:{0}/", port));
+        HostConfiguration configuration = new HostConfiguration();
+        configuration.RewriteLocalhost = true;
+        host = new NancyHost(new Bootstrapper(), new Uri[] { uri });
+
         host.Start();
         this.BeginInvoke(new Action(SetEnabledState));
         mre.Reset();

@@ -1,5 +1,4 @@
 ﻿using cYo.Projects.ComicRack.Plugins.Automation;
-using FreeImageAPI;
 using System;
 using System.Windows;
 
@@ -11,12 +10,6 @@ namespace ComicRackWebViewer
         private static MainForm panel;
         
         
-        static void FreeImage_Message(FREE_IMAGE_FORMAT fif, string message)
-    		{
-          string m = message;
-    			
-    		}
-            
         public static bool Initialize(IApplication app)
         {
           try
@@ -26,8 +19,6 @@ namespace ComicRackWebViewer
             if (!BCRInstaller.Instance.Install())
               return false;
 
-            FreeImageEngine.Message += new OutputMessageFunction(FreeImage_Message);
-            
             BCR.Database.Instance.Initialize();
             
             return true;
