@@ -412,11 +412,29 @@ namespace BCR
         	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
-        	  
-        	  
-        	  ///////////////////////////////////////////////////////////////////////////////////////////////
-        	  //
-        	  Get["/Log"] = x => {
+
+            Get["/Publishers/{publisher}/Imprint/{imprint}/"] = x => {
+                try
+                {
+                    int totalCount = 0;
+                    var pub = x.publisher;
+                    var imprint = x.imprint;
+                    if (string.IsNullOrEmpty(imprint))
+                    {
+                        imprint = "";
+                    }
+                        var series = Context.ApplyODataUriFilter(BCR.GetSeries(pub, imprint), ref totalCount);
+                    var result = new { totalCount = 0, items = series };
+                    return Response.AsJson(result, HttpStatusCode.OK);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+                }
+            };
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            //
+            Get["/Log"] = x => {
         	    try
         	    {
           	    string severity = Request.Query.sev.HasValue ? Request.Query.sev : "";

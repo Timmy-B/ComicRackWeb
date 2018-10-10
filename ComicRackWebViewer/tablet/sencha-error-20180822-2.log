@@ -1,0 +1,263 @@
+Sencha Cmd 6.6.0.13 - Crash report
+================================================
+An error occurred while executing the following command: app upgrade
+
+Diagnostic information:
+=======================
+                                         : ======                                            
+                                 <<<<<<< : Generated                                         
+                                 >>>>>>> : Custom                                            
+                         app.archivePath : archive                                           
+                      app.bootstrap.base : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet
+                           app.build.dir : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/build/Comic
+                           app.classpath : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/app.js,C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/app,C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/lib,C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/lib/ux
+                         app.cmd.version : 6.6.0.13                                          
+                          app.config.dir : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\.sencha\app
+                   app.cordova.config.id : com.domain.Comic                                  
+                 app.cordova.config.name : Comic                                             
+                 app.cordova.config.path : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/cordova
+               app.cordova.config.target :                                                   
+              app.cordova.config.verbose : false                                             
+                   app.cordova.js.0.path : cordova.js                                        
+               app.cordova.js.0.priority : 1000                                              
+                 app.cordova.js.0.remote : true                                              
+                   app.cordova.js.length : 1                                                 
+                 app.cordova.microloader : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\.sencha\app/microloader/testing.js
+                 app.cordova.output.base : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/cordova/www
+         app.cordova.output.cache.enable : false                                             
+        app.cordova.output.deltas.enable : false                                             
+       app.cordova.output.manifest.embed : true                                              
+                                 app.dir : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet
+                           app.framework : touch                                             
+                   app.framework.version : 2.4.2.571                                         
+                                  app.id : a448a190-b304-11e1-a112-1564ffe4994a              
+                       app.indexHtmlPath : index.html                                        
+                                app.name : Comic                                             
+                         app.output.base : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/build/${build.environment}/Comic
+           app.output.microloader.enable : true                                              
+                  app.phonegap.config.id : com.domain.Comic                                  
+                app.phonegap.config.name : Comic                                             
+                app.phonegap.config.path : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/phonegap
+              app.phonegap.config.remote : false                                             
+             app.phonegap.config.verbose : false                                             
+                  app.phonegap.js.0.path : phonegap.js                                       
+              app.phonegap.js.0.priority : 1000                                              
+                app.phonegap.js.0.remote : true                                              
+                  app.phonegap.js.length : 1                                                 
+                app.phonegap.microloader : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\.sencha\app/microloader/testing.js
+                app.phonegap.output.base : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/phonegap/www
+        app.phonegap.output.cache.enable : false                                             
+       app.phonegap.output.deltas.enable : false                                             
+      app.phonegap.output.manifest.embed : true                                              
+                      app.resource.paths :                                                   
+        app.slicer.js.0.isWidgetManifest : true                                              
+                    app.slicer.js.0.path : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/sass/example/custom.js
+                    app.slicer.js.length : 1                                                 
+                                 app.url : null                                              
+                  base.framework.version : 2.4.2.571                                         
+                    buildenvironment.dir : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet
+               buildenvironment.load.dir : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet
+                          cmd.config.dir : C:\Users\timmyb\bin\Sencha\Cmd\6.6.0.13           
+                                 cmd.dir : C:\Users\timmyb\bin\Sencha\Cmd\6.6.0.13           
+                    cmd.framework.minver : 2.2.0                                             
+                   cmd.framework.version : 2.99.99.99999                                     
+              cmd.merge.tool.args.araxis : -wait -merge -3 -a1 {base} {user} {generated} {out}
+              cmd.merge.tool.args.kdiff3 : {base} {user} {generated} -o {out}                
+             cmd.merge.tool.args.p4merge : {base} {user} {generated} {out}                   
+           cmd.merge.tool.args.smartsync : {user} {generated} {base}                         
+          cmd.merge.tool.args.sourcegear : --merge --result={out} {user} {base} {generated}  
+            cmd.merge.tool.args.tortoise : -base:{base} -theirs:{generated} -mine:{user} -merged:{out}
+                              cmd.minver : 3.0.0.0                                           
+                            cmd.platform : windows                                           
+                     cmd.unicode.escapes : C:\Users\timmyb\bin\Sencha\Cmd\6.6.0.13/unicode-escapes.json
+                             cmd.version : 6.6.0.13                                          
+                            cmd.web.port : 1841                                              
+                     config.skipDownload : true                                              
+                      config.skipInherit : false                                             
+                     framework.classpath : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\touch/src
+                    framework.cmd.minver : 3.1.0.53                                          
+                   framework.cmd.version : 4.0.5.87                                          
+                    framework.config.dir : C:\Users\timmyb\bin\Sencha\Cmd\6.6.0.13\plugins\touch\2.3
+                           framework.dir : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\touch
+                       framework.ignores : src/locale,src/platform,auth2/Auth.js,scroller/Infinite.js
+                          framework.name : touch                                             
+                  framework.packages.dir : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\touch/packages
+                       framework.version : 2.4.2.571                                         
+                       inspector.address : http://localhost:1839/                            
+                legacy.framework.version : current                                           
+                          repo.local.dir : C:\Users\timmyb\bin\Sencha\Cmd\repo               
+                       shared.sencha.dir : false                                             
+        system.java.net.useSystemProxies : true                                              
+                     workspace.build.dir : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/build
+                   workspace.cmd.version : 6.6.0.13                                          
+                    workspace.config.dir : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\.sencha\workspace
+                           workspace.dir : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet
+         workspace.frameworks.touch.path : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\touch
+      workspace.frameworks.touch.version : 2.4.2.571                                         
+                  workspace.packages.dir : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/packages/local,C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/packages
+              workspace.packages.extract : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/packages/remote
+                     workspace.theme.dir : C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/packages/local,C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet/packages/${args.themeName}
+
+Exception information:
+=======================
+C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\build.xml:8: The following error occurred while executing this line:
+C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\.sencha\app\build-impl.xml:287: Cannot find C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\.sencha\app\sass-impl.xml imported from C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\.sencha\app\build-impl.xml
+     at com.sencha.ant.AntScript.execute(AntScript.java:121)
+     at com.sencha.command.plugin.PluginManager.execute(PluginManager.java:104)
+     at com.sencha.command.plugin.PluginManager.executeReverse(PluginManager.java:137)
+     at com.sencha.command.environment.BuildEnvironment.execute(BuildEnvironment.java:310)
+     at com.sencha.command.environment.BuildEnvironment.execute(BuildEnvironment.java:288)
+     at com.sencha.command.app.AppCommands$UpgradeCommand.execute(AppCommands.java:1252)
+     at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+     at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at com.sencha.util.MethodInvoker$Arguments.invoke(MethodInvoker.java:175)
+     at com.sencha.cli.Command.dispatch(Command.java:43)
+     at com.sencha.command.BasePluginCommands$BasePluginCommand.dispatch(BasePluginCommands.java:289)
+     at com.sencha.cli.Commands.dispatch(Commands.java:64)
+     at com.sencha.cli.Commands.dispatch(Commands.java:64)
+     at com.sencha.command.Sencha.dispatch(Sencha.java:80)
+     at com.sencha.command.Sencha.main(Sencha.java:147)
+     at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+     at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at com.exe4j.runtime.LauncherEngine.launch(LauncherEngine.java:65)
+     at com.exe4j.runtime.WinLauncher.main(WinLauncher.java:101)
+     at com.install4j.runtime.launcher.WinLauncher.main(WinLauncher.java:26)
+   Caused by: The following error occurred while executing this line:
+C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\.sencha\app\build-impl.xml:287: Cannot find C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\.sencha\app\sass-impl.xml imported from C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\.sencha\app\build-impl.xml
+     at org.apache.tools.ant.ProjectHelper.addLocationToBuildException(ProjectHelper.java:551)
+     at org.apache.tools.ant.taskdefs.ImportTask.importResource(ImportTask.java:238)
+     at org.apache.tools.ant.taskdefs.ImportTask.execute(ImportTask.java:163)
+     at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:291)
+     at sun.reflect.GeneratedMethodAccessor26.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+     at org.apache.tools.ant.Task.perform(Task.java:348)
+     at org.apache.tools.ant.Target.execute(Target.java:392)
+     at org.apache.tools.ant.helper.ProjectHelper2.parse(ProjectHelper2.java:180)
+     at org.apache.tools.ant.ProjectHelper.configureProject(ProjectHelper.java:82)
+     at com.sencha.ant.AntScript.init(AntScript.java:223)
+     at com.sencha.command.ant.AntCommand.execute(AntCommand.java:106)
+     at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+     at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at com.sencha.util.MethodInvoker$Arguments.invoke(MethodInvoker.java:175)
+     at com.sencha.cli.Command.dispatch(Command.java:43)
+     at com.sencha.cli.Commands.dispatch(Commands.java:64)
+     at com.sencha.command.Sencha.dispatch(Sencha.java:80)
+     at com.sencha.cli.AbstractCommand.dispatch(AbstractCommand.java:124)
+     at com.sencha.ant.SenchaCommandTask.doExecute(SenchaCommandTask.java:42)
+     at com.sencha.ant.BaseAntTask.execute(BaseAntTask.java:34)
+     at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:291)
+     at sun.reflect.GeneratedMethodAccessor26.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+     at org.apache.tools.ant.Task.perform(Task.java:348)
+     at org.apache.tools.ant.Target.execute(Target.java:392)
+     at org.apache.tools.ant.Target.performTasks(Target.java:413)
+     at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1399)
+     at org.apache.tools.ant.Project.executeTarget(Project.java:1368)
+     at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+     at org.apache.tools.ant.Project.executeTargets(Project.java:1251)
+     at com.sencha.ant.AntScript.execute(AntScript.java:117)
+     at com.sencha.command.plugin.PluginManager.execute(PluginManager.java:104)
+     at com.sencha.command.plugin.PluginManager.executeReverse(PluginManager.java:137)
+     at com.sencha.command.environment.BuildEnvironment.execute(BuildEnvironment.java:310)
+     at com.sencha.command.environment.BuildEnvironment.execute(BuildEnvironment.java:288)
+     at com.sencha.command.app.AppCommands$UpgradeCommand.execute(AppCommands.java:1252)
+     at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+     at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at com.sencha.util.MethodInvoker$Arguments.invoke(MethodInvoker.java:175)
+     at com.sencha.cli.Command.dispatch(Command.java:43)
+     at com.sencha.command.BasePluginCommands$BasePluginCommand.dispatch(BasePluginCommands.java:289)
+     at com.sencha.cli.Commands.dispatch(Commands.java:64)
+     at com.sencha.cli.Commands.dispatch(Commands.java:64)
+     at com.sencha.command.Sencha.dispatch(Sencha.java:80)
+     at com.sencha.command.Sencha.main(Sencha.java:147)
+     at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+     at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at com.exe4j.runtime.LauncherEngine.launch(LauncherEngine.java:65)
+     at com.exe4j.runtime.WinLauncher.main(WinLauncher.java:101)
+     at com.install4j.runtime.launcher.WinLauncher.main(WinLauncher.java:26)
+   Caused by: Cannot find C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\.sencha\app\sass-impl.xml imported from C:\Users\timmyb\Downloads\ComicRackWeb-master\ComicRackWebViewer\tablet\.sencha\app\build-impl.xml
+     at org.apache.tools.ant.taskdefs.ImportTask.importResource(ImportTask.java:182)
+     at org.apache.tools.ant.taskdefs.ImportTask.execute(ImportTask.java:163)
+     at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:291)
+     at sun.reflect.GeneratedMethodAccessor26.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+     at org.apache.tools.ant.Task.perform(Task.java:348)
+     at org.apache.tools.ant.Target.execute(Target.java:392)
+     at org.apache.tools.ant.helper.ProjectHelper2.parse(ProjectHelper2.java:169)
+     at org.apache.tools.ant.taskdefs.ImportTask.importResource(ImportTask.java:229)
+     at org.apache.tools.ant.taskdefs.ImportTask.execute(ImportTask.java:163)
+     at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:291)
+     at sun.reflect.GeneratedMethodAccessor26.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+     at org.apache.tools.ant.Task.perform(Task.java:348)
+     at org.apache.tools.ant.Target.execute(Target.java:392)
+     at org.apache.tools.ant.helper.ProjectHelper2.parse(ProjectHelper2.java:180)
+     at org.apache.tools.ant.ProjectHelper.configureProject(ProjectHelper.java:82)
+     at com.sencha.ant.AntScript.init(AntScript.java:223)
+     at com.sencha.command.ant.AntCommand.execute(AntCommand.java:106)
+     at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+     at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at com.sencha.util.MethodInvoker$Arguments.invoke(MethodInvoker.java:175)
+     at com.sencha.cli.Command.dispatch(Command.java:43)
+     at com.sencha.cli.Commands.dispatch(Commands.java:64)
+     at com.sencha.command.Sencha.dispatch(Sencha.java:80)
+     at com.sencha.cli.AbstractCommand.dispatch(AbstractCommand.java:124)
+     at com.sencha.ant.SenchaCommandTask.doExecute(SenchaCommandTask.java:42)
+     at com.sencha.ant.BaseAntTask.execute(BaseAntTask.java:34)
+     at org.apache.tools.ant.UnknownElement.execute(UnknownElement.java:291)
+     at sun.reflect.GeneratedMethodAccessor26.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at org.apache.tools.ant.dispatch.DispatchUtils.execute(DispatchUtils.java:106)
+     at org.apache.tools.ant.Task.perform(Task.java:348)
+     at org.apache.tools.ant.Target.execute(Target.java:392)
+     at org.apache.tools.ant.Target.performTasks(Target.java:413)
+     at org.apache.tools.ant.Project.executeSortedTargets(Project.java:1399)
+     at org.apache.tools.ant.Project.executeTarget(Project.java:1368)
+     at org.apache.tools.ant.helper.DefaultExecutor.executeTargets(DefaultExecutor.java:41)
+     at org.apache.tools.ant.Project.executeTargets(Project.java:1251)
+     at com.sencha.ant.AntScript.execute(AntScript.java:117)
+     at com.sencha.command.plugin.PluginManager.execute(PluginManager.java:104)
+     at com.sencha.command.plugin.PluginManager.executeReverse(PluginManager.java:137)
+     at com.sencha.command.environment.BuildEnvironment.execute(BuildEnvironment.java:310)
+     at com.sencha.command.environment.BuildEnvironment.execute(BuildEnvironment.java:288)
+     at com.sencha.command.app.AppCommands$UpgradeCommand.execute(AppCommands.java:1252)
+     at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+     at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at com.sencha.util.MethodInvoker$Arguments.invoke(MethodInvoker.java:175)
+     at com.sencha.cli.Command.dispatch(Command.java:43)
+     at com.sencha.command.BasePluginCommands$BasePluginCommand.dispatch(BasePluginCommands.java:289)
+     at com.sencha.cli.Commands.dispatch(Commands.java:64)
+     at com.sencha.cli.Commands.dispatch(Commands.java:64)
+     at com.sencha.command.Sencha.dispatch(Sencha.java:80)
+     at com.sencha.command.Sencha.main(Sencha.java:147)
+     at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+     at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+     at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+     at java.lang.reflect.Method.invoke(Unknown Source)
+     at com.exe4j.runtime.LauncherEngine.launch(LauncherEngine.java:65)
+     at com.exe4j.runtime.WinLauncher.main(WinLauncher.java:101)
+     at com.install4j.runtime.launcher.WinLauncher.main(WinLauncher.java:26)
+

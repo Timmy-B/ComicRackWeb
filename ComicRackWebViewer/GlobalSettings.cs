@@ -18,7 +18,7 @@ namespace BCR
       
     public GlobalSettings()
     {
-      nancy_request_tracing = true;
+      nancy_request_tracing = false;
       nancy_diagnostics_password = "diagnostics";
       webserver_port = 8080;
       url_base = "tablet";
@@ -40,7 +40,7 @@ namespace BCR
       }
       
       webserver_port = GetInt32("webserver_port", 8080);
-      nancy_request_tracing = GetBoolean("nancy_request_tracing", true);
+      nancy_request_tracing = GetBoolean("nancy_request_tracing", false);
       nancy_diagnostics_password = GetString("nancy_diagnostics_password", "diagnostics");
       url_base = GetString("url_base", "tablet");
     }

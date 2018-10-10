@@ -91,11 +91,14 @@ namespace BCR
       //_caption = new Lazy<string>(() => { return book.Caption; });
     }
 
-    #endregion Constructors
+        #endregion Constructors
 
-    #region Wrapped ComicBook properties
+        #region Wrapped ComicBook properties
 
-    public int AlternateCount { get { return book.AlternateCount; } }
+
+
+        public string Added { get { return book.AddedTimeAsText; } }
+        public int AlternateCount { get { return book.AlternateCount; } }
 
     public string AlternateSeries { get { return book.AlternateSeries; } }
 
@@ -109,6 +112,7 @@ namespace BCR
         return _caption;
       }
     }
+    public string Manga { get { return book.MangaAsText; } }
 
     public string Characters { get { return book.Characters; } }
 
@@ -174,8 +178,8 @@ namespace BCR
     // Shadow properties: These are values taken from the filename of the eComic (these are
     // displayed in light gray in ComicRack)
     public string ShadowSeries { get { return book.ShadowSeries; } }
-
-    public string ShadowTitle { get { return book.ShadowTitle; } }
+        public string Pages { get { return book.PagesAsText; } }
+        public string ShadowTitle { get { return book.ShadowTitle; } }
 
     public int ShadowVolume { get { return book.ShadowVolume; } }
 
@@ -273,7 +277,9 @@ namespace BCR
     public string Imprint { get; set; }
 
     public string Name { get; set; }
-  }
+
+    public string Count { get; set; }
+    }
 
   public class Series : IEquatable<Series>
   {
