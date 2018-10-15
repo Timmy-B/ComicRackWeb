@@ -309,8 +309,8 @@ namespace ComicRackWebViewer
       
       // Password Strength: http://xkcd.com/936/
       InputBoxValidation validation = delegate(string val) {
-        if (val.Length < 8)
-          return "Password must contain at least 8 characters.";
+        if (val.Length < 4)
+          return "Password must contain at least 4 characters.";
         
         return "";
       };
