@@ -175,80 +175,83 @@ namespace BCR
         	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
             };
-            
-            
-            ///////////////////////////////////////////////////////////////////////////////////////////////
-        	  // Get one property.
-        	  /*
-        	  Get["/Comics/{id}/{property}"] = x => { 
-        	    try
-        	    {
-                Comic comic = BCR.GetComic(new Guid(x.id));
-                if (comic == null)
-                {
-                  return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
-                }
 
-                PropertyInfo property = comic.GetType().GetProperty(x.property);
-                object value = property.GetValue(comic, null);
-                
-                return Response.AsJson(value);
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            // Get one property.
+            /*
+            Get["/Comics/{id}/{property}"] = x => { 
+              try
+              {
+              Comic comic = BCR.GetComic(new Guid(x.id));
+              if (comic == null)
+              {
+                return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
+              }
+
+              PropertyInfo property = comic.GetType().GetProperty(x.property);
+              object value = property.GetValue(comic, null);
+
+              return Response.AsJson(value);
+            }
+            catch(Exception e)
+              {
+                return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+              }
+          };
+          */
+
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            // Update properties of the specified comicbook.
+            /*
+            Put["/Comics/{id}"] = x => {
+              try
+              {
+              // Get the ComicBook entry from the library, so we can change it.
+              ComicBook book = BCR.GetComicBook(new Guid(x.id));
+              if (book == null)
+              {
+                return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
+              }
+
+              // Convert form values to temporary ComicBook object.
+              ComicBook info = this.Bind<ComicBook>();
+
+              IEnumerable<string> keys = Request.Form.GetDynamicMemberNames();
+
+              // This also triggers the update of the ComicRack application.
+              book.CopyDataFrom(info, keys);
+
+              return HttpStatusCode.OK;  
               }
               catch(Exception e)
-        	    {
-        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
-        	    }
+              {
+                return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+              }
             };
             */
-        	  
-        	  
-        	  ///////////////////////////////////////////////////////////////////////////////////////////////
-        	  // Update properties of the specified comicbook.
-        	  /*
-        	  Put["/Comics/{id}"] = x => {
-        	    try
-        	    {
-          	    // Get the ComicBook entry from the library, so we can change it.
-          	    ComicBook book = BCR.GetComicBook(new Guid(x.id));
-          	    if (book == null)
-          	    {
-          	      return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
-          	    }
-          	    
-          	    // Convert form values to temporary ComicBook object.
-          	    ComicBook info = this.Bind<ComicBook>();
-          	    
-          	    IEnumerable<string> keys = Request.Form.GetDynamicMemberNames();
-          	    
-          	    // This also triggers the update of the ComicRack application.
-          	    book.CopyDataFrom(info, keys);
-          	      
-          	    return HttpStatusCode.OK;  
-        	    }
-        	    catch(Exception e)
-        	    {
-        	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
-        	    }
-        	  };
-        	  */
-        	  
+
             ///////////////////////////////////////////////////////////////////////////////////////////////
-        	  // Update properties of the specified comicbook for the current user
-        	  Put["/Comics/{id}/Progress"] = x => {
+            // Update properties of the specified comicbook for the current user
+               Post["/Comics/{id}/Progress"] = x => {
         	    try
         	    {
-          	    // Check if the comic exists.
-          	    Guid comicId = new Guid(x.id);
+                      // Check if the comic exists.
+                
+
+                  Guid comicId = new Guid(x.id);
                 ComicBook book = BCR.GetComics().FirstOrDefault(comic => comic.Id == comicId);
           	    if (book == null)
           	    {
           	      return Response.AsError(HttpStatusCode.NotFound, "Comic not found", Request);
           	    }
-          	              	    
-          	    BCRUser user = (BCRUser)this.Context.CurrentUser;
+
+                BCRUser user = (BCRUser)this.Context.CurrentUser;
           	    user.UpdateComicProgress(book, int.Parse(this.Request.Form.CurrentPage));
-          	              	    
-          	    return HttpStatusCode.OK;  
+                //if using multiple users do we update the master file with a users progress?
+                //book.SetValue("CurrentPage", int.Parse(this.Request.Form.CurrentPage));
+                return HttpStatusCode.OK;  
         	    }
         	    catch(Exception e)
         	    {
@@ -323,7 +326,8 @@ namespace BCR
         	  Get["/Series"] = x => {
         	    try 
         	    {
-        	      int totalCount = 0;
+                  var user = (BCRUser)this.Context.CurrentUser;
+                      int totalCount = 0;
         	      var series = Context.ApplyODataUriFilter(BCR.GetSeries(), ref totalCount);
         	      var result = new { totalCount = totalCount, items = series };
         	      return Response.AsJson(result, HttpStatusCode.OK);
@@ -333,11 +337,26 @@ namespace BCR
         	      return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
-        	  
-        	  
-        	  ///////////////////////////////////////////////////////////////////////////////////////////////
-        	  // Retrieve a list of all comics in the specified list
-        	  Get["/Series/{id}"] = x => {
+            // Get a list of series added in the last 2 days
+            Get["/Series/Recent/{days}"] = x => {
+                try
+                {
+                    var user = (BCRUser)this.Context.CurrentUser;
+                    int totalCount = 0;
+                    int days = x.days;
+                    var series = BCR.GetMostRecentlyAdded(user, days);
+                    var result = new { totalCount = totalCount, items = series };
+                    return Response.AsJson(result, HttpStatusCode.OK);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+                }
+            };
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            // Retrieve a list of all comics in the specified list
+            Get["/Series/{id}"] = x => {
         	    try 
         	    {
         	      var user = (BCRUser)this.Context.CurrentUser;
@@ -416,14 +435,15 @@ namespace BCR
             Get["/Publishers/{publisher}/Imprint/{imprint}/"] = x => {
                 try
                 {
-                    int totalCount = 0;
+                    var user = (BCRUser)this.Context.CurrentUser;
+                   //s int totalCount = 0;
                     var pub = x.publisher;
                     var imprint = x.imprint;
                     if (string.IsNullOrEmpty(imprint))
                     {
                         imprint = "";
                     }
-                        var series = Context.ApplyODataUriFilter(BCR.GetSeries(pub, imprint), ref totalCount);
+                    var series = BCR.GetSeries(pub, imprint);
                     var result = new { totalCount = 0, items = series };
                     return Response.AsJson(result, HttpStatusCode.OK);
                 }

@@ -74,7 +74,18 @@ namespace BCR
             
             return series;
         }
-        
+        // Get all comics added within x days 
+        public static IEnumerable<Comic> GetMostRecentlyAdded(BCRUser user, int days)
+        {
+            //comicrack format = "Added": "10/15/2018 10:51:25 AM"
+            //string dateformat = "MM/dd/yyyy HH':'mm':'ss ";
+            var books = ComicRackWebViewer.Plugin.Application.GetLibraryBooks();
+            var recent = books.Where(x => x.AddedTime >= DateTime.Today.AddDays(-(days)));
+            var list = recent.Select(x => x.ToComic(user))
+                .OrderBy(x => x.Added).ToList();
+
+            return list;
+        }
         // Get all volumes from a specific series
         public static IEnumerable<int> GetVolumesFromSeries(Guid id)
         {
