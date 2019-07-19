@@ -12,7 +12,7 @@ namespace BCR
   {
     public static IEnumerable<Series> AsSeries(this IEnumerable<ComicBook> comics)
     {
-      return comics.Select(x => x.ToSeries()).Distinct();
+      return comics.Select(x => x.ToSeries()).Distinct().OrderBy(x => x.Volume).OrderBy(x => x.Title);
     }
 
     public static Comic ToComic(this ComicBook x, BCRUser user)
@@ -281,7 +281,13 @@ namespace BCR
     public string Count { get; set; }
     }
 
-  public class Series : IEquatable<Series>
+  public class Rating
+    {
+        public string Name { get; set; }
+
+        public string Count { get; set; }
+    }
+    public class Series : IEquatable<Series>
   {
     public int Count { get; set; }
 

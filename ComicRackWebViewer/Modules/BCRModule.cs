@@ -7,7 +7,7 @@ using Nancy.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Reflection;
 
 
 namespace BCR
@@ -88,27 +88,46 @@ namespace BCR
         	      BCRUser user = (BCRUser)this.Context.CurrentUser;
         	      
                 var rawcomics = BCR.GetComicsForList(user, new Guid(x.id));
-        	      int totalCount = 0;
-        	      var comics = Context.ApplyODataUriFilter(rawcomics, ref totalCount);
-        	      var result = new { totalCount = totalCount, items = comics };
-        	      return Response.AsJson(result, HttpStatusCode.OK);
+        	    int propCount = rawcomics.Count();
+        	    var result = new { totalCount = propCount, items = rawcomics };
+        	    return Response.AsJson(result, HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
         	    {
                 return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
         	    }
         	  };
-            
-        	  
-        	  ///////////////////////////////////////////////////////////////////////////////////////////////
-        	  // Returns a list of all the comics as comic excerpts
-        	  Get["/Comics"] = x => { 
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            // Return the Library Totals.
+            Get["/Totals"] = x => {
+                try
+                {
+                    BCRUser user = (BCRUser)this.Context.CurrentUser;
+                    var comics = BCR.GetComics().Select(c => c.ToComic(user));
+                    var series = BCR.GetSeries();
+                    var publishers = BCR.GetPublishers();
+                    int issuesCount = comics.Count();
+                    int seriesCount = series.Count();
+                    int publishersCount = publishers.Count();
+                    var result = new { issues = issuesCount, series = seriesCount, publishers = publishersCount };
+                    return Response.AsJson(result, HttpStatusCode.OK);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+                }
+            };
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            // Returns a list of all the comics as comic excerpts
+            Get["/Comics"] = x => { 
         	    try
         	    {
         	      BCRUser user = (BCRUser)this.Context.CurrentUser;
-        	      int totalCount = 0;
-        	      var comics = Context.ApplyODataUriFilter(BCR.GetComics().Select(c => c.ToComic(user)), ref totalCount);
-        	      var result = new { totalCount = totalCount, items = comics };
+        	      var comics = BCR.GetComics().Select(c => c.ToComic(user));
+                  int propCount = comics.Count();
+        	      var result = new { totalCount = propCount, items = comics };
         	      return Response.AsJson(result, HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
@@ -326,11 +345,11 @@ namespace BCR
         	  Get["/Series"] = x => {
         	    try 
         	    {
-                  var user = (BCRUser)this.Context.CurrentUser;
-                      int totalCount = 0;
-        	      var series = Context.ApplyODataUriFilter(BCR.GetSeries(), ref totalCount);
-        	      var result = new { totalCount = totalCount, items = series };
-        	      return Response.AsJson(result, HttpStatusCode.OK);
+                 var user = (BCRUser)this.Context.CurrentUser;
+        	     var series = BCR.GetSeries();
+                 int propCount = series.Count();
+                 var result = new { totalCount = propCount, items = series };
+        	     return Response.AsJson(result, HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
         	    {
@@ -342,10 +361,10 @@ namespace BCR
                 try
                 {
                     var user = (BCRUser)this.Context.CurrentUser;
-                    int totalCount = 0;
                     int days = x.days;
                     var series = BCR.GetMostRecentlyAdded(user, days);
-                    var result = new { totalCount = totalCount, items = series };
+                    int propCount = series.Count();
+                    var result = new { totalCount = propCount, items = series };
                     return Response.AsJson(result, HttpStatusCode.OK);
                 }
                 catch (Exception e)
@@ -360,9 +379,9 @@ namespace BCR
         	    try 
         	    {
         	      var user = (BCRUser)this.Context.CurrentUser;
-        	      int totalCount = 0;
-        	      var series = Context.ApplyODataUriFilter(BCR.GetComicsFromSeries(user, new Guid(x.id)), ref totalCount);
-        	      var result = new { totalCount = totalCount, items = series };
+        	      var series =BCR.GetComicsFromSeries(user, new Guid(x.id));
+                  int propCount = series.Count();
+                  var result = new { totalCount = propCount, items = series };
         	      return Response.AsJson(result, HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
@@ -393,6 +412,7 @@ namespace BCR
         	  Get["/Series/{id}/Volumes"] = x => {
         	    try 
         	    {
+                  
         	      return Response.AsOData(BCR.GetVolumesFromSeries(new Guid(x.id)), HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
@@ -424,7 +444,10 @@ namespace BCR
         	  Get["/Publishers"] = x => {
         	    try 
         	    {
-        	      return Response.AsOData(BCR.GetPublishers(), HttpStatusCode.OK);
+                      var publishers =  BCR.GetPublishers();
+                      int propCount = publishers.Count();
+                      var result = new { totalCount = propCount, items = publishers };
+                      return Response.AsJson(result, HttpStatusCode.OK);
         	    }
         	    catch(Exception e)
         	    {
@@ -436,7 +459,6 @@ namespace BCR
                 try
                 {
                     var user = (BCRUser)this.Context.CurrentUser;
-                   //s int totalCount = 0;
                     var pub = x.publisher;
                     var imprint = x.imprint;
                     if (string.IsNullOrEmpty(imprint))
@@ -444,7 +466,8 @@ namespace BCR
                         imprint = "";
                     }
                     var series = BCR.GetSeries(pub, imprint);
-                    var result = new { totalCount = 0, items = series };
+                   // int propCount = series.Count();
+                    var result = new { items = series };
                     return Response.AsJson(result, HttpStatusCode.OK);
                 }
                 catch (Exception e)
@@ -452,6 +475,44 @@ namespace BCR
                     return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
                 }
             };
+
+
+            Get["/Ratings"] = x => {
+                try
+                {
+                    var series = BCR.GetAgeRatings();
+                    int propCount = series.Count();
+                    var result = new { totalCount = propCount, items = series };
+                    return Response.AsJson(result, HttpStatusCode.OK);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+                }
+            };
+
+            Get["/Rating/{rating}/"] = x => {
+                try
+                {
+                    var user = (BCRUser)this.Context.CurrentUser;
+                    string rating = x.rating;
+                    // replace ~ with +
+                    rating = rating.Replace('~', '+');
+                    if (string.IsNullOrEmpty(rating))
+                    {
+                        rating = "";
+                    }
+                    var series = BCR.GetSeriesByAgeRating(rating);
+                    int propCount = series.Count();
+                    var result = new { totalCount = propCount, items = series };
+                    return Response.AsJson(result, HttpStatusCode.OK);
+                }
+                catch (Exception e)
+                {
+                    return Response.AsError(HttpStatusCode.InternalServerError, e.ToString(), Request);
+                }
+            };
+
             ///////////////////////////////////////////////////////////////////////////////////////////////
             //
             Get["/Log"] = x => {

@@ -572,6 +572,31 @@ namespace BCR
                 return x.GroupBy(y => y.Imprint).Select(y => new Publisher { Name = x.Key, Imprint = y.Key });
             }).SelectMany(x => x).OrderBy(x => x.Imprint).OrderBy(x => x.Name);
         }
+        //adding rating list
+
+
+        public static IEnumerable<Rating> GetAgeRatings()
+        {
+            return ComicRackWebViewer.Plugin.Application.GetLibraryBooks().GroupBy(x => x.AgeRating).Select(x =>
+            {
+                return new Rating { Name = x.Key };
+            });
+        }
+
+        public static IEnumerable<Series> GetSeriesByAgeRating(string rating)
+        {
+            IEnumerable<ComicBook> comics;
+            if (string.Compare(rating, "no rating", true) == 0)
+            {
+                comics = ComicRackWebViewer.Plugin.Application.GetLibraryBooks().Where(x => string.IsNullOrEmpty(x.AgeRating));
+            }
+            else
+            {
+                comics = ComicRackWebViewer.Plugin.Application.GetLibraryBooks().Where(x => string.Compare(rating, x.AgeRating, true) == 0);
+            }
+            return comics.AsSeries();
+        }
+
 
         public static IEnumerable<Series> GetSeries(string publisher, string imprint)
         {

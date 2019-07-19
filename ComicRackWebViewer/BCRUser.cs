@@ -105,14 +105,14 @@ namespace BCR
         comicProgress[comicBook.Id] = progress;
       }
 
-      if (settings.use_comicrack_progress)
-      {
+    //  if (settings.use_comicrack_progress)
+  //    {
         // Save the progess to the ComicRack database as well
         comicBook.CurrentPage = currentPage;
         if (comicBook.LastPageRead < currentPage)
           comicBook.LastPageRead = currentPage;
 
-      }
+    //  }
     }
 
     public void UpdateSettings(UserSettings settings)

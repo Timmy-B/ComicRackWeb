@@ -9,6 +9,7 @@
 
 using System;
 using System.IO;
+using System.Drawing;
 
 namespace BCR
 {
@@ -53,19 +54,19 @@ namespace BCR
         
         private ImageCache()
         { 
-          cache_size = 1024; // MB 
+          cache_size = 2048; // MB 
           // TODO: make this a user setting?
           // Maximum image dimensions for images.
           // If you never zoom in, then set this to the size of your tablet screen, e.g. 2048x1536 for ipad 3
           use_max_dimension = false;
-          max_dimension_long = 4096;
-          max_dimension_short = 3072; 
+          max_dimension_long = 2736;
+          max_dimension_short = 1824; 
           
 
           maximum_imagesize = 5*1024*1024; // IOS5 : 5 megapixels
                     
           use_progressive_jpeg = true;
-          progressive_jpeg_size_threshold = 2*1024*1024; // 2 megapixels
+          progressive_jpeg_size_threshold = 4*1024*1024; // 4 megapixels
           progressive_jpeg_quality = 90; // 10..100 %
           
           folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), DIRECTORY);
@@ -105,7 +106,31 @@ namespace BCR
             return null;
           }
         }
-        
+
+        //public String[] GetFullSizeFast(string filename)
+        //{
+        //    if (cache_size <= 0)
+        //        return null;
+
+        //    try
+        //    {
+        //        using (FileStream fs = new FileStream(cache_folder + filename, FileMode.Open))
+        //        {
+        //            using (Image img = Image.FromStream(fs, false, false))
+        //            {
+        //                string height = img.Height.ToString();
+        //                string width = img.Width.ToString();
+        //                string[] dimens = { height, width };
+        //                return dimens;
+        //            }
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        return null;
+        //    }
+        //}
+
         public void SaveToCache(string filename, MemoryStream image, bool thumbnail)
         {
           if (cache_size <= 0)
