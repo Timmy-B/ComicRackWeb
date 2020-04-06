@@ -128,6 +128,7 @@ namespace ComicRackWebViewer
                     x.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                     x.Response.Headers.Add("Access-Control-Allow-Methods", "POST,GET,DELETE,PUT,OPTIONS");
                     x.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+                    x.Response.Headers.Add("Access-Control-Allow-Headers", "Accept, Origin, Content-type");
                 });
         }
     

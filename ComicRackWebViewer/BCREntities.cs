@@ -10,10 +10,12 @@ namespace BCR
 {
   public static class EntityExtensions
   {
-    public static IEnumerable<Series> AsSeries(this IEnumerable<ComicBook> comics)
+
+
+        public static IEnumerable<Series> AsSeries(this IEnumerable<ComicBook> comics)
     {
-      return comics.Select(x => x.ToSeries()).Distinct().OrderBy(x => x.Volume).OrderBy(x => x.Title);
-    }
+           return comics.GroupBy(x => new { x.Series, x.Volume }, (key, g) => new Series { Title = key.Series, Volume = key.Volume, Id = g.FirstOrDefault().Id, SecondId = (g.Skip(1).FirstOrDefault()?.Id), Count = g.Count() }).OrderBy(x => x.Title);
+        }
 
     public static Comic ToComic(this ComicBook x, BCRUser user)
     {
@@ -46,10 +48,10 @@ namespace BCR
     public static Series ToSeries(this ComicBook x)
     {
       return new Series
-              {
-                Title = x.ShadowSeries,
-                Volume = x.ShadowVolume,
+             {
                 Id = x.Id,
+                Title = x.ShadowSeries,
+                Volume = x.ShadowVolume
               };
     }
   }
@@ -260,7 +262,8 @@ namespace BCR
     public string Type { get; set; }
   }
 
-  public class ComicProgress
+
+    public class ComicProgress
   {
     public int CurrentPage { get; set; }
 
@@ -281,19 +284,41 @@ namespace BCR
     public string Count { get; set; }
     }
 
-  public class Rating
+    public class PageList
+    {
+        public int height { get; set; }
+        public int width { get; set; }
+        public int ratio { get; set; }
+    }
+
+    public class SeriesList
+    {
+        public string Title { get; set; }
+
+        public int Volume { get; set; }
+
+        public Guid Id { get; set; }
+
+        public Nullable<Guid> SecondId { get; set; } = null;
+
+        public int Count { get; set; }
+    }
+    public class Rating
     {
         public string Name { get; set; }
 
         public string Count { get; set; }
     }
+
     public class Series : IEquatable<Series>
   {
     public int Count { get; set; }
 
     public Guid Id { get; set; }
 
-    public string Title { get; set; }
+        public Nullable<Guid> SecondId { get; set; } = null;
+
+        public string Title { get; set; }
 
     public int Volume { get; set; }
     public bool Equals(Series other)

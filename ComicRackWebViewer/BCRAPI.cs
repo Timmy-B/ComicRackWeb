@@ -57,7 +57,7 @@ namespace BCR
                 .Select(x => x.ToComic(user))
                 .OrderBy(x => x.ShadowNumber).ToList();
 
-            int totalCount = 0;
+            int totalCount = series.Count();
             return context.ApplyODataUriFilter(series, ref totalCount).Cast<Comic>();
         }
         
@@ -81,6 +81,18 @@ namespace BCR
             //string dateformat = "MM/dd/yyyy HH':'mm':'ss ";
             var books = ComicRackWebViewer.Plugin.Application.GetLibraryBooks();
             var recent = books.Where(x => x.AddedTime >= DateTime.Today.AddDays(-(days)));
+            var list = recent.Select(x => x.ToComic(user))
+                .OrderBy(x => x.Added).ToList();
+
+            return list;
+        }
+        // Get all comics read within x days 
+        public static IEnumerable<Comic> GetMostRecentlyRead(BCRUser user, int days)
+        {
+            //comicrack format = "Added": "10/15/2018 10:51:25 AM"
+            //string dateformat = "MM/dd/yyyy HH':'mm':'ss ";
+            var books = ComicRackWebViewer.Plugin.Application.GetLibraryBooks();
+            var recent = books.Where(x => x.OpenedTime >= DateTime.Today.AddDays(-(days)));
             var list = recent.Select(x => x.ToComic(user))
                 .OrderBy(x => x.Added).ToList();
 
@@ -110,6 +122,42 @@ namespace BCR
         }
 
 
+        public static IEnumerable<PageList> GetPagesInfo(Guid id)
+        {
+            List<PageList> pagesizes = new List<PageList>();
+            var comic = GetComicBook(id);
+            comic.OpenProvider();
+            int pages = comic.PageCount;
+
+            for (int i = 0; i < pages; i++)
+            {
+                var test1 = comic.GetImageKey(i);
+                test1.UpdateFileInfo();
+                var test = comic.GetPageByImageIndex(i);
+                pagesizes.Add(new PageList { height = test.ImageHeight, width = test.ImageWidth, ratio = 0 });
+            }
+
+            return pagesizes;
+        }
+
+        public static IEnumerable<PageList> GetIssuePages(Guid id)
+        {
+            List<PageList> pagesizes = new List<PageList>();
+            var comic = GetComicBook(id);
+            comic.OpenProvider();
+            int pages = comic.PageCount;
+
+            for (int i = 0; i < pages; i++)
+            {
+                var test1 = comic.GetImageKey(i);
+                test1.UpdateFileInfo();
+                var test = comic.GetPageByImageIndex(i);
+                pagesizes.Add(new PageList { height = test.ImageHeight, width = test.ImageWidth, ratio = 0 });
+            }
+
+            return pagesizes;
+        }
+
         public static MemoryStream GetBytesFromImage(Image image/*, bool progressive, int qualitylevel*/)
         {
             var bitmap = new Bitmap(image);
@@ -119,6 +167,7 @@ namespace BCR
             stream.Position = 0;
             return stream;
         }
+
 
         private static Bitmap GetPageBitmap(Guid id, int page)
         {
@@ -163,7 +212,7 @@ namespace BCR
                 return null;
             }
         }
-        
+
         // Uses GDI+ for resizing.
         public static Bitmap Resize(Image img, int width, int height)
         {
@@ -174,7 +223,7 @@ namespace BCR
             graphic.InterpolationMode = InterpolationMode.HighQualityBicubic;
             graphic.SmoothingMode  = SmoothingMode.HighQuality;
             graphic.CompositingQuality = CompositingQuality.HighQuality;
-            graphic.PixelOffsetMode = PixelOffsetMode.HighQuality; 
+            graphic.PixelOffsetMode = PixelOffsetMode.HighQuality;
             //draw the newly resized image
             graphic.DrawImage(img, 0, 0, width, height);
             //dispose and free up the resources
@@ -183,7 +232,7 @@ namespace BCR
             return bmp;
         }
 
-
+        
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public static bool GetPageImageSize(Guid id, int page, ref int width, ref int height)
         {
@@ -533,8 +582,7 @@ namespace BCR
             return null;
           }
         }
-        
-       
+
         public static ComicBook GetComicBook(Guid id)
         {
           try
@@ -571,6 +619,12 @@ namespace BCR
             {
                 return x.GroupBy(y => y.Imprint).Select(y => new Publisher { Name = x.Key, Imprint = y.Key });
             }).SelectMany(x => x).OrderBy(x => x.Imprint).OrderBy(x => x.Name);
+        }
+        public static IEnumerable<Series> GetSeriesList()
+        {
+            var books = ComicRackWebViewer.Plugin.Application.GetLibraryBooks();
+
+            return books.GroupBy(x => new { x.ShadowSeries, x.ShadowVolume }, (key, g) => new Series { Title = key.ShadowSeries, Volume = key.ShadowVolume, Id = g.FirstOrDefault().Id, SecondId = (g.Skip(1).FirstOrDefault()?.Id), Count = g.Count() }).OrderBy(x => x.Title);
         }
         //adding rating list
 
